@@ -32,6 +32,11 @@
 
   <!-- EVERYTHING ABOVE IS NEEDED TO MAKE BOOTSTRAP WORK -->
 
+  <!-- Google sign in add-ons -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id" content="1039774670515-f26imeu5vrlju55c9fb9tq8f9frka23v.apps.googleusercontent.com">
+  <!-- Google sign in add-ons -->
+
 
   <!-- Navbar -->
        <nav class="navbar navbar-expand-xl bg-light">
@@ -60,8 +65,9 @@
         <div class="row text-center d-flex justify-content-center pt-5">
           <!-- Grid column -->
           <div class="col-md-2">
-            <h6 class="text">
-              <a href="#!" class="text-black">Sign in with Google</a>
+            <h6 class="text-center">
+<!--              <a href="#!" class="text-black">Sign in with Google</a>-->
+                <div class="g-signin2 " data-onsuccess="onSignIn" ></div>
             </h6>
           </div>
           <!-- Grid column -->
