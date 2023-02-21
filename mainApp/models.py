@@ -31,4 +31,8 @@ class TutorTime(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     location = models.CharField(max_length=100)
+class SessionBooked(models.Model):
+    sessionID = models.ForeignKey(TutorTime, on_delete=models.CASCADE)
+    tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    studentID = models.ForeignKey(Student, on_delete=models.CASCADE)
 # Create your models here.
