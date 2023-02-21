@@ -15,4 +15,7 @@ class Student(models.Model):
     pronouns = models.CharField(max_length=20)
     major = models.CharField(max_length=100)
     fun_fact = models.CharField(max_length=200)
+class Classes(models.Model):
+    classID = models.IntegerField(primary_key=True)
+    className = models.CharField(max_length=100)
 # Create your models here.
