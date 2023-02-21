@@ -23,4 +23,12 @@ class TutorClasses(models.Model):
     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     classID = models.ForeignKey(Classes, on_delete=models.CASCADE)
     rate = models.FloatField()
+
+class TutorTime(models.Model):
+    sessionID = models.AutoField(primary_key=True)
+    tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    day = models.CharField(max_length=20)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    location = models.CharField(max_length=100)
 # Create your models here.
