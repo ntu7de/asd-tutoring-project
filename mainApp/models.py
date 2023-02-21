@@ -18,4 +18,9 @@ class Student(models.Model):
 class Classes(models.Model):
     classID = models.IntegerField(primary_key=True)
     className = models.CharField(max_length=100)
+
+class TutorClasses(models.Model):
+    tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    classID = models.ForeignKey(Classes, on_delete=models.CASCADE)
+    rate = models.FloatField()
 # Create your models here.
