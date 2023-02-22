@@ -1,0 +1,11 @@
+.container-fluid {
+    height: 100vh;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn a, .btn a:hover {
+    color: white;
+    text-decoration: none;
+}

@@ -1,6 +1,7 @@
-{% extends 'mainApp/base.html' %}
+{% load static %}
 {% block title %}Sign in{% endblock %} 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'mainApp/login.css' %}" />
     <div class="row">
         <div class="col-md-8 mx-auto social-container my-2 order-md-1" style="justify-content:center; display:flex; flex-direction: column;">
             <button class="btn btn-primary mb-2">
