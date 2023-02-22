@@ -7,3 +7,7 @@ def login(request):
 @login_required
 def home(request):
     return render(request, 'mainApp/home.html')
+
+@login_required
+def accountSettings(request):
+    return render(request, 'mainApp/accountSettings.html')
