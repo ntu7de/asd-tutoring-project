@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'mainApp/base.html' %}
+{% block title %}HOME{% endblock %} 
+{% block content %} 
+    <div class="row">
+        <div class="col-sm-12 mb-3">
+            <h4 class="text-center" style="color:white">Welcome {{ user.first_name }} to the tutor page</h4>
+        </div>
+    </div>
+{% endblock %}
