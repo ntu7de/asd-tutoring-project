@@ -12,15 +12,30 @@
     align-items: center;
 }
 .button {
-  background-color: royalblue;
-  border-radius: 8px;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
+    background-color: white;
+    color: royalblue;
+    border-radius: 8px;
+    border-color: royalblue;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: .4s;
+    cursor: pointer;
 }
+button1{
+    background-color: white;
+    color: royalblue;
+    border-radius: 8px;
+    border-color: royalblue;
+    transition-duration: .4s;
+}
+button:hover{
+    background-color: royalblue;
+    color: white;
+}
+
 .block {
     height: 10vh;
     background-color: blue;
