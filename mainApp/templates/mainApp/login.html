@@ -1,10 +1,10 @@
 {% extends 'mainApp/base.html' %}
 {% block title %}Sign in{% endblock %} 
-{% block content %} 
+{% block content %}
     <div class="row">
-        <div class="col-md-8 mx-auto social-container my-2 order-md-1">
+        <div class="col-md-8 mx-auto social-container my-2 order-md-1" style="justify-content:center; display:flex; flex-direction: column;">
             <button class="btn btn-primary mb-2">
-                <a style="color:white" href="{% url 'social:begin' 'google-oauth2' %}">Login With Google</a>
+                <a style="color:white; text-decoration: none;" href="{% url 'social:begin' 'google-oauth2' %}">Login With Google</a>
             </button>
         </div>
     </div>
