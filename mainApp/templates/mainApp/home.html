@@ -1,11 +1,21 @@
-{% extends 'mainApp/base.html' %}
-{% block title %}HOME{% endblock %} 
+{% load static %}
 {% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'mainApp/home.css' %}" />
+</head>
     <div class="row">
-        <div class="col-sm-12 mb-3">
-            <h4 class="text-center" style="color:white">Welcome {{ user.first_name }}</h4>
+        <div class="top">
+            <h1 class="h1">Welcome {{ user.first_name }}</h1>
+        </div>
+        <div class="option">
+            <a href="/tutor">
+                <button class="button">I'm a tutor</button>
+            </a>
+        </div>
+        <div class="option">
+            <a href="/student">
+                <button class="button">I'm a student</button>
+            </a>
         </div>
     </div>
-    <a class="btn btn-primary" href="/tutor">I'm a tutor</a>
-    <a class="btn btn-primary" href="/student">I'm a student</a>
 {% endblock %}

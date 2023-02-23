@@ -1,15 +1,15 @@
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'mainApp/login.css' %}" />
 <head>
-    <div class="container-fluid">
-        <h1> Sign In: </h1>
-    </div>
+    <link rel="stylesheet" href="{% static 'mainApp/login.css' %}" />
 </head>
 <body>
     <div class="container-fluid">
+        <h1 class="h1"> Sign In to Tutor Me: </h1>
+    </div>
+    <div class="container-fluid">
         <a href="{% url 'social:begin' 'google-oauth2' %}">
-            <button class="button button1">Login With Google</button>
+            <button class="button">Login With Google</button>
         </a>
     </div>
 </body>

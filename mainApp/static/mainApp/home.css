@@ -1,10 +1,20 @@
-
-.container-fluid {
+.row {
+    margin: auto;
+    text-align: center;
+    display: block;
     height: 30vh;
-    background-color: white;
-    display: flex;
+    background-color: gray;
     justify-content: center;
     align-items: center;
+    align-self: center;
+    border-radius: 8px;
+    width: 320px;
+    padding: 10px;
+}
+.option {
+    display: inline-block;
+    align-items: center;
+    vertical-align: middle;
 }
 .h1 {
     font-family: "Helvetica", Arial, SansSerif;
@@ -12,9 +22,9 @@
     justify-content: center;
     align-items: center;
 }
-.btn {
-    background-color: white;
-    color: royalblue;
+.button {
+    background-color: royalblue;
+    color: white;
     border-radius: 8px;
     border-color: royalblue;
     padding: 15px 32px;
@@ -24,7 +34,7 @@
     transition-duration: .4s;
     cursor: pointer;
 }
-btn:hover{
-    background-color: royalblue;
+button:hover{
+    background-color: #4169a1;
     color: white;
 }
