@@ -1,9 +1,12 @@
-{% extends 'mainApp/base.html' %}
-{% block title %}HOME{% endblock %} 
-{% block content %} 
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="{% static 'mainApp/student.css' %}" />
+</head>
+<body>
     <div class="row">
-        <div class="col-sm-12 mb-3">
-            <h4 class="text-center" style="color:white">Welcome {{ user.first_name }} to the student page</h4>
-        </div>
+        <h1 class="h1">Welcome {{ user.first_name }}</h1>
+        <h1 class="h1">to the student page</h1>
     </div>
+</body>
 {% endblock %}
