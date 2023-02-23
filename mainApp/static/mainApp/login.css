@@ -1,4 +1,3 @@
-
 .container-fluid {
     height: 30vh;
     background-color: white;
@@ -12,7 +11,7 @@
     justify-content: center;
     align-items: center;
 }
-.btn {
+.button1 {
     background-color: white;
     color: royalblue;
     border-radius: 8px;
@@ -24,7 +23,7 @@
     transition-duration: .4s;
     cursor: pointer;
 }
-btn:hover{
+.button1:hover{
     background-color: royalblue;
     color: white;
 }
