@@ -17,7 +17,14 @@ class Student(models.Model):
     fun_fact = models.CharField(max_length=200)
 class Classes(models.Model):
     classID = models.IntegerField(primary_key=True)
-    className = models.CharField(max_length=100)
+    subject = models.CharField(max_length=100, default='')
+    catalogNumber = models.CharField(max_length=100, default='')
+    classSection = models.CharField(max_length=100, default='')
+    classNumber = models.CharField(max_length=100, default='')
+    className = models.CharField(max_length=100, default='')
+    instructor = models.TextField(default='')
+    def __str__(self):
+        return self.className
 
 class TutorClasses(models.Model):
     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
@@ -35,4 +42,3 @@ class SessionBooked(models.Model):
     sessionID = models.ForeignKey(TutorTime, on_delete=models.CASCADE)
     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
     studentID = models.ForeignKey(Student, on_delete=models.CASCADE)
-# Create your models here.
