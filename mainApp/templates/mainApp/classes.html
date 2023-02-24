@@ -1,11 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'mainApp/base.html'%}
+{% load static %}
+{% block content %}
+  <div class = "container">
+    <div class = "text-center container">
+      <br>
+    <br><br>
+    <div class="row">
+      {% for class in AllClasses %}
+        <div class="col-md-4 col-sm-6 col-lg-3">
+          <div class="card">
+            <img class="card-img-top" src="{{ meal.image_url }}" alt="Card image cap">
+            <div class="card-body text-center">
+              <p class="card-title">{{ class.className }}</p>
+              <hr>
+              <p class="card-text">{{ class.instructor }}</p>
+            </div>
+          </div>
+          <br><br><br>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
 
-</body>
-</html>
 <!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->

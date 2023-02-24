@@ -22,7 +22,7 @@ class Classes(models.Model):
     classSection = models.CharField(max_length=100, default='')
     classNumber = models.CharField(max_length=100, default='')
     className = models.CharField(max_length=100, default='')
-    instructor = models.TextField(default='')
+    instructor = models.CharField(max_length=200,default='')
     def __str__(self):
         return self.className
 
