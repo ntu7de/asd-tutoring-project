@@ -6,19 +6,8 @@
       <br>
     <br><br>
     <div class="row">
-      {% for class in AllClasses %}
-        <div class="col-md-4 col-sm-6 col-lg-3">
-          <div class="card">
-            <img class="card-img-top" src="{{ meal.image_url }}" alt="Card image cap">
-            <div class="card-body text-center">
-              <p class="card-title">{{ class.className }}</p>
-              <hr>
-              <p class="card-text">{{ class.instructor }}</p>
-            </div>
-          </div>
-          <br><br><br>
-        </div>
-      {% endfor %}
+      <body>{AllClasses[0].ClassName}</body>
+      <body>{AllClasses[0].instructor}</body>
     </div>
   </div>
 {% endblock %}

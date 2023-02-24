@@ -20,7 +20,6 @@ def classes(request):
     response = requests.get(url)
     data = response.json()
     courses = data["class_schedules"]["records"]
-    i = courses[0]
     AllClasses = {}
     for i in courses:
         Classes.objects.create(subject=i[0],catalogNumber=i[1],classSection=i[2],classNumber=i[3],className=i[4],instructor=i[6]
