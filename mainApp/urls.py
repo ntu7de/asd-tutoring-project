@@ -9,4 +9,7 @@ urlpatterns = [
     path('social-auth/', include('social_django.urls', namespace='social')),
     path('accountSettings/', views.accountSettings, name='accountSettings'),
     path("", views.home, name='home'),
+    path('tutor/', views.tutor, name = 'tutor'),
+    path('student/', views.student, name = 'student'),
+
 ]

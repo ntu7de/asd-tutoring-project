@@ -1,0 +1,51 @@
+.row {
+    margin: auto;
+    text-align: center;
+    color: white;
+    display: block;
+    height: 30vh;
+    background-color: gray;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    border-radius: 8px;
+    width: 320px;
+    padding: 10px;
+}
+.h1 {
+    font-family: "Helvetica", Arial, SansSerif;
+    color: black;
+    justify-content: center;
+    align-items: center;
+}
+.container-fluid {
+    height: 10vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+li {
+    float: left;
+}
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+li a:hover:not(.active) {
+    background-color: #111;
+}
+.active {
+    background-color: royalblue;
+}

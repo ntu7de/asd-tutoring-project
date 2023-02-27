@@ -1,11 +1,16 @@
-{% extends 'mainApp/base.html' %}
-{% block title %}Sign in{% endblock %} 
+{% load static %}
 {% block content %}
-    <div class="row">
-        <div class="col-md-8 mx-auto social-container my-2 order-md-1" style="justify-content:center; display:flex; flex-direction: column;">
-            <button class="btn btn-primary mb-2">
-                <a style="color:white; text-decoration: none;" href="{% url 'social:begin' 'google-oauth2' %}">Login With Google</a>
-            </button>
-        </div>
+<head>
+    <link rel="stylesheet" href="{% static 'mainApp/login.css' %}" />
+</head>
+<body>
+    <div class="container-fluid">
+        <h1 class="h1"> Sign In to Tutor Me: </h1>
     </div>
+    <div class="container-fluid">
+        <a href="{% url 'social:begin' 'google-oauth2' %}">
+            <button class="button1">Login With Google</button>
+        </a>
+    </div>
+</body>
 {% endblock %}

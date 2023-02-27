@@ -1,0 +1,29 @@
+.container-fluid {
+    height: 30vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.h1 {
+    font-family: "Helvetica", Arial, SansSerif;
+    color: black;
+    justify-content: center;
+    align-items: center;
+}
+.button1 {
+    background-color: white;
+    color: royalblue;
+    border-radius: 8px;
+    border-color: royalblue;
+    padding: 15px 32px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    transition-duration: .4s;
+    cursor: pointer;
+}
+.button1:hover{
+    background-color: royalblue;
+    color: white;
+}
