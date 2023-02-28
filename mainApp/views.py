@@ -36,6 +36,7 @@ def accountSettings(request):
         form = ProfileForm(request.POST)
         if form.is_valid():
             profile = form.save(commit=False)
+            profile.user = request.user
             profile.save()
             return redirect('home')
     form = ProfileForm()

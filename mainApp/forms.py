@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import Profile
 
 
@@ -14,4 +15,5 @@ class ProfileForm(forms.ModelForm):
     fun_fact = forms.CharField(max_length=200)
     class Meta:
         model = Profile
+        fields = ['first_name', 'last_name', 'year', 'email', 'pronouns', 'major', 'is_tutor', 'is_student', 'fun_fact']
         exclude = ()
