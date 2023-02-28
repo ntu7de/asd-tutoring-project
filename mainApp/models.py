@@ -13,10 +13,6 @@ class Profile(models.Model):
     fun_fact = models.CharField(max_length=200)
     is_registered = models.BooleanField(null=False, blank=False, default=False)
 
-    @classmethod
-    def create(cls, first_name, last_name, year, email, pronouns, major, is_tutor, is_student, fun_fact):
-        profile = cls(user=User, first_name=first_name, last_name=last_name, year=year, email=email, pronouns=pronouns, major=major, is_tutor=is_tutor, is_student=is_student, fun_fact=fun_fact, is_registered=True)
-        return profile
 class Tutor(models.Model):
     tstudentID = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
