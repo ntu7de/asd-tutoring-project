@@ -1,6 +1,10 @@
 from django.contrib import admin
-from .models import Classes, Tutor, Student, TutorClasses, TutorTime, SessionBooked
+from .models import Classes, Tutor, Student, TutorClasses, TutorTime, SessionBooked, Profile
 # Register your models here.
+
+@admin.register(Profile)
+class AdminClasses(admin.ModelAdmin):
+    model = Profile
 @admin.register(Classes)
 class AdminClasses(admin.ModelAdmin):
     model = Classes

@@ -1,7 +1,8 @@
 import requests
-from django.shortcuts import render
-from mainApp.models import Classes
+from django.shortcuts import render, redirect
+from .models import Classes, Student
 from django.contrib.auth.decorators import login_required
+from .forms import ProfileForm
 # Create your views here.
 
 
@@ -11,7 +12,13 @@ def login(request):
 
 @login_required
 def home(request):
-    return render(request, 'mainApp/home.html')
+    if request.user.is_authenticated:
+        try:
+            request.user.profile
+        except: #if a profile does not already exist for the user we will refer them to this form which will force them to update the database
+            return redirect('accountSettings')
+
+    return render(request,'mainApp/home.html')
 
 def tutor(request):
     return render(request, 'mainApp/tutor.html')
@@ -20,9 +27,19 @@ def student(request):
     return render(request, 'mainApp/student.html')
 @login_required
 def accountSettings(request):
-    return render(request, 'mainApp/accountSettings.html')
-
-
+    theEmail = request.user.email
+    user = Student.objects.filter(email=theEmail).values()
+    context = {
+        'user': user
+    }
+    if request.method == "POST":
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.save()
+            return redirect('home')
+    form = ProfileForm()
+    return render(request, 'mainApp/accountSettings.html', {"form": form})
 
 def classes(request):
     model = Classes

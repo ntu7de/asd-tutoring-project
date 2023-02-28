@@ -1,4 +1,22 @@
+from django.contrib.auth.models import User
 from django.db import models
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    year = models.IntegerField()
+    email = models.EmailField()
+    pronouns = models.CharField(max_length=20)
+    major = models.CharField(max_length=100)
+    is_tutor = models.BooleanField(null=False, blank=False, default=False)
+    is_student = models.BooleanField(null=False, blank=False, default=False)
+    fun_fact = models.CharField(max_length=200)
+    is_registered = models.BooleanField(null=False, blank=False, default=False)
+
+    @classmethod
+    def create(cls, first_name, last_name, year, email, pronouns, major, is_tutor, is_student, fun_fact):
+        profile = cls(user=User, first_name=first_name, last_name=last_name, year=year, email=email, pronouns=pronouns, major=major, is_tutor=is_tutor, is_student=is_student, fun_fact=fun_fact, is_registered=True)
+        return profile
 class Tutor(models.Model):
     tstudentID = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=100)
