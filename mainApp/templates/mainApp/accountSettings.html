@@ -10,7 +10,7 @@
         <title>Account Settings</title>
 </head>
 
-
+        <h4 class="pb-4 border-bottom" style="text-align:center; font-family:Avantgarde;">Account Settings </h4>
         <form method="post" style="text-align:center; font-family:Avantgarde; border-radius:12px">
             {% csrf_token %}
             {{ form.as_p }}
@@ -18,70 +18,3 @@
                     type="submit">Submit
             </button>
         </form>
-
-
-
-
-
-<div class="wrapper bg-white mt-sm-5" style="margin-right: auto; margin-left: auto; max-width:1160px; padding-right: 10px; padding-left: 10px;">
-    <h4 class="pb-4 border-bottom">Account Settings</h4>
-    <div class="py-2">
-        <div class="row py-2">
-            <div class="col-md-6">
-                <label for="firstname">First Name</label>
-                <input type="text" class="bg-light form-control" placeholder={{user.first_name}}>
-            </div>
-            <div class="col-md-6 pt-md-0 pt-3">
-                <label for="lastname">Last Name</label>
-                <input type="text" class="bg-light form-control" placeholder={{user.last_name}}>
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="col-md-6">
-                <label for="email">Email Address (you can't change this!)</label>
-                <input type="text" class="bg-light form-control" placeholder={{user.email}}>
-            </div>
-            <div class="col-md-6 pt-md-0 pt-3">
-                <label for="phone">Phone Number</label>
-                <input type="tel" class="bg-light form-control" placeholder="+1 234 567 8900">
-            </div>
-        </div>
-        <div class="row py-2">
-            <div class="col-md-6">
-                <label for="year">Year</label>
-                <div class = "arrow">
-                    <select name="year" id="year" class="bg-light">
-                        <option value="first" selected>First</option>
-                        <option value="second">Second</option>
-                        <option value="third">Third</option>
-                        <option value="fourth">Fourth</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6 pt-md-0 pt-3" id="lang">
-                <label for="pronouns">Pronouns</label>
-                <div class="arrow">
-                    <select name="pronouns" id="pronouns" class="bg-light">
-                        <option value="He/Him" selected>He/Him</option>
-                        <option value="He/They">He/They</option>
-                        <option value="She/Her">She/Her</option>
-                        <option value="She/They">She/They</option>
-                        <option value="They/Them">They/Them</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row py-2">
-            <h1> I am going to put the fun fact form here</h1>
-        </div>
-        <div>
-            <h1>
-            </h1>
-        </div>
-        <div class="py-3 pb-4 border-bottom">
-            <button class="btn btn-primary mr-3">Save Changes</button>
-            <button class="btn border button">Cancel</button>
-        </div>
-    </div>
-</div>
