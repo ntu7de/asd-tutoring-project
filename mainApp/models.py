@@ -11,7 +11,6 @@ class Profile(models.Model):
     is_tutor = models.BooleanField(null=False, blank=False, default=False)
     is_student = models.BooleanField(null=False, blank=False, default=False)
     fun_fact = models.CharField(max_length=200)
-    is_registered = models.BooleanField(null=False, blank=False, default=False)
 
 class Tutor(models.Model):
     tstudentID = models.IntegerField(primary_key=True)
