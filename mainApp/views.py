@@ -27,18 +27,16 @@ def student(request):
     return render(request, 'mainApp/student.html')
 @login_required
 def accountSettings(request):
-    theEmail = request.user.email
-    user = Student.objects.filter(email=theEmail).values()
-    context = {
-        'user': user
-    }
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()
-            return redirect('home')
+            if profile.is_tutor:
+                return redirect('tutor')
+            else:
+                return redirect('student')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
