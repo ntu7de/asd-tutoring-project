@@ -31,7 +31,7 @@ def home(request):
 def tutorsetting(request):
     user = request.user
     profile = get_object_or_404(Profile, user=user)
-    profileform2 = ProfileForm2(instance=profile)
+    tutor = get_object_or_404(Profile2, user=user)
     tutorform = TutorForm
     if request.method == 'POST':
         if 'edit_profile' in request.POST:
@@ -39,12 +39,9 @@ def tutorsetting(request):
             if profileform2.is_valid():
                 profileform2.save()
         if 'edit_tutor' in request.POST:
-            tutorform = tutorform(request.POST)
+            tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-                tutor = tutorform.save(commit=False)
-                tutor.user = request.user
                 tutor.save()
-                return redirect('tutor')
     context = {
         'form': ProfileForm2,
         'form2': TutorForm,
