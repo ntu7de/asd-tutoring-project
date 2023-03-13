@@ -69,13 +69,22 @@ def accountSettings(request):
             profile.user = request.user
             profile.save()
             if profile.is_tutor:
-                return redirect('tutorsetting')
+                return redirect('accountSettings2t')
             else:
                 return redirect('student')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
-
+def accountSettings2t(request): #the next page that a tutor sees when they first log in!
+    if request.method == "POST":
+        form = TutorForm(request.POST)
+        if form.is_valid():
+            tutor = form.save(commit=False)
+            tutor.user = request.user
+            tutor.save()
+            return redirect('tutor')
+    form = TutorForm()
+    return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
