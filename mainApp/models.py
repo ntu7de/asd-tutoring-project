@@ -14,11 +14,10 @@ class Profile(models.Model):
     is_student = models.BooleanField(null=False, blank=False, default=False)
     fun_fact = models.CharField(max_length=200)
 
-class TutorProfile(models.Model):
-    profile = models.ForeignKey(Profile, blank=True, null=True, on_delete=models.CASCADE)
+class Profile2(models.Model): #tutor profile!
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    hourly_rate = models.IntegerField()
     classes = models.CharField(max_length=200)
-    hourlyRate = models.FloatField()
-
 
 class Student(models.Model):
     studentID = models.IntegerField(primary_key=True)

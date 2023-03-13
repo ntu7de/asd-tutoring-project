@@ -10,6 +10,7 @@ urlpatterns = [
     path('accountSettings/', views.accountSettings, name='accountSettings'),
     path("", views.home, name='home'),
     path('tutor/', views.tutor, name = 'tutor'),
+    path('tutorsetting/', views.tutorsetting, name = 'tutorsetting'),
     path('student/', views.student, name = 'student'),
     path('classes/', views.classes, name = 'classes'),
 ]

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Profile2
+    # , TutorProfile
 
 
 class ProfileForm(forms.ModelForm):
@@ -16,4 +17,21 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['first_name', 'last_name', 'year', 'email', 'pronouns', 'major', 'is_tutor', 'is_student', 'fun_fact']
+        exclude = ()
+
+class ProfileForm2(forms.ModelForm):
+    edit_profile = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+    class Meta:
+        model = Profile
+        fields = ['first_name', 'last_name', 'year', 'email', 'pronouns', 'major', 'fun_fact']
+        exclude = ()
+
+class TutorForm(forms.ModelForm):
+    # classes = forms.CharField(required=True)
+    # hourly_rate = forms.FloatField(required=True)
+    edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True)
+
+    class Meta:
+        model = Profile2
+        fields = ['classes', 'hourly_rate']
         exclude = ()
