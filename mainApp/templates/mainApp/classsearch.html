@@ -1,0 +1,40 @@
+{% extends 'mainApp/base.html'%}
+{% load static %}
+{% block content %}
+
+<style>
+  h2 {
+    color: white;
+  }
+</style>
+
+    <div class = "container">
+      <br>
+      <h2 class = "text-center" >Search for a class using the form CS 2150</h2>
+      <br>
+      <form method="GET">
+        <input type = "text" name = "name" placeholder="Search..." class = "text-center">
+        <button type = "submit" class = "btn-danger btn-sm">SEARCH </button>
+      </form>
+    </div>
+    <br><br>
+<!--{%for class in AllClasses%}-->
+<!--{%if name in class.className%}-->
+<!--    <div class = "container">-->
+<!--      <h2 class = "text-center" >{{name}}</h2>-->
+<!--      <br>-->
+<!--      <h3 class = "text-center" >{{name}} is a class offered at the University of Virginia</h3>-->
+<!--    </div>-->
+<!--{%else%}-->
+<!--    <div class = "container">-->
+<!--      <h2 class = "text-center" >{{name}}</h2>-->
+<!--      <br>-->
+<!--      <h3 class = "text-center" >{{name}} is not a class offered at the University of Virginia</h3>-->
+<!--    </div>-->
+<!--{%endif%}-->
+<!--{%endfor%}-->
+
+  </div>
+{% endblock %}
+<!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->
+<!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->
