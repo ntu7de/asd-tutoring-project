@@ -22,6 +22,27 @@ def student(request):
 def accountSettings(request):
     return render(request, 'mainApp/accountSettings.html')
 
+def searchClasses(request):
+    all_classes = {}
+    if 'name' in request.GET:
+        # name = request.GET['class']
+        subject = request.GET['name'].split(' ')[0]
+        courseNumber = request.GET['name'].split(' ')[1]
+        url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+        response = requests.get(url)
+        data = response.json()
+        # classes = data['class']
+        for c in data:
+            class_data = Classes(
+                subject=c['subject'],
+                catalogNumber=c['catalog_nbr'],
+                classSection=c['class_section'],
+                classNumber=c['class_nbr'],
+                className=c['descr'],
+            )
+            class_data.save()
+            all_classes = Classes.objects.all()
+    return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 
 def classes(request):
