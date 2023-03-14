@@ -1,5 +1,7 @@
 import requests
 from django.shortcuts import render
+from django.views.generic import ListView
+
 from mainApp.models import Classes
 from django.contrib.auth.decorators import login_required
 # Create your views here.
@@ -43,6 +45,15 @@ def searchClasses(request):
             class_data.save()
             all_classes = Classes.objects.all()
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
+class classList(ListView):
+    model = Classes
+    template_name = 'mainApp/classList.html'
+    context_object_name = 'AllClasses'
+    def get_queryset(self):
+        return Classes.objects.all()
+
+
 
 
 def classes(request):
