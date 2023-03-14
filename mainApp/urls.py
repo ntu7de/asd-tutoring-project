@@ -11,5 +11,6 @@ urlpatterns = [
     path("", views.home, name='home'),
     path('tutor/', views.tutor, name = 'tutor'),
     path('student/', views.student, name = 'student'),
-    path('classes/', views.classes, name = 'classes'),
+    path('classes/', views.searchClasses, name = 'classes'),
+    path('classList/', views.classList.as_view(), name = 'classList'),
 ]

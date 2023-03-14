@@ -16,9 +16,10 @@ class Student(models.Model):
     major = models.CharField(max_length=100)
     fun_fact = models.CharField(max_length=200)
 class Classes(models.Model):
-    classID = models.IntegerField(primary_key=True)
+    # classID = models.AutoField(primary_key=True, null = False)
+    # classID = models.AutoField(primary_key=True)
     subject = models.CharField(max_length=100, default='')
-    catalogNumber = models.CharField(max_length=100, default='')
+    catalogNumber = models.CharField(max_length=100, default='', primary_key= True)
     classSection = models.CharField(max_length=100, default='')
     classNumber = models.CharField(max_length=100, default='')
     className = models.CharField(max_length=100, default='')
