@@ -1,6 +1,13 @@
 import requests
+
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Classes, Profile, Tutor, Student
+
+from django.shortcuts import render
+from django.views.generic import ListView
+
+from mainApp.models import Classes
+
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
 
@@ -93,6 +100,7 @@ def accountSettings(request):
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
 
+
 def accountSettings2s(request): #the next page that a student sees when they first log in!
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -103,6 +111,38 @@ def accountSettings2s(request): #the next page that a student sees when they fir
             return redirect('student')
     form = StudentForm()
     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
+
+def searchClasses(request):
+    all_classes = {}
+    if 'name' in request.GET:
+        # name = request.GET['class']
+        subject = request.GET['name'].split(' ')[0]
+        courseNumber = request.GET['name'].split(' ')[1]
+        url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+        response = requests.get(url)
+        data = response.json()
+        # classes = data['class']
+        for c in data:
+            class_data = Classes(
+                subject=c['subject'],
+                catalogNumber=c['catalog_nbr'],
+                classSection=c['class_section'],
+                classNumber=c['class_nbr'],
+                className=c['descr'],
+            )
+            class_data.save()
+            all_classes = Classes.objects.all()
+    return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
+class classList(ListView):
+    model = Classes
+    template_name = 'mainApp/classList.html'
+    context_object_name = 'AllClasses'
+    def get_queryset(self):
+        return Classes.objects.all()
+
+
+
 
 
 def accountSettings2t(request): #the next page that a tutor sees when they first log in!

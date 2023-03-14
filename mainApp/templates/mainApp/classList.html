@@ -1,0 +1,12 @@
+{% extends 'mainApp/base.html'%}
+{% load static %}
+{% block content %}
+{%for class in AllClasses%}
+<style>
+.white-text {
+  color: white;
+}
+</style>
+<li class="white-text">{{class.className}}</li>
+{%endfor%}
+{% endblock %}
