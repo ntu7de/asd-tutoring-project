@@ -1,13 +1,8 @@
 import requests
-<<<<<<<<< Temporary merge branch 1
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Classes, Profile, Tutor, Student
-=========
 from django.shortcuts import render
 from django.views.generic import ListView
-
-from mainApp.models import Classes
->>>>>>>>> Temporary merge branch 2
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
 
