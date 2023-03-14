@@ -2,6 +2,11 @@
 {% load static %}
 {% block content %}
 {%for class in AllClasses%}
-<li>{{class.className}}</li>
+<style>
+.white-text {
+  color: white;
+}
+</style>
+<li class="white-text">{{class.className}}</li>
 {%endfor%}
 {% endblock %}

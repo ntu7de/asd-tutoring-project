@@ -1,10 +1,15 @@
 {% extends 'mainApp/base.html'%}
 {% load static %}
 {% block content %}
+<style>
+  h2 {
+    color: white;
+  }
+</style>
 
     <div class = "container">
       <br>
-      <h2 class = "text-center">Search for a class using the form CS 2150</h2>
+      <h2 class = "text-center" >Search for a class using the form CS 2150</h2>
       <br>
       <form method="GET">
         <input type = "text" name = "name" placeholder="Search..." class = "text-center">
@@ -13,14 +18,9 @@
     </div>
     <br><br>
     <div class="row">
-<!--        <h1>Classes</h1>-->
-<!--      {% for class in Classes %}-->
-<!--        <li>{{class.className}}</li>-->
-<!--      {% endfor %}-->
+
          {% for class in all_classes %}
           <li> {{class.className}} : {{class.subject}}</li>
-
-
       {% endfor %}
     </div>
   </div>
