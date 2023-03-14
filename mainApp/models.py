@@ -14,19 +14,14 @@ class Profile(models.Model):
     is_student = models.BooleanField(null=False, blank=False, default=False)
     fun_fact = models.CharField(max_length=200)
 
-class Profile2(models.Model): #tutor profile!
+class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.IntegerField()
     classes = models.CharField(max_length=200)
 
 class Student(models.Model):
-    studentID = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=100)
-    year = models.IntegerField()
-    email = models.EmailField()
-    pronouns = models.CharField(max_length=20)
-    major = models.CharField(max_length=100)
-    fun_fact = models.CharField(max_length=200)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    classes = models.CharField(max_length=200)
 
 
 class Classes(models.Model):

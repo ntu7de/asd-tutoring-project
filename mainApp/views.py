@@ -1,8 +1,8 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Student, Profile, Profile2
+from .models import Classes, Profile, Tutor, Student
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
 
 
 # Create your views here.
@@ -31,7 +31,7 @@ def home(request):
 def tutorsetting(request):
     user = request.user
     profile = get_object_or_404(Profile, user=user)
-    tutor = get_object_or_404(Profile2, user=user)
+    tutor = get_object_or_404(Tutor, user=user)
     tutorform = TutorForm
     if request.method == 'POST':
         if 'edit_profile' in request.POST:
@@ -47,6 +47,26 @@ def tutorsetting(request):
         'form2': TutorForm,
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
+
+def studentsetting(request):
+    user = request.user
+    profile = get_object_or_404(Profile, user=user)
+    student = get_object_or_404(Student, user=user)
+    studentform = StudentForm
+    if request.method == 'POST':
+        if 'edit_profile' in request.POST:
+            profileform2 = ProfileForm2(request.POST, instance=profile)
+            if profileform2.is_valid():
+                profileform2.save()
+        if 'edit_student' in request.POST:
+            studentform = studentform(request.POST, instance=student)
+            if studentform.is_valid():
+                student.save()
+    context = {
+        'form': ProfileForm2,
+        'form2': StudentForm,
+    }
+    return render(request, 'mainApp/studentSettings.html', context=context)
 
 
 def tutor(request):
@@ -68,9 +88,22 @@ def accountSettings(request):
             if profile.is_tutor:
                 return redirect('accountSettings2t')
             else:
-                return redirect('student')
+                return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
+
+
+def accountSettings2s(request): #the next page that a student sees when they first log in!
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            student = form.save(commit=False)
+            student.user = request.user
+            student.save()
+            return redirect('student')
+    form = StudentForm()
+    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
+
 
 def accountSettings2t(request): #the next page that a tutor sees when they first log in!
     if request.method == "POST":
