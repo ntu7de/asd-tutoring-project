@@ -1,6 +1,7 @@
 {% extends 'mainApp/base.html'%}
 {% load static %}
 {% block content %}
+
 <style>
   h2 {
     color: white;
@@ -17,12 +18,22 @@
       </form>
     </div>
     <br><br>
-    <div class="row">
+<!--{%for class in AllClasses%}-->
+<!--{%if name in class.className%}-->
+<!--    <div class = "container">-->
+<!--      <h2 class = "text-center" >{{name}}</h2>-->
+<!--      <br>-->
+<!--      <h3 class = "text-center" >{{name}} is a class offered at the University of Virginia</h3>-->
+<!--    </div>-->
+<!--{%else%}-->
+<!--    <div class = "container">-->
+<!--      <h2 class = "text-center" >{{name}}</h2>-->
+<!--      <br>-->
+<!--      <h3 class = "text-center" >{{name}} is not a class offered at the University of Virginia</h3>-->
+<!--    </div>-->
+<!--{%endif%}-->
+<!--{%endfor%}-->
 
-         {% for class in all_classes %}
-          <li> {{class.className}} : {{class.subject}}</li>
-      {% endfor %}
-    </div>
   </div>
 {% endblock %}
 <!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->
