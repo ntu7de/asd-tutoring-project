@@ -33,8 +33,8 @@ class ProfileForm2(forms.ModelForm):
         exclude = ()
 
 class TutorForm(forms.ModelForm):
-    # classes = forms.CharField(required=True)
-    # hourly_rate = forms.FloatField(required=True)
+    classes = forms.CharField(required=False)
+    hourly_rate = forms.FloatField(required=False)
     edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True)
 
     class Meta:
