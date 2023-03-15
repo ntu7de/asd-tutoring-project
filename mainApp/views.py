@@ -4,7 +4,7 @@ from .models import Classes, Profile, Tutor, Student
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm
 
 
 # Create your views here.
@@ -194,7 +194,7 @@ class classList(ListView):
 
 def accountSettings2s(request): #the student settings that a student sees when they first log in (right after initial account settings)
     if request.method == "POST":
-        form = StudentForm(request.POST)
+        form = FirstStudentForm(request.POST) #the student form that requires you to add everything
         if form.is_valid():
             student = form.save(commit=False)
             student.user = request.user #connects the student to the user
@@ -206,7 +206,7 @@ def accountSettings2s(request): #the student settings that a student sees when t
 
 def accountSettings2t(request): #the tutor settings that a student sees when they first log in (right after initial account settings)
     if request.method == "POST":
-        form = TutorForm(request.POST)
+        form = FirstTutorForm(request.POST) #the tutor form that requires you to add everything
         if form.is_valid():
             tutor = form.save(commit=False)
             tutor.user = request.user #connects the tutor to the user
