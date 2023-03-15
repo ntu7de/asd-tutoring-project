@@ -55,14 +55,38 @@ def studentsetting(request):
     profile = get_object_or_404(Profile, user=user)
     student = get_object_or_404(Student, user=user)
     studentform = StudentForm
+    classes = student.classes
+    first_name = profile.first_name
+    last_name = profile.last_name
+    year = profile.year
+    email = profile.email
+    pronouns = profile.pronouns
+    major = profile.major
+    fun_fact = profile.fun_fact
     if request.method == 'POST':
         if 'edit_profile' in request.POST:
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
+                if not profileform2.data['first_name']:
+                    profile.first_name = first_name
+                if not profileform2.data['last_name']:
+                    profile.last_name = last_name
+                if not profileform2.data['year']:
+                    profile.year = year
+                if not profileform2.data['email']:
+                    profile.email = email
+                if not profileform2.data['pronouns']:
+                    profile.pronouns = pronouns
+                if not profileform2.data['major']:
+                    profile.major = major
+                if not profileform2.data['fun_fact']:
+                    profile.fun_fact = fun_fact
                 profileform2.save()
         if 'edit_student' in request.POST:
             studentform = studentform(request.POST, instance=student)
             if studentform.is_valid():
+                if not studentform.data['classes']:
+                    student.classes = classes
                 student.save()
     context = {
         'form': ProfileForm2,
