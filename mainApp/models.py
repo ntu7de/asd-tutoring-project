@@ -24,10 +24,14 @@ class Student(models.Model):
     classes = models.CharField(max_length=200)
 
 class TutorDB(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # id = models.AutoField(primary_key=True)
+    # user = models.ManyToOneRel(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.OneToManyField(User, on_delete=models.CASCADE)
     catalogNumber = models.CharField(max_length=100, default='')
     rate = models.CharField(max_length=200)
     hours = models.CharField(max_length=200)
+
 class Classes(models.Model):
     # classID = models.AutoField(primary_key=True, null = False)
     # classID = models.AutoField(primary_key=True)

@@ -50,6 +50,7 @@ def tutorsetting(request):
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
+
 def studentsetting(request):
     user = request.user
     profile = get_object_or_404(Profile, user=user)
@@ -95,10 +96,10 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+
 def searchClasses(request):
     all_classes = {}
     catalogNumber = ""
-
     if 'name' in request.GET:
         # name = request.GET['class']
         subject = request.GET['name'].split(' ')[0]
@@ -120,24 +121,27 @@ def searchClasses(request):
             all_classes = Classes.objects.all()
 
         tutor_data = TutorDB(
-            user=request.user,
-            catalogNumber= catalogNumber,
-            rate = request.GET['rate'],
-            hours = request.GET['hours']
+            user= request.user,
+            catalogNumber=catalogNumber,
+            rate="0",
+            hours="0"
+            # rate=request.GET['rate'],
+            # hours=request.GET['hours']
         )
         tutor_data.save()
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
 
 class classList(ListView):
     model = Classes
     template_name = 'mainApp/classList.html'
     context_object_name = 'AllClasses'
+
     def get_queryset(self):
         return Classes.objects.all()
 
 
-
-def accountSettings2s(request): #the next page that a student sees when they first log in!
+def accountSettings2s(request):  # the next page that a student sees when they first log in!
     if request.method == "POST":
         form = StudentForm(request.POST)
         if form.is_valid():
@@ -149,7 +153,7 @@ def accountSettings2s(request): #the next page that a student sees when they fir
     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 
-def accountSettings2t(request): #the next page that a tutor sees when they first log in!
+def accountSettings2t(request):  # the next page that a tutor sees when they first log in!
     if request.method == "POST":
         form = TutorForm(request.POST)
         if form.is_valid():
