@@ -26,7 +26,7 @@ class Student(models.Model):
 class TutorDB(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     catalogNumber = models.CharField(max_length=100, default='')
-    rate = models.IntegerField(max_length=200)
+    rate = models.CharField(max_length=200)
     hours = models.CharField(max_length=200)
 class Classes(models.Model):
     # classID = models.AutoField(primary_key=True, null = False)

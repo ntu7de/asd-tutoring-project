@@ -1,6 +1,6 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Profile, Tutor, Student
+from .models import Classes, Profile, Tutor, Student, TutorDB
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -97,6 +97,8 @@ def accountSettings(request):
 
 def searchClasses(request):
     all_classes = {}
+    catalogNumber = ""
+
     if 'name' in request.GET:
         # name = request.GET['class']
         subject = request.GET['name'].split(' ')[0]
@@ -106,6 +108,7 @@ def searchClasses(request):
         data = response.json()
         # classes = data['class']
         for c in data:
+            catalogNumber = c['catalog_nbr']
             class_data = Classes(
                 subject=c['subject'],
                 catalogNumber=c['catalog_nbr'],
@@ -115,6 +118,14 @@ def searchClasses(request):
             )
             class_data.save()
             all_classes = Classes.objects.all()
+
+        tutor_data = TutorDB(
+            user=request.user,
+            catalogNumber= catalogNumber,
+            rate = request.GET['rate'],
+            hours = request.GET['hours']
+        )
+        tutor_data.save()
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 class classList(ListView):
