@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.conf import settings
 
 
 class Profile(models.Model):
@@ -17,7 +18,8 @@ class Profile(models.Model):
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.IntegerField()
-    classes = models.CharField(max_length=200)
+    classes = models.OneToOneField('Classes', on_delete=models.CASCADE)
+    # classes = models.CharField(max_length=200)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -26,8 +28,11 @@ class Student(models.Model):
 class TutorDB(models.Model):
     # id = models.AutoField(primary_key=True)
     # user = models.ManyToOneRel(User, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    # user = models.OneToManyField(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    #user = models.OneToManyField(User, on_delete=models.CASCADE)
+    user = models.CharField(max_length=100, default='')
+    # catalogNumber = models.ForeignKey('Classes', on_delete=models.CASCADE)
     catalogNumber = models.CharField(max_length=100, default='')
     rate = models.CharField(max_length=200)
     hours = models.CharField(max_length=200)

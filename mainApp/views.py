@@ -51,6 +51,51 @@ def tutorsetting(request):
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
 
+def searchClasses(request):
+    # form = TutorDBForm
+    # user = request.user
+
+    all_classes = {}
+    # if request.method == 'POST':
+
+    if 'name' in request.GET:
+            # name = request.GET['class']
+            subject = request.GET['name'].split(' ')[0]
+            courseNumber = request.GET['name'].split(' ')[1]
+            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+            response = requests.get(url)
+            data = response.json()
+            catalogNumber = ""
+            # classes = data['class']
+            for c in data:
+                catalogNumber = c['catalog_nbr']
+                class_data = Classes(
+                    subject=c['subject'],
+                    catalogNumber=c['catalog_nbr'],
+                    classSection=c['class_section'],
+                    classNumber=c['class_nbr'],
+                    className=c['descr'],
+                )
+                class_data.save()
+                all_classes = Classes.objects.all()
+            # tutordata = form.save(commit=False)
+            # tutordata.user = user
+            # tutordata.catalogNumber = catalogNumber
+            # tutordata.hours = request.GET['hours']
+            # tutordata.save()
+
+            # tutor_data = TutorDB(
+            #     user=request.GET['username'],
+            #     catalogNumber=catalogNumber,
+            #     # rate="5",
+            #     # hours="asdsd"
+            #     rate=request.GET['rate'],
+            #     hours=request.GET['hours']
+            # )
+            # tutor_data.save()
+            # all_tutors = TutorDB.objects.all()
+    return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
 def studentsetting(request):
     user = request.user
     profile = get_object_or_404(Profile, user=user)
@@ -90,46 +135,14 @@ def accountSettings(request):
             profile.save()
             if profile.is_tutor:
                 # return redirect('accountSettings2t')
-                return redirect('classsearch')
+                return redirect('classes')
             else:
                 return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
 
-def searchClasses(request):
-    all_classes = {}
-    catalogNumber = ""
-    if 'name' in request.GET:
-        # name = request.GET['class']
-        subject = request.GET['name'].split(' ')[0]
-        courseNumber = request.GET['name'].split(' ')[1]
-        url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-        response = requests.get(url)
-        data = response.json()
-        # classes = data['class']
-        for c in data:
-            catalogNumber = c['catalog_nbr']
-            class_data = Classes(
-                subject=c['subject'],
-                catalogNumber=c['catalog_nbr'],
-                classSection=c['class_section'],
-                classNumber=c['class_nbr'],
-                className=c['descr'],
-            )
-            class_data.save()
-            all_classes = Classes.objects.all()
 
-        tutor_data = TutorDB(
-            user= request.user,
-            catalogNumber=catalogNumber,
-            rate="0",
-            hours="0"
-            # rate=request.GET['rate'],
-            # hours=request.GET['hours']
-        )
-        tutor_data.save()
-    return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 
 class classList(ListView):
