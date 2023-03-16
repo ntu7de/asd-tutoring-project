@@ -19,6 +19,13 @@ class ProfileForm(forms.ModelForm):
         exclude = ()
 
 class ProfileForm2(forms.ModelForm):
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+    year = forms.IntegerField(required=False)
+    email = forms.EmailField(required=False)
+    pronouns = forms.CharField(max_length=20, required=False)
+    major = forms.CharField(max_length=100, required=False)
+    fun_fact = forms.CharField(max_length=200, required=False)
     edit_profile = forms.BooleanField(widget=forms.HiddenInput, initial=True)
     class Meta:
         model = Profile
@@ -26,8 +33,8 @@ class ProfileForm2(forms.ModelForm):
         exclude = ()
 
 class TutorForm(forms.ModelForm):
-    # classes = forms.CharField(required=True)
-    # hourly_rate = forms.FloatField(required=True)
+    classes = forms.CharField(required=False)
+    hourly_rate = forms.FloatField(required=False)
     edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True)
 
     class Meta:
@@ -36,10 +43,8 @@ class TutorForm(forms.ModelForm):
         exclude = ()
 
 class StudentForm(forms.ModelForm):
-    # classes = forms.CharField(required=True)
-    # hourly_rate = forms.FloatField(required=True)
+    classes = forms.CharField(required=False)
     edit_student = forms.BooleanField(widget=forms.HiddenInput, initial=True)
-
     class Meta:
         model = Student
         fields = ['classes']
