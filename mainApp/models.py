@@ -17,8 +17,9 @@ class Profile(models.Model):
 
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    hourly_rate = models.IntegerField()
-    classes = models.OneToOneField('Classes', on_delete=models.CASCADE)
+    hourly_rate = models.IntegerField(max_length=200)
+    # classes = models.OneToOneField('Classes', on_delete=models.CASCADE)
+    hours_available = models.CharField(max_length=200)
     # classes = models.CharField(max_length=200)
 
 class Student(models.Model):

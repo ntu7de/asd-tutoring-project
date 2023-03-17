@@ -6,6 +6,7 @@ from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
 
+curClass = Classes.objects.first()
 
 # Create your views here.
 
@@ -78,6 +79,8 @@ def searchClasses(request):
                 )
                 class_data.save()
                 all_classes = Classes.objects.all()
+                curClass = Classes.objects.all()[:1]
+            return redirect('accountSettings2t')
             # tutordata = form.save(commit=False)
             # tutordata.user = user
             # tutordata.catalogNumber = catalogNumber
@@ -135,7 +138,7 @@ def accountSettings(request):
             profile.save()
             if profile.is_tutor:
                 # return redirect('accountSettings2t')
-                return redirect('classes')
+                return redirect('accountSettings2t')
             else:
                 return redirect('accountSettings2s')
     form = ProfileForm()
@@ -172,6 +175,7 @@ def accountSettings2t(request):  # the next page that a tutor sees when they fir
         if form.is_valid():
             tutor = form.save(commit=False)
             tutor.user = request.user
+            tutor.classes = curClass
             tutor.save()
             return redirect('tutor')
     form = TutorForm()
