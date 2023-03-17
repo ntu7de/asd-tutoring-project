@@ -32,7 +32,7 @@ class TutorForm(forms.ModelForm):
 
     class Meta:
         model = Tutor
-        fields = ['classes', 'hourly_rate']
+        fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
         exclude = ()
 
 class StudentForm(forms.ModelForm):

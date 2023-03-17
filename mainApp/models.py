@@ -17,7 +17,12 @@ class Profile(models.Model):
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.IntegerField()
-    classes = models.CharField(max_length=200)
+    monday_hours = models.CharField(max_length=200)
+    tuesday_hours = models.CharField(max_length=200)
+    wednesday_hours = models.CharField(max_length=200)
+    thursday_hours = models.CharField(max_length=200)
+    friday_hours = models.CharField(max_length=200)
+    # classes = models.CharField(max_length=200)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -27,15 +32,16 @@ class Student(models.Model):
 class Classes(models.Model):
     # classID = models.AutoField(primary_key=True, null = False)
     # classID = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, default='')
-    catalogNumber = models.CharField(max_length=100, default='', primary_key= True)
-    classSection = models.CharField(max_length=100, default='')
-    classNumber = models.CharField(max_length=100, default='')
-    className = models.CharField(max_length=100, default='')
+    catalognumber = models.CharField(max_length=100, default='', primary_key= True)
+    classsection = models.CharField(max_length=100, default='')
+    classnumber = models.CharField(max_length=100, default='')
+    classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
 
     def __str__(self):
-        return self.className
+        return self.classname
 
 
 # class TutorClasses(models.Model):
