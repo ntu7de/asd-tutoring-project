@@ -114,7 +114,6 @@ def searchClasses(request):
             )
             class_data.save()
             all_classes = Classes.objects.all()
-            return redirect('tutor')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 class classList(ListView):
@@ -145,7 +144,7 @@ def accountSettings2t(request): #the next page that a tutor sees when they first
             tutor = form.save(commit=False)
             tutor.user = request.user
             tutor.save()
-            return redirect('classes')
+            return redirect('tutor')
     form = TutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 def classes(request):

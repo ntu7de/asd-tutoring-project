@@ -16,13 +16,8 @@ class Profile(models.Model):
 
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    monday_hours = models.CharField(max_length=200)
-    tuesday_hours = models.CharField(max_length=200)
-    wednesday_hours = models.CharField(max_length=200)
-    thursday_hours = models.CharField(max_length=200)
-    friday_hours = models.CharField(max_length=200)
     hourly_rate = models.IntegerField()
-    # hours_available = models.CharField(max_length=200)
+    classes = models.CharField(max_length=200)
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
