@@ -1,16 +1,24 @@
 from django.test import TestCase
+from django.test import SimpleTestCase
 from mainApp.models import User
 from mainApp.models import Profile
 from mainApp.models import Tutor
 # Create your tests here.
 
 
-class ProfileTestCase(TestCase):
+class TutorTestCase(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="tester", password="password")
+        self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year=1,
+                                                   email="email", pronouns="pronouns", major="major", is_tutor=True,
+                                                   is_student=False, fun_fact="fact")
+
+
     def test_tutor_profile(self):
-        user = User.objects.create(username="tester")
-        Profile.objects.create(user=user, first_name="f_name", last_name="l_name", year=1, email="email",
-                               pronouns="pronouns", major="major", is_tutor=True, is_student=False, fun_fact="fact")
-        tutor = Profile.objects.get(user=user)
+        """
+        testing if tutor profile data is correctly stored in profile
+        """
+        tutor = self.user.profile
         self.assertEqual(tutor.first_name, 'f_name')
         self.assertEqual(tutor.last_name, 'l_name')
         self.assertEqual(tutor.year, 1)
