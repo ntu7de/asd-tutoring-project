@@ -45,7 +45,7 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 
     class Meta:
         model = Tutor
-        fields = ['classes', 'hourly_rate']
+        fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
         exclude = ()
 
 
