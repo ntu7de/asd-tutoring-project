@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
+from django.contrib import messages
 
 
 # Create your views here.
@@ -118,6 +119,7 @@ def searchClasses(request):
             # classes.user = request.user
             # classes.save()
             all_classes = Classes.objects.all()
+            messages.success(request, 'Class added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 class classList(ListView):
