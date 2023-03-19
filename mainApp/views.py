@@ -106,13 +106,17 @@ def searchClasses(request):
         # classes = data['class']
         for c in data:
             class_data = Classes(
+                user=request.user,
                 subject=c['subject'],
-                catalogNumber=c['catalog_nbr'],
-                classSection=c['class_section'],
-                classNumber=c['class_nbr'],
-                className=c['descr'],
+                catalognumber=c['catalog_nbr'],
+                classsection=c['class_section'],
+                classnumber=c['class_nbr'],
+                classname=c['descr'],
             )
+
             class_data.save()
+            # classes.user = request.user
+            # classes.save()
             all_classes = Classes.objects.all()
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
@@ -144,7 +148,7 @@ def accountSettings2t(request): #the next page that a tutor sees when they first
             tutor = form.save(commit=False)
             tutor.user = request.user
             tutor.save()
-            return redirect('tutor')
+            return redirect('classes')
     form = TutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 def classes(request):
