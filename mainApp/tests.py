@@ -1,11 +1,14 @@
 from django.test import TestCase
+from mainApp.models import User
 from mainApp.models import Profile
+from mainApp.models import Tutor
 # Create your tests here.
 
 
 class ProfileTestCase(TestCase):
     def test_Tutor_Profile(self):
-        tutor = Profile.objects.create(first_name="f_name", last_name="l_name", year=1, email="email",
+        user = User.objects.create(username="test")
+        tutor = Profile.objects.create(user=user, first_name="f_name", last_name="l_name", year=1, email="email",
                                        pronouns="pronouns", major="major", is_tutor=True, is_student=False,
                                        fun_fact="fact")
         self.assertEqual(tutor.first_name, 'f_name')
