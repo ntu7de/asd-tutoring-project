@@ -118,12 +118,28 @@ def searchClasses(request):
                 classnumber=c['class_nbr'],
                 classname=c['descr'],
             )
+            class_data.save()
+            if Classes.objects.filter(user=request.user, classname=c['descr']).count() == 1:
+                class_data = Classes(
+                    user=request.user,
+                    subject=c['subject'],
+                    catalognumber=c['catalog_nbr'],
+                    classsection=c['class_section'],
+                    classnumber=c['class_nbr'],
+                    classname=c['descr'],
+                )
+                class_data.save()
+            # Add the class again if it already exists
 
             class_data.save()
             # classes.user = request.user
             # classes.save()
             all_classes = Classes.objects.all()
-        messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+        if len(data) == 0:
+            messages.add_message(request, messages.WARNING, 'No classes found')
+        else:
+            messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+        # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
             # messages.success(request, 'Class ' + classname + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
