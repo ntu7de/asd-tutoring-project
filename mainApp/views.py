@@ -38,7 +38,11 @@ def tutorsetting(request): #the account settings page for tutors
     tutorform = TutorForm #the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
-    classes = tutor.classes
+    monday_hours = tutor.monday_hours
+    tuesday_hours = tutor.tuesday_hours
+    wednesday_hours = tutor.wednesday_hours
+    thursday_hours = tutor.thursday_hours
+    friday_hours = tutor.friday_hours
     hourly_rate = tutor.hourly_rate
     first_name = profile.first_name
     last_name = profile.last_name
@@ -76,10 +80,18 @@ def tutorsetting(request): #the account settings page for tutors
             if tutorform.is_valid():
 
                 # these if statements exist so that if the fields aren't directly updated they stay the same
-                if not tutorform.data['classes']:
-                    tutor.classes = classes
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
+                if not tutorform.data['monday_hours']:
+                    tutor.monday_hours = monday_hours
+                if not tutorform.data['tuesday_hours']:
+                    tutor.tuesday_hours = tuesday_hours
+                if not tutorform.data['wednesday_hours']:
+                    tutor.wednesday_hours = wednesday_hours
+                if not tutorform.data['thursday_hours']:
+                    tutor.thursday_hours = thursday_hours
+                if not tutorform.data['friday_hours']:
+                    tutor.friday_hours = friday_hours
                 tutor.save()
     context = {
         'form': ProfileForm2,
