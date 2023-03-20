@@ -6,17 +6,27 @@
   h2 {
     color: white;
   }
+  li{
+      color: white;
+  }
 </style>
 
     <div class = "container">
       <br>
-      <h2 class = "text-center" >Search for a class using the form CS 2150</h2>
+      <h2 class = "text-center" >Search for a class using the form Subject Class Number (like CS 3240)</h2>
       <br>
       <form method="GET">
         <input type = "text" name = "name" placeholder="Search..." class = "text-center">
         <button type = "submit" class = "btn-danger btn-sm">SEARCH </button>
       </form>
-    </div>
+    {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<!--    </div>-->
     <br><br>
 <!--{%for class in AllClasses%}-->
 <!--{%if name in class.className%}-->
