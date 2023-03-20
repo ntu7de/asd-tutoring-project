@@ -105,9 +105,11 @@ def searchClasses(request):
         response = requests.get(url)
         data = response.json()
         # classes = data['class']
-
+        # classname = data['class'][0]['descr']
+        name = ''
         for c in data:
-            classname = c['descr']
+            name = c['descr']
+            # classname = c['descr']
             class_data = Classes(
                 user=request.user,
                 subject=c['subject'],
@@ -121,7 +123,7 @@ def searchClasses(request):
             # classes.user = request.user
             # classes.save()
             all_classes = Classes.objects.all()
-    messages.add_message(request, messages.INFO, 'Class ' + classname + ' added successfully')
+        messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
             # messages.success(request, 'Class ' + classname + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
