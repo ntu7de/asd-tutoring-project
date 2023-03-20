@@ -125,32 +125,39 @@ def accountSettings(request):
 #             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
 #
 #     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
+
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
         subject = request.GET['name'].split(' ')[0]
-        courseNumber = request.GET['name'].split(' ')[1]
-        url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-        response = requests.get(url)
-        data = response.json()
-        name = ''
-        for c in data:
-            name = c['descr']
-            class_data = Classes(
-                user=request.user,
-                subject=c['subject'],
-                catalognumber=c['catalog_nbr'],
-                classsection=c['class_section'],
-                classnumber=c['class_nbr'],
-                classname=c['descr'],
-            )
-            class_data.save()
-        all_classes = Classes.objects.filter(user=request.user)
-        if len(data) == 0:
-            messages.add_message(request, messages.WARNING, 'No classes found')
+        try:
+            courseNumber = request.GET['name'].split(' ')[1]
+        except IndexError:
+            messages.add_message(request, messages.WARNING, 'Incorrect Form')
         else:
-            messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+            response = requests.get(url)
+            data = response.json()
+            name = ''
+            for c in data:
+                name = c['descr']
+                class_data = Classes(
+                    user=request.user,
+                    subject=c['subject'],
+                    catalognumber=c['catalog_nbr'],
+                    classsection=c['class_section'],
+                    classnumber=c['class_nbr'],
+                    classname=c['descr'],
+                )
+                class_data.save()
+            all_classes = Classes.objects.filter(user=request.user)
+            if len(data) == 0:
+                messages.add_message(request, messages.WARNING, 'No classes found')
+            else:
+                messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
 
 class classList(ListView):
     model = Classes
@@ -171,6 +178,7 @@ def accountSettings2s(request): #the next page that a student sees when they fir
             return redirect('student')
     form = StudentForm()
     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
+
 
 
 def accountSettings2t(request): #the next page that a tutor sees when they first log in!

@@ -1,7 +1,5 @@
 from django.test import TestCase, Client
-from mainApp.models import User
-from mainApp.models import Profile
-from mainApp.models import Tutor
+from mainApp.models import User, Profile, Tutor, Classes
 # Create your tests here.
 
 
@@ -54,12 +52,20 @@ class ListTest(TestCase):
         # Every test needs a client.
         self.client = Client()
 
+        # Add a class
+        Classes.objects.create(user=self.user, subject="testing", catalognumber="1234", classsection="001",
+                               classnumber="12345", classname="testClass")
+
     def test_class_list(self):
+        """
+        testing if class list returns the correct amount of classes.
+        :return:
+        """
         # Issue a GET request.
         response = self.client.get('/classList/')
 
         # Check that the response is 200 OK.
         self.assertEqual(response.status_code, 200)
 
-        # Check that the rendered context contains 0 classes.
-        self.assertEqual(len(response.context['AllClasses']), 0)
+        # Check that the rendered context contains 1 class.
+        self.assertEqual(len(response.context['AllClasses']), 1)
