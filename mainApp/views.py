@@ -152,25 +152,25 @@ def studentsetting(request): #the account settings page for students
     return render(request, 'mainApp/studentSettings.html', context=context)
 
 
-def tutor(request):
+def tutor(request): #tutor home page
     return render(request, 'mainApp/tutor.html')
 
 
-def student(request):
+def student(request): #student home page
     return render(request, 'mainApp/student.html')
 
 
 @login_required
-def accountSettings(request):
+def accountSettings(request): #the first form that someone sees when they first log in (account settings)
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():
             profile = form.save(commit=False)
-            profile.user = request.user
+            profile.user = request.user #makes it so that the google auth user is connected to this profile
             profile.save()
-            if profile.is_tutor:
+            if profile.is_tutor: #sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
-            else:
+            else: #sends you to initially filling in your student settings
                 return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
@@ -248,28 +248,28 @@ class classList(ListView):
 
 
 
-def accountSettings2s(request): #the next page that a student sees when they first log in!
+def accountSettings2s(request): #the student settings that a student sees when they first log in (right after initial account settings)
     if request.method == "POST":
-        form = StudentForm(request.POST)
+        form = FirstStudentForm(request.POST) #the student form that requires you to add everything
         if form.is_valid():
             student = form.save(commit=False)
-            student.user = request.user
+            student.user = request.user #connects the student to the user
             student.save()
-            return redirect('student')
-    form = StudentForm()
+            return redirect('student') #send them to the student home page
+    form = FirstStudentForm()
     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 
 
-def accountSettings2t(request): #the next page that a tutor sees when they first log in!
+def accountSettings2t(request): #the tutor settings that a tutor sees when they first log in (right after initial account settings)
     if request.method == "POST":
-        form = TutorForm(request.POST)
+        form = FirstTutorForm(request.POST) #the tutor form that requires you to add everything
         if form.is_valid():
             tutor = form.save(commit=False)
-            tutor.user = request.user
+            tutor.user = request.user #connects the tutor to the user
             tutor.save()
-            return redirect('classes')
-    form = TutorForm()
+            return redirect('classes') #send them to the classes page
+    form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 def classes(request):
     model = Classes
