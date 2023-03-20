@@ -39,8 +39,12 @@ class ProfileForm2(forms.ModelForm): #the form you see that updates your profile
 
 class TutorForm(forms.ModelForm):#the form you see that updates your tutor settings in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
-    classes = forms.CharField(required=False)
     hourly_rate = forms.FloatField(required=False)
+    monday_hours = forms.CharField(required=False)
+    tuesday_hours = forms.CharField(required=False)
+    wednesday_hours = forms.CharField(required=False)
+    thursday_hours = forms.CharField(required=False)
+    friday_hours = forms.CharField(required=False)
     edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True) #differentiates between profile and tutor forms
 
     class Meta:
@@ -51,12 +55,16 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
-    classes = forms.CharField(required=True)
-    hourly_rate = forms.FloatField(required=True)
+    hourly_rate = forms.FloatField(required=False)
+    monday_hours = forms.CharField(required=False)
+    tuesday_hours = forms.CharField(required=False)
+    wednesday_hours = forms.CharField(required=False)
+    thursday_hours = forms.CharField(required=False)
+    friday_hours = forms.CharField(required=False)
 
     class Meta:
         model = Tutor
-        fields = ['classes', 'hourly_rate']
+        fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
         exclude = ()
 
 

@@ -31,19 +31,55 @@ def home(request):
     return render(request, 'mainApp/home.html')
 
 
-def tutorsetting(request):
-    user = request.user
-    profile = get_object_or_404(Profile, user=user)
-    tutor = get_object_or_404(Tutor, user=user)
-    tutorform = TutorForm
+def tutorsetting(request): #the account settings page for tutors
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    tutor = get_object_or_404(Tutor, user=user) #tutor info of the user logged in
+    tutorform = TutorForm #the form that allows them to update their tutor information
+
+    # the field information that is currently in the database for tutor and profile
+    classes = tutor.classes
+    hourly_rate = tutor.hourly_rate
+    first_name = profile.first_name
+    last_name = profile.last_name
+    year = profile.year
+    email = profile.email
+    pronouns = profile.pronouns
+    major = profile.major
+    fun_fact = profile.fun_fact
+
     if request.method == 'POST':
-        if 'edit_profile' in request.POST:
+        if 'edit_profile' in request.POST: #if they're workin with the PROFILE FORM
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
+
+                # all of these if statements exist so that if the fields aren't directly updated they stay the same
+                if not profileform2.data['first_name']:
+                    profile.first_name = first_name
+                if not profileform2.data['last_name']:
+                    profile.last_name = last_name
+                if not profileform2.data['year']:
+                    profile.year = year
+                if not profileform2.data['email']:
+                    profile.email = email
+                if not profileform2.data['pronouns']:
+                    profile.pronouns = pronouns
+                if not profileform2.data['major']:
+                    profile.major = major
+                if not profileform2.data['fun_fact']:
+                    profile.fun_fact = fun_fact
+
                 profileform2.save()
-        if 'edit_tutor' in request.POST:
+        if 'edit_tutor' in request.POST: #if they're working with the TUTOR FORM
+
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
+
+                # these if statements exist so that if the fields aren't directly updated they stay the same
+                if not tutorform.data['classes']:
+                    tutor.classes = classes
+                if not tutorform.data['hourly_rate']:
+                    tutor.hourly_rate = hourly_rate
                 tutor.save()
     context = {
         'form': ProfileForm2,
