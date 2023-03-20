@@ -95,21 +95,47 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+# def searchClasses(request):
+#     all_classes = {}
+#     if 'name' in request.GET:
+#         # name = request.GET['class']
+#         subject = request.GET['name'].split(' ')[0]
+#         courseNumber = request.GET['name'].split(' ')[1]
+#         url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+#         response = requests.get(url)
+#         data = response.json()
+#
+#         name = ''
+#         for c in data:
+#             name = c['descr']
+#             # classname = c['descr']
+#             class_data = Classes(
+#                 user=request.user,
+#                 subject=c['subject'],
+#                 catalognumber=c['catalog_nbr'],
+#                 classsection=c['class_section'],
+#                 classnumber=c['class_nbr'],
+#                 classname=c['descr'],
+#             )
+#             class_data.save()
+#             all_classes = Classes.objects.filter(user=request.user)
+#         if len(data) == 0:
+#             messages.add_message(request, messages.WARNING, 'No classes found')
+#         else:
+#             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+#
+#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
-        # name = request.GET['class']
         subject = request.GET['name'].split(' ')[0]
         courseNumber = request.GET['name'].split(' ')[1]
         url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
         response = requests.get(url)
         data = response.json()
-        # classes = data['class']
-        # classname = data['class'][0]['descr']
         name = ''
         for c in data:
             name = c['descr']
-            # classname = c['descr']
             class_data = Classes(
                 user=request.user,
                 subject=c['subject'],
@@ -119,28 +145,11 @@ def searchClasses(request):
                 classname=c['descr'],
             )
             class_data.save()
-            if Classes.objects.filter(user=request.user, classname=c['descr']).count() == 1:
-                class_data = Classes(
-                    user=request.user,
-                    subject=c['subject'],
-                    catalognumber=c['catalog_nbr'],
-                    classsection=c['class_section'],
-                    classnumber=c['class_nbr'],
-                    classname=c['descr'],
-                )
-                class_data.save()
-            # Add the class again if it already exists
-
-            class_data.save()
-            # classes.user = request.user
-            # classes.save()
-            all_classes = Classes.objects.all()
+        all_classes = Classes.objects.filter(user=request.user)
         if len(data) == 0:
             messages.add_message(request, messages.WARNING, 'No classes found')
         else:
             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-        # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-            # messages.success(request, 'Class ' + classname + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 class classList(ListView):
