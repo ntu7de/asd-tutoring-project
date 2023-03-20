@@ -4,7 +4,7 @@ from .models import Classes, Profile, Tutor, Student
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm
 from django.contrib import messages
 
 
@@ -17,17 +17,17 @@ def login(request):
 
 @login_required
 def home(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated: #if the google login works
         try:
-            request.user.profile
-        except:  # if a profile does not already exist for the user we will refer them to this form which will force them to update the database
+            request.user.profile #see if a profile exists for that user
+        except: # if a profile does not already exist for the user they go to account settings
             return redirect('accountSettings')
     user = request.user
     profile = (Profile.objects.filter(user=user).all()[:1])
-    if profile[0].is_tutor:  # we already know that they are a tutor!
+    if profile[0].is_tutor:  # if we already know that they are a tutor take them to the tutor home
         return redirect('tutor')
     else:
-        return redirect('student')  # we already know that they are a student
+        return redirect('student')   # if we already know that they are a student take them to the student home
     return render(request, 'mainApp/home.html')
 
 
