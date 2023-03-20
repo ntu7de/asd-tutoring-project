@@ -38,7 +38,11 @@ def tutorsetting(request): #the account settings page for tutors
     tutorform = TutorForm #the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
-    classes = tutor.classes
+    monday_hours = tutor.monday_hours
+    tuesday_hours = tutor.tuesday_hours
+    wednesday_hours = tutor.wednesday_hours
+    thursday_hours = tutor.thursday_hours
+    friday_hours = tutor.friday_hours
     hourly_rate = tutor.hourly_rate
     first_name = profile.first_name
     last_name = profile.last_name
@@ -76,10 +80,18 @@ def tutorsetting(request): #the account settings page for tutors
             if tutorform.is_valid():
 
                 # these if statements exist so that if the fields aren't directly updated they stay the same
-                if not tutorform.data['classes']:
-                    tutor.classes = classes
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
+                if not tutorform.data['monday_hours']:
+                    tutor.monday_hours = monday_hours
+                if not tutorform.data['tuesday_hours']:
+                    tutor.tuesday_hours = tuesday_hours
+                if not tutorform.data['wednesday_hours']:
+                    tutor.wednesday_hours = wednesday_hours
+                if not tutorform.data['thursday_hours']:
+                    tutor.thursday_hours = thursday_hours
+                if not tutorform.data['friday_hours']:
+                    tutor.friday_hours = friday_hours
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -87,19 +99,51 @@ def tutorsetting(request): #the account settings page for tutors
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
-def studentsetting(request):
-    user = request.user
-    profile = get_object_or_404(Profile, user=user)
-    student = get_object_or_404(Student, user=user)
-    studentform = StudentForm
-    if request.method == 'POST':
+def studentsetting(request): #the account settings page for students
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    student = get_object_or_404(Student, user=user) #student info of the user logged in
+    studentform = StudentForm #the form that allows them to update their student information
+
+    # the field information that is currently in the database for student and profile
+    classes = student.classes
+    first_name = profile.first_name
+    last_name = profile.last_name
+    year = profile.year
+    email = profile.email
+    pronouns = profile.pronouns
+    major = profile.major
+    fun_fact = profile.fun_fact
+
+    if request.method == 'POST': #if they're workin with the PROFILE FORM
         if 'edit_profile' in request.POST:
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
+
+                # all of these if statements exist so that if the fields aren't directly updated they stay the same
+                if not profileform2.data['first_name']:
+                    profile.first_name = first_name
+                if not profileform2.data['last_name']:
+                    profile.last_name = last_name
+                if not profileform2.data['year']:
+                    profile.year = year
+                if not profileform2.data['email']:
+                    profile.email = email
+                if not profileform2.data['pronouns']:
+                    profile.pronouns = pronouns
+                if not profileform2.data['major']:
+                    profile.major = major
+                if not profileform2.data['fun_fact']:
+                    profile.fun_fact = fun_fact
+
                 profileform2.save()
-        if 'edit_student' in request.POST:
+        if 'edit_student' in request.POST: #if they're working with the STUDENT FORM
             studentform = studentform(request.POST, instance=student)
             if studentform.is_valid():
+                # this is here so we keep it as the stuff that is already in the database if it's not updated
+                if not studentform.data['classes']:
+                    student.classes = classes
+
                 student.save()
     context = {
         'form': ProfileForm2,
