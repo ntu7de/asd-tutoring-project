@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm
+from django.contrib import messages
 
 
 # Create your views here.
@@ -94,46 +95,62 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
-
+# def searchClasses(request):
+#     all_classes = {}
+#     if 'name' in request.GET:
+#         # name = request.GET['class']
+#         subject = request.GET['name'].split(' ')[0]
+#         courseNumber = request.GET['name'].split(' ')[1]
+#         url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+#         response = requests.get(url)
+#         data = response.json()
+#
+#         name = ''
+#         for c in data:
+#             name = c['descr']
+#             # classname = c['descr']
+#             class_data = Classes(
+#                 user=request.user,
+#                 subject=c['subject'],
+#                 catalognumber=c['catalog_nbr'],
+#                 classsection=c['class_section'],
+#                 classnumber=c['class_nbr'],
+#                 classname=c['descr'],
+#             )
+#             class_data.save()
+#             all_classes = Classes.objects.filter(user=request.user)
+#         if len(data) == 0:
+#             messages.add_message(request, messages.WARNING, 'No classes found')
+#         else:
+#             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+#
+#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
-        # name = request.GET['class']
-        try:
-            subject = request.GET['name'].split(' ')[0]
-            courseNumber = request.GET['name'].split(' ')[1]
-            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-            response = requests.get(url)
-            data = response.json()
-            # classes = data['class']
-            for c in data:
-                class_data = Classes(
-                    user=request.user,
-                    subject=c['subject'],
-                    catalognumber=c['catalog_nbr'],
-                    classsection=c['class_section'],
-                    classnumber=c['class_nbr'],
-                    classname=c['descr'],
-                )
-        except IndexError:
-            # subject = request.GET['name']
-            # print(str(subject) + " does not fit the correct form")
-            all_classes = Classes.objects.all()
-            return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
-        except:
-            # subject = request.GET['name']
-            # print(str(subject) + " does not exist")
-            all_classes = Classes.objects.all()
-            return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+        subject = request.GET['name'].split(' ')[0]
+        courseNumber = request.GET['name'].split(' ')[1]
+        url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+        response = requests.get(url)
+        data = response.json()
+        name = ''
+        for c in data:
+            name = c['descr']
+            class_data = Classes(
+                user=request.user,
+                subject=c['subject'],
+                catalognumber=c['catalog_nbr'],
+                classsection=c['class_section'],
+                classnumber=c['class_nbr'],
+                classname=c['descr'],
+            )
+            class_data.save()
+        all_classes = Classes.objects.filter(user=request.user)
+        if len(data) == 0:
+            messages.add_message(request, messages.WARNING, 'No classes found')
         else:
-                class_data.save()
-                # classes.user = request.user
-                # classes.save()
-                all_classes = Classes.objects.all()
-                # print(subject + " " + courseNumber + " exists")
-                # print("class number = " + str(class_data.classnumber))
-        finally:
-            return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+            messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+    return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 class classList(ListView):
     model = Classes
