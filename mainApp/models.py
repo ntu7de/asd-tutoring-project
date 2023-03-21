@@ -6,7 +6,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    year = models.IntegerField()
+    year = models.CharField(max_length=100)
     email = models.EmailField()
     pronouns = models.CharField(max_length=20)
     major = models.CharField(max_length=100)
