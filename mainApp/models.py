@@ -10,8 +10,9 @@ class Profile(models.Model):
     email = models.EmailField()
     pronouns = models.CharField(max_length=20)
     major = models.CharField(max_length=100)
-    is_tutor = models.BooleanField(null=False, blank=False, default=False)
-    is_student = models.BooleanField(null=False, blank=False, default=False)
+    # is_tutor = models.BooleanField(null=False, blank=False, default=False)
+    # is_student = models.BooleanField(null=False, blank=False, default=False)
+    tutor_or_student = models.CharField(max_length=100, default="tutor")
     fun_fact = models.CharField(max_length=200)
 
 class Tutor(models.Model): #tutor profile!

@@ -24,7 +24,7 @@ def home(request):
             return redirect('accountSettings')
     user = request.user
     profile = (Profile.objects.filter(user=user).all()[:1])
-    if profile[0].is_tutor:  # if we already know that they are a tutor take them to the tutor home
+    if profile[0].tutor_or_student == "Tutor":  # if we already know that they are a tutor take them to the tutor home
         return redirect('tutor')
     else:
         return redirect('student')   # if we already know that they are a student take them to the student home
@@ -164,14 +164,16 @@ def student(request): #student home page
 def accountSettings(request): #the first form that someone sees when they first log in (account settings)
     if request.method == "POST":
         form = ProfileForm(request.POST)
-        if form.is_valid():
+        if form.is_valid(): #form isn't valid right now
             profile = form.save(commit=False)
             profile.user = request.user #makes it so that the google auth user is connected to this profile
             profile.save()
-            if profile.is_tutor: #sends you to initially filling in your tutor settings
+            if profile.tutor_or_student == "Tutor": #sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
             else: #sends you to initially filling in your student settings
                 return redirect('accountSettings2s')
+        else:
+            return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
