@@ -2,12 +2,17 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Profile, Tutor, Student
 
-
+Years =(
+    ("1", "First"),
+    ("2", "Second"),
+    ("3", "Third"),
+    ("4", "Fourth"), ("5", "Grad")
+) #choices for the year choicefield
 class ProfileForm(forms.ModelForm): #the form you see when you first log in to input your profile information
     #all of the fields you input
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    year = forms.IntegerField(required=True)
+    year = forms.ChoiceField(choices=Years, required=True)
     email = forms.EmailField(required=True)
     pronouns = forms.CharField(required=True, max_length=20)
     major = forms.CharField(required=True, max_length=100)
@@ -39,8 +44,12 @@ class ProfileForm2(forms.ModelForm): #the form you see that updates your profile
 
 class TutorForm(forms.ModelForm):#the form you see that updates your tutor settings in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
-    classes = forms.CharField(required=False)
     hourly_rate = forms.FloatField(required=False)
+    monday_hours = forms.CharField(required=False)
+    tuesday_hours = forms.CharField(required=False)
+    wednesday_hours = forms.CharField(required=False)
+    thursday_hours = forms.CharField(required=False)
+    friday_hours = forms.CharField(required=False)
     edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True) #differentiates between profile and tutor forms
 
     class Meta:
@@ -51,12 +60,16 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
-    classes = forms.CharField(required=True)
-    hourly_rate = forms.FloatField(required=True)
+    hourly_rate = forms.FloatField(required=False)
+    monday_hours = forms.CharField(required=False)
+    tuesday_hours = forms.CharField(required=False)
+    wednesday_hours = forms.CharField(required=False)
+    thursday_hours = forms.CharField(required=False)
+    friday_hours = forms.CharField(required=False)
 
     class Meta:
         model = Tutor
-        fields = ['classes', 'hourly_rate']
+        fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
         exclude = ()
 
 
