@@ -3,18 +3,25 @@ from django.contrib.auth.models import User
 from .models import Profile, Tutor, Student
 
 Years =(
-    ("1", "First"),
-    ("2", "Second"),
-    ("3", "Third"),
-    ("4", "Fourth"), ("5", "Grad")
-) #choices for the year choicefield
+    ("First", "First"),
+    ("Second", "Second"),
+    ("Third", "Third"),
+    ("Fourth", "Fourth"), ("Grad", "Grad")
+) #choices for the year choice field
+
+Pronouns = (
+    ("She/Her", "She/Her"),
+    ("He/Him", "He/Him"),
+    ("They/Them", "They/Them"),
+    ("She/They", "She/They"), ("He/They", "He/They"), ("Other", "Other")
+) #choices for the year choice field
 class ProfileForm(forms.ModelForm): #the form you see when you first log in to input your profile information
     #all of the fields you input
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     year = forms.ChoiceField(choices=Years, required=True)
     email = forms.EmailField(required=True)
-    pronouns = forms.CharField(required=True, max_length=20)
+    pronouns = forms.ChoiceField(choices=Pronouns, required=True)
     major = forms.CharField(required=True, max_length=100)
     is_tutor = forms.BooleanField(required=False)
     is_student = forms.BooleanField(required=False)
@@ -30,9 +37,9 @@ class ProfileForm2(forms.ModelForm): #the form you see that updates your profile
     #the fields you can (BUT DON'T HAVE TO) update
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
-    year = forms.IntegerField(required=False)
+    year = forms.ChoiceField(choices=Years, required=False)
     email = forms.EmailField(required=False)
-    pronouns = forms.CharField(max_length=20, required=False)
+    pronouns = forms.ChoiceField(choices=Pronouns, required=False)
     major = forms.CharField(max_length=100, required=False)
     fun_fact = forms.CharField(max_length=200, required=False)
     edit_profile = forms.BooleanField(widget=forms.HiddenInput, initial=True) #allows me to differentiate between the profile and the tutor/student forms
