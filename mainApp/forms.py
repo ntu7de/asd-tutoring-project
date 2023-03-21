@@ -2,12 +2,17 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Profile, Tutor, Student
 
-
+Years =(
+    ("1", "First"),
+    ("2", "Second"),
+    ("3", "Third"),
+    ("4", "Fourth"), ("5", "Grad")
+) #choices for the year choicefield
 class ProfileForm(forms.ModelForm): #the form you see when you first log in to input your profile information
     #all of the fields you input
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    year = forms.IntegerField(required=True)
+    year = forms.ChoiceField(choices=Years, required=True)
     email = forms.EmailField(required=True)
     pronouns = forms.CharField(required=True, max_length=20)
     major = forms.CharField(required=True, max_length=100)
