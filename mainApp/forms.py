@@ -23,13 +23,13 @@ class ProfileForm(forms.ModelForm): #the form you see when you first log in to i
     email = forms.EmailField(required=True)
     pronouns = forms.ChoiceField(choices=Pronouns, required=True)
     major = forms.CharField(required=True, max_length=100)
-    is_tutor = forms.BooleanField(required=False)
-    is_student = forms.BooleanField(required=False)
+    tutor_or_student = forms.ChoiceField(choices=(("Tutor", 'Tutor'), ("Student", 'Student')), widget=forms.RadioSelect,
+                                         required=True)
     fun_fact = forms.CharField(required=True, max_length=200)
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'year', 'email', 'pronouns', 'major', 'is_tutor', 'is_student', 'fun_fact']
+        fields = ['first_name', 'last_name', 'year', 'email', 'pronouns', 'major', 'fun_fact', 'tutor_or_student']
         exclude = ()
 
 
