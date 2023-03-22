@@ -17,15 +17,15 @@ Pronouns = (
 ) #choices for the year choice field
 class ProfileForm(forms.ModelForm): #the form you see when you first log in to input your profile information
     #all of the fields you input
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Jim'}), required=True)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Ryan'}), required=True)
     year = forms.ChoiceField(choices=Years, required=True)
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder':'ex: jimryan@virginia.edu'}), required=True)
     pronouns = forms.ChoiceField(choices=Pronouns, required=True)
-    major = forms.CharField(required=True, max_length=100)
+    major = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Computer Science'}), required=True, max_length=100)
     tutor_or_student = forms.ChoiceField(choices=(("Tutor", 'Tutor'), ("Student", 'Student')), widget=forms.RadioSelect,
                                          required=True)
-    fun_fact = forms.CharField(required=True, max_length=200)
+    fun_fact = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: This is my fun fact!'}), required=True, max_length=200)
 
     class Meta:
         model = Profile
@@ -35,13 +35,13 @@ class ProfileForm(forms.ModelForm): #the form you see when you first log in to i
 
 class ProfileForm2(forms.ModelForm): #the form you see that updates your profile in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
-    first_name = forms.CharField(required=False)
-    last_name = forms.CharField(required=False)
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Jim'}), required=False)
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Ryan'}), required=False)
     year = forms.ChoiceField(choices=Years, required=False)
-    email = forms.EmailField(required=False)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder':'ex: jimryan@virginia.edu'}), required=False)
     pronouns = forms.ChoiceField(choices=Pronouns, required=False)
-    major = forms.CharField(max_length=100, required=False)
-    fun_fact = forms.CharField(max_length=200, required=False)
+    major = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Computer Science'}), max_length=100, required=False)
+    fun_fact = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: This is my fun fact!'}), max_length=200, required=False)
     edit_profile = forms.BooleanField(widget=forms.HiddenInput, initial=True) #allows me to differentiate between the profile and the tutor/student forms
     class Meta:
         model = Profile
@@ -51,12 +51,12 @@ class ProfileForm2(forms.ModelForm): #the form you see that updates your profile
 
 class TutorForm(forms.ModelForm):#the form you see that updates your tutor settings in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
-    hourly_rate = forms.DecimalField(required=False)
-    monday_hours = forms.CharField(required=False)
-    tuesday_hours = forms.CharField(required=False)
-    wednesday_hours = forms.CharField(required=False)
-    thursday_hours = forms.CharField(required=False)
-    friday_hours = forms.CharField(required=False)
+    hourly_rate = forms.DecimalField(widget=forms.TextInput(attrs={'placeholder':'ex: 12.50'}), required=False)
+    monday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    tuesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    wednesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    thursday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    friday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
     edit_tutor = forms.BooleanField(widget=forms.HiddenInput, initial=True) #differentiates between profile and tutor forms
 
     class Meta:
@@ -67,12 +67,12 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
-    hourly_rate = forms.DecimalField(required=False)
-    monday_hours = forms.CharField(required=False)
-    tuesday_hours = forms.CharField(required=False)
-    wednesday_hours = forms.CharField(required=False)
-    thursday_hours = forms.CharField(required=False)
-    friday_hours = forms.CharField(required=False)
+    hourly_rate = forms.DecimalField(widget=forms.TextInput(attrs={'placeholder':'ex: 12.50'}), required=False)
+    monday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    tuesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    wednesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    thursday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+    friday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
 
     class Meta:
         model = Tutor
