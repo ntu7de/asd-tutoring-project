@@ -6,7 +6,7 @@ from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm
 from django.contrib import messages
-
+from django.db.models import Q
 
 # Create your views here.
 
@@ -246,8 +246,13 @@ def StudentSearch(request):
     context_dict = {
         'info': data
     }
-    
-    return render(request,'mainApp/classList.html',context_dict)
+    q = request.GET.get('search')
+    if q:
+        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) |  Q(catalognumber__icontains=q) 
+                                         )
+        return render(request,'mainApp/classList.html',{'info':classes})
+    else:
+        return render(request,'mainApp/classList.html',context_dict)
 
 
 
