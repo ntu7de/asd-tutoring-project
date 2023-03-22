@@ -15,7 +15,7 @@ class Profile(models.Model):
 
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    hourly_rate = models.IntegerField()
+    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
     monday_hours = models.CharField(max_length=200)
     tuesday_hours = models.CharField(max_length=200)
     wednesday_hours = models.CharField(max_length=200)

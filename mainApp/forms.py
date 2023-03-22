@@ -51,7 +51,7 @@ class ProfileForm2(forms.ModelForm): #the form you see that updates your profile
 
 class TutorForm(forms.ModelForm):#the form you see that updates your tutor settings in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
-    hourly_rate = forms.FloatField(required=False)
+    hourly_rate = forms.DecimalField(required=False)
     monday_hours = forms.CharField(required=False)
     tuesday_hours = forms.CharField(required=False)
     wednesday_hours = forms.CharField(required=False)
@@ -67,7 +67,7 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
-    hourly_rate = forms.FloatField(required=False)
+    hourly_rate = forms.DecimalField(required=False)
     monday_hours = forms.CharField(required=False)
     tuesday_hours = forms.CharField(required=False)
     wednesday_hours = forms.CharField(required=False)
