@@ -1,12 +1,23 @@
-{% extends 'mainApp/base.html'%}
 {% load static %}
 {% block content %}
-{%for class in AllClasses%}
-<style>
-.white-text {
-  color: white;
-}
-</style>
-<li class="white-text">{{class.className}}</li>
-{%endfor%}
+<div class="container">
+  {% if info %}
+  <ul>
+    <hr>
+    <form action="classList.html" method="post" action="{%url 'classList'%}">
+      {%csrf_token%}
+      <input name="q" type="text" placeholder="Search...">
+    </form>
+    {% for class in info %}
+    <div class="col" id="tags">
+      <b>{{ class.subject}} {{class.catalognumber}}:</b> {{class.classname}}
+      <hr>
+    </div>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>No Classes are available</p>
+  {% endif %}
+
+</div>
 {% endblock %}

@@ -240,13 +240,14 @@ def searchClasses(request):
                 messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
-
-class classList(ListView):
+def StudentSearch(request):
     model = Classes
-    template_name = 'mainApp/classList.html'
-    context_object_name = 'AllClasses'
-    def get_queryset(self):
-        return Classes.objects.all()
+    data = Classes.objects.all()
+    context_dict = {
+        'info': data
+    }
+    
+    return render(request,'mainApp/classList.html',context_dict)
 
 
 
