@@ -240,6 +240,9 @@ def searchClasses(request):
                 messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
+def detail(request):
+    return render(request,'mainApp/detail.html')
+
 def StudentSearch(request):
     model = Classes
     data = Classes.objects.all()

@@ -29,7 +29,7 @@
     <hr>
     {% for class in info %}
     <div class="col" id="tags">
-      <b>{{ class.subject}} {{class.catalognumber}}:</b> {{class.classname}}
+      <a href="detail/"><b>{{ class.subject}} {{class.catalognumber}}:</b> {{class.classname}}</a>
       <hr>
     </div>
     {% endfor %}
