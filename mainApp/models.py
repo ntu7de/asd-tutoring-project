@@ -10,13 +10,12 @@ class Profile(models.Model):
     email = models.EmailField()
     pronouns = models.CharField(max_length=20)
     major = models.CharField(max_length=100)
-    is_tutor = models.BooleanField(null=False, blank=False, default=False)
-    is_student = models.BooleanField(null=False, blank=False, default=False)
+    tutor_or_student = models.CharField(max_length=100, default="tutor")
     fun_fact = models.CharField(max_length=200)
 
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    hourly_rate = models.IntegerField()
+    hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
     monday_hours = models.CharField(max_length=200)
     tuesday_hours = models.CharField(max_length=200)
     wednesday_hours = models.CharField(max_length=200)
