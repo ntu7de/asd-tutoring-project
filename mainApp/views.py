@@ -38,11 +38,21 @@ def tutorsetting(request): #the account settings page for tutors
     tutorform = TutorForm #the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
-    monday_hours = tutor.monday_hours
-    tuesday_hours = tutor.tuesday_hours
-    wednesday_hours = tutor.wednesday_hours
-    thursday_hours = tutor.thursday_hours
-    friday_hours = tutor.friday_hours
+    monday_start = tutor.monday_start
+    monday_end = tutor.monday_end
+    tuesday_start = tutor.tuesday_start
+    tuesday_end = tutor.tuesday_end
+    wednesday_start = tutor.wednesday_start
+    wednesday_end = tutor.wednesday_end
+    thursday_start = tutor.thursday_start
+    thursday_end = tutor.thursday_end
+    friday_start = tutor.friday_start
+    friday_end = tutor.friday_end
+    # monday_hours = tutor.monday_hours
+    # tuesday_hours = tutor.tuesday_hours
+    # wednesday_hours = tutor.wednesday_hours
+    # thursday_hours = tutor.thursday_hours
+    # friday_hours = tutor.friday_hours
     hourly_rate = tutor.hourly_rate
     first_name = profile.first_name
     last_name = profile.last_name
@@ -82,16 +92,36 @@ def tutorsetting(request): #the account settings page for tutors
                 # these if statements exist so that if the fields aren't directly updated they stay the same
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if not tutorform.data['monday_hours']:
-                    tutor.monday_hours = monday_hours
-                if not tutorform.data['tuesday_hours']:
-                    tutor.tuesday_hours = tuesday_hours
-                if not tutorform.data['wednesday_hours']:
-                    tutor.wednesday_hours = wednesday_hours
-                if not tutorform.data['thursday_hours']:
-                    tutor.thursday_hours = thursday_hours
-                if not tutorform.data['friday_hours']:
-                    tutor.friday_hours = friday_hours
+                if not tutorform.data['monday_start']:
+                    tutor.monday_start = monday_start
+                if not tutorform.data['monday_end']:
+                    tutor.monday_end = monday_end
+                if not tutorform.data['tuesday_start']:
+                    tutor.tuesday_start = tuesday_start
+                if not tutorform.data['tuesday_end']:
+                    tutor.tuesday_end = tuesday_end
+                if not tutorform.data['wednesday_start']:
+                    tutor.wednesday_start = wednesday_start
+                if not tutorform.data['wednesday_end']:
+                    tutor.wednesday_end = wednesday_end
+                if not tutorform.data['thursday_start']:
+                    tutor.thursday_start = thursday_start
+                if not tutorform.data['thursday_end']:
+                    tutor.thursday_end = thursday_end
+                if not tutorform.data['friday_start']:
+                    tutor.friday_start = friday_start
+                if not tutorform.data['friday_end']:
+                    tutor.friday_end = friday_end
+                # if not tutorform.data['monday_hours']:
+                #     tutor.monday_hours = monday_hours
+                # if not tutorform.data['tuesday_hours']:
+                #     tutor.tuesday_hours = tuesday_hours
+                # if not tutorform.data['wednesday_hours']:
+                #     tutor.wednesday_hours = wednesday_hours
+                # if not tutorform.data['thursday_hours']:
+                #     tutor.thursday_hours = thursday_hours
+                # if not tutorform.data['friday_hours']:
+                #     tutor.friday_hours = friday_hours
                 tutor.save()
     context = {
         'form': ProfileForm2,
