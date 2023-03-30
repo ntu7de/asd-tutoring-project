@@ -4,7 +4,7 @@ from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm
 from django.contrib import messages
 from django.db.models import Q
 
@@ -177,42 +177,16 @@ def accountSettings(request): #the first form that someone sees when they first 
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
-# def searchClasses(request):
-#     all_classes = {}
-#     if 'name' in request.GET:
-#         # name = request.GET['class']
-#         subject = request.GET['name'].split(' ')[0]
-#         courseNumber = request.GET['name'].split(' ')[1]
-#         url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-#         response = requests.get(url)
-#         data = response.json()
-#
-#         name = ''
-#         for c in data:
-#             name = c['descr']
-#             # classname = c['descr']
-#             class_data = Classes(
-#                 user=request.user,
-#                 subject=c['subject'],
-#                 catalognumber=c['catalog_nbr'],
-#                 classsection=c['class_section'],
-#                 classnumber=c['class_nbr'],
-#                 classname=c['descr'],
-#             )
-#             class_data.save()
-#             all_classes = Classes.objects.filter(user=request.user)
-#         if len(data) == 0:
-#             messages.add_message(request, messages.WARNING, 'No classes found')
-#         else:
-#             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-#
-#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
-
 
 def searchClasses(request):
     all_classes = {}
+    search_method = ' '
+    if request.method == "POST":
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            search_method = form.__getitem__('search_method').value()
     if 'name' in request.GET:
-        subject = request.GET['name'].split(' ')[0]
+        subject = request.GET['name'].split(' ')[0].upper()
         try:
             courseNumber = request.GET['name'].split(' ')[1]
         except IndexError:
@@ -237,9 +211,11 @@ def searchClasses(request):
                 class_data.save()
             all_classes = Classes.objects.all()
             if len(data) == 0:
-                messages.add_message(request, messages.WARNING, 'No classes found')
+                messages.error(request, 'No classes found')
+                # messages.add_message(request, messages.WARNING, 'No classes found')
             else:
-                messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+                # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+                messages.success(request, 'Class ' + name + ' added successfully')
                 tutuor_class_data = tutorClasses(
 
                     classes_id=classNumber,

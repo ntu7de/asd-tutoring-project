@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import Profile, Tutor, Student
-
+Search = ( ("option1", "course mnemonic"),
+           ("option2","course number"),
+           ("option1", "course name")
+           ) #choices for the search choice field
 Years =(
     ("First", "First"),
     ("Second", "Second"),
@@ -15,6 +18,10 @@ Pronouns = (
     ("They/Them", "They/Them"),
     ("She/They", "She/They"), ("He/They", "He/They"), ("Other", "Other")
 ) #choices for the year choice field
+
+class SearchForm(forms.Form): #the form you see when searching for classes
+    search = forms.ChoiceField(choices=Search, required=True)
+
 class ProfileForm(forms.ModelForm): #the form you see when you first log in to input your profile information
     #all of the fields you input
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: Jim'}), required=True)
