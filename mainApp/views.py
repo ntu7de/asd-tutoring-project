@@ -178,26 +178,78 @@ def accountSettings(request): #the first form that someone sees when they first 
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
 
+# def searchClasses(request):
+#     all_classes = {}
+#     url = ' '
+#     data = {}
+#     if 'name' in request.GET:
+#         input1 = request.GET['name']
+#         input_length = len(input1)
+#         if input_length == 0:
+#             messages.add_message(request, messages.WARNING, 'Please enter a class name')
+#         elif input_length == 1:
+#             subject = request.GET['name'].split(' ')[0].upper()
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + subject
+#         elif input_length == 2:
+#             subject = request.GET['name'].split(' ')[0].upper()
+#             courseNumber = request.GET['name'].split(' ')[1]
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+#         else:
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
+#         response = requests.get(url)
+#         data = response.json()
+#         for c in data:
+#             class_data = Classes(
+#                             # user=request.user,
+#                             subject=c['subject'],
+#                             catalognumber=c['catalog_nbr'],
+#                             classsection=c['class_section'],
+#                             classnumber=c['class_nbr'],
+#                             classname=c['descr'],
+#                         )
+#         class_data.save()
+#         if len(data) == 0:
+#             messages.error(request, 'No classes found')
+#         else:
+#             for c in data:
+#                 classNumber = c['class_nbr']
+#                 if tutorClasses.objects.filter(tutor_id=request.user.id, classes_id=classNumber).exists():
+#                     c['is_added'] = True
+#                 else:
+#                     tutor_class_data = tutorClasses(tutor_id=request.user.id, classes_id=classNumber)
+#                     tutor_class_data.save()
+#                     c['is_added'] = True
+#
+#             messages.success(request, '{} classes found'.format(len(data)))
+#
+#         all_classes = Classes.objects.all()
+#
+#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes, 'search_result': data})
+
+
+
 def searchClasses(request):
     all_classes = {}
-    search_method = ' '
-    if request.method == "POST":
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            search_method = form.__getitem__('search_method').value()
+    url = ' '
     if 'name' in request.GET:
-        subject = request.GET['name'].split(' ')[0].upper()
-        try:
+        input1 = request.GET['name']
+        input_length = len(input1)
+        if input_length == 0:
+            messages.add_message(request, messages.WARNING, 'Please enter a class name')
+        if input_length == 1:
+            subject = request.GET['name'].split(' ')[0].upper()
+            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + subject
+        if input_length == 2:
+            subject = request.GET['name'].split(' ')[0].upper()
             courseNumber = request.GET['name'].split(' ')[1]
-        except IndexError:
-            messages.add_message(request, messages.WARNING, 'Incorrect Form')
-        else:
             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-            response = requests.get(url)
-            data = response.json()
-            name = ''
-            classNumber = ''
-            for c in data:
+        if input_length > 2:
+            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
+        else:
+            messages.add_message(request, messages.WARNING, 'Please enter a class name')
+        response = requests.get(url)
+        data = response.json()
+        for c in data:
                 name = c['descr']
                 classNumber = c['class_nbr']
                 class_data = Classes(
@@ -209,19 +261,18 @@ def searchClasses(request):
                     classname=c['descr'],
                 )
                 class_data.save()
-            all_classes = Classes.objects.all()
-            if len(data) == 0:
-                messages.error(request, 'No classes found')
+                all_classes = Classes.objects.all()
+                if len(data) == 0:
+                        messages.error(request, 'No classes found')
                 # messages.add_message(request, messages.WARNING, 'No classes found')
-            else:
+                else:
                 # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-                messages.success(request, 'Class ' + name + ' added successfully')
-                tutuor_class_data = tutorClasses(
-
+                    messages.success(request, 'Class ' + name + ' added successfully')
+                    tutuor_class_data = tutorClasses(
                     classes_id=classNumber,
                     tutor_id=request.user.id,
                 )
-                tutuor_class_data.save()
+                    tutuor_class_data.save()
 
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
