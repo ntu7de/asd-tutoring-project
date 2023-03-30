@@ -43,7 +43,7 @@ class Classes(models.Model):
         return self.classname
 
 class tutorClasses(models.Model):
-    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
 
 # class TutorClasses(models.Model):

@@ -1,6 +1,6 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Profile, Tutor, Student
+from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -222,8 +222,10 @@ def searchClasses(request):
             response = requests.get(url)
             data = response.json()
             name = ''
+            classNumber = ''
             for c in data:
                 name = c['descr']
+                classNumber = c['class_nbr']
                 class_data = Classes(
                     # user=request.user,
                     subject=c['subject'],
@@ -238,6 +240,13 @@ def searchClasses(request):
                 messages.add_message(request, messages.WARNING, 'No classes found')
             else:
                 messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+                tutuor_class_data = tutorClasses(
+
+                    classes_id=classNumber,
+                    tutor_id=request.user.id,
+                )
+                tutuor_class_data.save()
+
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 def StudentSearch(request):
