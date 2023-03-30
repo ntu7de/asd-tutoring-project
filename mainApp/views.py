@@ -225,7 +225,7 @@ def searchClasses(request):
             for c in data:
                 name = c['descr']
                 class_data = Classes(
-                    user=request.user,
+                    # user=request.user,
                     subject=c['subject'],
                     catalognumber=c['catalog_nbr'],
                     classsection=c['class_section'],
@@ -233,7 +233,7 @@ def searchClasses(request):
                     classname=c['descr'],
                 )
                 class_data.save()
-            all_classes = Classes.objects.filter(user=request.user)
+            all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(request, messages.WARNING, 'No classes found')
             else:

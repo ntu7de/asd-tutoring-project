@@ -31,17 +31,20 @@ class Student(models.Model):
 class Classes(models.Model):
     # classID = models.AutoField(primary_key=True, null = False)
     # classID = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, default='')
-    catalognumber = models.CharField(max_length=100, default='', primary_key= True)
+    catalognumber = models.CharField(max_length=100, default='')
     classsection = models.CharField(max_length=100, default='')
-    classnumber = models.CharField(max_length=100, default='')
+    classnumber = models.CharField(max_length=100, default='', primary_key= True, unique= True)
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.classname
 
+class tutorClasses(models.Model):
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
 
 # class TutorClasses(models.Model):
 #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
