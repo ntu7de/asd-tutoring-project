@@ -227,7 +227,7 @@ def searchClasses(request):
                     tutor_id=request.user.id,
                 )
                 tutuor_class_data.save()
-                messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+                messages.add_message(request, messages.INFO,  name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 
