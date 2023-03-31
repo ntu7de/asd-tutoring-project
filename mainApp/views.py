@@ -48,12 +48,29 @@ def tutorsetting(request): #the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
-    # monday_hours = tutor.monday_hours
-    # tuesday_hours = tutor.tuesday_hours
-    # wednesday_hours = tutor.wednesday_hours
-    # thursday_hours = tutor.thursday_hours
-    # friday_hours = tutor.friday_hours
+    # if(monday_start == None and monday_end == None  and tuesday_start == None and tuesday_end == None and wednesday_start == None and wednesday_end == None and thursday_start == None and thursday_end == None and friday_start == None and friday_end == None):
+    #     messages.error(request, 'Please enter your availability')
+    # if (monday_start == None and monday_end != None):
+    #     messages.error(request, 'Please enter a start time for Monday')
+    # if (monday_start != None and monday_end == None):
+    #     messages.error(request, 'Please enter an end time for Monday')
+    # if (tuesday_start == None and tuesday_end != None):
+    #     messages.error(request, 'Please enter a start time for Tuesday')
+
+    # if (monday_start > monday_end):
+    #     messages.error(request, 'Monday start time cannot be after Monday end time')
+    # if (tuesday_start > tuesday_end):
+    #     messages.error(request, 'Tuesday start time cannot be after Tuesday end time')
+    # if (wednesday_start > wednesday_end):
+    #     messages.error(request, 'Wednesday start time cannot be after Wednesday end time')
+    # if (thursday_start > thursday_end):
+    #     messages.error(request, 'Thursday start time cannot be after Thursday end time')
+    # if (friday_start > friday_end):
+    #     messages.error(request, 'Friday start time cannot be after Friday end time')
+
     hourly_rate = tutor.hourly_rate
+    if len(hourly_rate) > 4:
+        messages.error(request, 'Hourly rate cannot be more than 4 digits')
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year

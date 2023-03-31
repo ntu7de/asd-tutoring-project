@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -26,6 +27,21 @@ class Tutor(models.Model): #tutor profile!
     thursday_end = models.TimeField()
     friday_start = models.TimeField()
     friday_end = models.TimeField()
+
+    def clean(self):
+        super().clean()
+
+        # Check if end time is later than start time for each day
+        if self.monday_start >= self.monday_end:
+            raise ValidationError("Monday end time must be later than start time.")
+        if self.tuesday_start >= self.tuesday_end:
+            raise ValidationError("Tuesday end time must be later than start time.")
+        if self.wednesday_start >= self.wednesday_end:
+            raise ValidationError("Wednesday end time must be later than start time.")
+        if self.thursday_start >= self.thursday_end:
+            raise ValidationError("Thursday end time must be later than start time.")
+        if self.friday_start >= self.friday_end:
+            raise ValidationError("Friday end time must be later than start time.")
     # monday_hours = models.CharField(max_length=200)
     # tuesday_hours = models.CharField(max_length=200)
     # wednesday_hours = models.CharField(max_length=200)
