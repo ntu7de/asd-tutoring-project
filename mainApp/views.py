@@ -17,25 +17,29 @@ def login(request):
 
 @login_required
 def home(request):
-    if request.user.is_authenticated: #if the google login works
+    if request.user.is_authenticated:  # if the google login works
         try:
-            request.user.profile #see if a profile exists for that user
-        except: # if a profile does not already exist for the user they go to account settings
+            request.user.profile  # see if a profile exists for that user
+        except:  # if a profile does not already exist for the user they go to account settings
             return redirect('accountSettings')
     user = request.user
     profile = (Profile.objects.filter(user=user).all()[:1])
-    if profile[0].tutor_or_student == "Tutor":  # if we already know that they are a tutor take them to the tutor home
+    # if we already know that they are a tutor take them to the tutor home
+    if profile[0].tutor_or_student == "Tutor":
         return redirect('tutor')
     else:
-        return redirect('student')   # if we already know that they are a student take them to the student home
+        # if we already know that they are a student take them to the student home
+        return redirect('student')
     return render(request, 'mainApp/home.html')
 
 
-def tutorsetting(request): #the account settings page for tutors
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
-    tutor = get_object_or_404(Tutor, user=user) #tutor info of the user logged in
-    tutorform = TutorForm #the form that allows them to update their tutor information
+def tutorsetting(request):  # the account settings page for tutors
+    user = request.user  # using this to access the profile of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
+    # tutor info of the user logged in
+    tutor = get_object_or_404(Tutor, user=user)
+    tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
     monday_start = tutor.monday_start
@@ -63,7 +67,7 @@ def tutorsetting(request): #the account settings page for tutors
     fun_fact = profile.fun_fact
 
     if request.method == 'POST':
-        if 'edit_profile' in request.POST: #if they're workin with the PROFILE FORM
+        if 'edit_profile' in request.POST:  # if they're workin with the PROFILE FORM
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
 
@@ -84,7 +88,7 @@ def tutorsetting(request): #the account settings page for tutors
                     profile.fun_fact = fun_fact
 
                 profileform2.save()
-        if 'edit_tutor' in request.POST: #if they're working with the TUTOR FORM
+        if 'edit_tutor' in request.POST:  # if they're working with the TUTOR FORM
 
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
@@ -129,11 +133,15 @@ def tutorsetting(request): #the account settings page for tutors
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
-def studentsetting(request): #the account settings page for students
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
-    student = get_object_or_404(Student, user=user) #student info of the user logged in
-    studentform = StudentForm #the form that allows them to update their student information
+
+def studentsetting(request):  # the account settings page for students
+    user = request.user  # using this to access the profile of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
+    # student info of the user logged in
+    student = get_object_or_404(Student, user=user)
+    # the form that allows them to update their student information
+    studentform = StudentForm
 
     # the field information that is currently in the database for student and profile
     classes = student.classes
@@ -145,7 +153,7 @@ def studentsetting(request): #the account settings page for students
     major = profile.major
     fun_fact = profile.fun_fact
 
-    if request.method == 'POST': #if they're workin with the PROFILE FORM
+    if request.method == 'POST':  # if they're workin with the PROFILE FORM
         if 'edit_profile' in request.POST:
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
@@ -167,7 +175,7 @@ def studentsetting(request): #the account settings page for students
                     profile.fun_fact = fun_fact
 
                 profileform2.save()
-        if 'edit_student' in request.POST: #if they're working with the STUDENT FORM
+        if 'edit_student' in request.POST:  # if they're working with the STUDENT FORM
             studentform = studentform(request.POST, instance=student)
             if studentform.is_valid():
                 # this is here so we keep it as the stuff that is already in the database if it's not updated
@@ -182,25 +190,27 @@ def studentsetting(request): #the account settings page for students
     return render(request, 'mainApp/studentSettings.html', context=context)
 
 
-def tutor(request): #tutor home page
+def tutor(request):  # tutor home page
     return render(request, 'mainApp/tutor.html')
 
 
-def student(request): #student home page
+def student(request):  # student home page
     return render(request, 'mainApp/student.html')
 
 
 @login_required
-def accountSettings(request): #the first form that someone sees when they first log in (account settings)
+# the first form that someone sees when they first log in (account settings)
+def accountSettings(request):
     if request.method == "POST":
         form = ProfileForm(request.POST)
-        if form.is_valid(): #form isn't valid right now
+        if form.is_valid():  # form isn't valid right now
             profile = form.save(commit=False)
-            profile.user = request.user #makes it so that the google auth user is connected to this profile
+            # makes it so that the google auth user is connected to this profile
+            profile.user = request.user
             profile.save()
-            if profile.tutor_or_student == "Tutor": #sends you to initially filling in your tutor settings
+            if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
-            else: #sends you to initially filling in your student settings
+            else:  # sends you to initially filling in your student settings
                 return redirect('accountSettings2s')
         else:
             return redirect('accountSettings2s')
@@ -237,31 +247,38 @@ def searchClasses(request):
             data = response.json()
             name = ''
             classNumber = ''
+            a = 0
             for c in data:
-                name = c['descr']
-                classNumber = c['class_nbr']
-                class_data = Classes(
-                    subject=c['subject'],
-                    catalognumber=c['catalog_nbr'],
-                    classsection=c['class_section'],
-                    classnumber=c['class_nbr'],
-                    classname=c['descr'],
+                if (c["component"] == "LEC" and a==0):
+                    a+=1
+                    name = c['descr']
+                    classNumber = c['class_nbr']
+                    class_data = Classes(
+                        subject=c['subject'],
+                        catalognumber=c['catalog_nbr'],
+                        classsection=c['class_section'],
+                        classnumber=c['class_nbr'],
+                        classname=c['descr'],
                 )
                 class_data.save()
+                
             all_classes = Classes.objects.all()
             if len(data) == 0:
-                messages.add_message(request, messages.WARNING, 'No classes found')
+                messages.add_message(
+                    request, messages.WARNING, 'No classes found')
             else:
                 tutuor_class_data = tutorClasses(
                     classes_id=classNumber,
                     tutor_id=request.user.id,
                 )
                 tutuor_class_data.save()
-                messages.add_message(request, messages.INFO,  name + ' added successfully')
+                messages.add_message(request, messages.INFO,
+                                     name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
+
 def detail(request):
-    return render(request,'mainApp/detail.html')
+    return render(request, 'mainApp/detail.html')
 
 
 # def searchClasses(request):
@@ -320,37 +337,41 @@ def StudentSearch(request):
     }
     q = request.GET.get('search')
     if q:
-        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) |  Q(catalognumber__icontains=q) 
+        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
-        return render(request,'mainApp/classList.html',{'info':classes})
+        return render(request, 'mainApp/classList.html', {'info': classes})
     else:
-        return render(request,'mainApp/classList.html',context_dict)
+        return render(request, 'mainApp/classList.html', context_dict)
 
 
-
-def accountSettings2s(request): #the student settings that a student sees when they first log in (right after initial account settings)
+# the student settings that a student sees when they first log in (right after initial account settings)
+def accountSettings2s(request):
     if request.method == "POST":
-        form = FirstStudentForm(request.POST) #the student form that requires you to add everything
+        # the student form that requires you to add everything
+        form = FirstStudentForm(request.POST)
         if form.is_valid():
             student = form.save(commit=False)
-            student.user = request.user #connects the student to the user
+            student.user = request.user  # connects the student to the user
             student.save()
-            return redirect('student') #send them to the student home page
+            return redirect('student')  # send them to the student home page
     form = FirstStudentForm()
     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 
-
-def accountSettings2t(request): #the tutor settings that a tutor sees when they first log in (right after initial account settings)
+# the tutor settings that a tutor sees when they first log in (right after initial account settings)
+def accountSettings2t(request):
     if request.method == "POST":
-        form = FirstTutorForm(request.POST) #the tutor form that requires you to add everything
+        # the tutor form that requires you to add everything
+        form = FirstTutorForm(request.POST)
         if form.is_valid():
             tutor = form.save(commit=False)
-            tutor.user = request.user #connects the tutor to the user
+            tutor.user = request.user  # connects the tutor to the user
             tutor.save()
-            return redirect('classes') #send them to the classes page
+            return redirect('classes')  # send them to the classes page
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
+
+
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
