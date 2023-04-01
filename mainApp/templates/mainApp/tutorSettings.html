@@ -1,6 +1,7 @@
 <!--adapted from: https://bbbootstrap.com/snippets/bootstrap-edit-profile-accounts-setting-template-80240656-->
-
-<!DOCTYPE html>
+{% extends "mainApp/base.html" %}
+{% load static %}
+{% block body %}
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
@@ -28,3 +29,4 @@
                     type="submit">Submit
             </button>
         </form>
+{% endblock %}

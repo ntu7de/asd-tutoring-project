@@ -1,16 +1,35 @@
 {% load static %}
 {% block content %}
+<link rel="stylesheet"
+      type="text/css"
+      href="{% static 'mainApp/css/bootstrap.css' %}"
+/>
 <head>
     <link rel="stylesheet" href="{% static 'mainApp/login.css' %}" />
 </head>
-<body>
-    <div class="container-fluid">
-        <h1 class="h1"> Sign In to Tutor Me: </h1>
-    </div>
-    <div class="container-fluid">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">
-            <button class="button1">Login With Google</button>
-        </a>
-    </div>
+
+<!--https://getbootstrap.com/docs/5.0/examples/sign-in/?/-->
+<body class="text-center">
+    <main class="form-signin">
+        <div class="form-floating">
+            <h1 class="h3 mb-3 fw-normal">Welcome to Tutor Me!</h1>
+            <p>Please sign in through Google:</p>
+            <a href="{% url 'social:begin' 'google-oauth2' %}">
+                <button class="w-100 btn btn-lg btn-primary">Sign In</button>
+            </a>
+<!--            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>-->
+        </div>
+    </main>
+<!--    <div class="container-fluid">-->
+<!--        <h1 class="h1"> Welcome to Tutor Me! </h1>-->
+<!--    </div>-->
+<!--    <div class="container-fluid">-->
+<!--        <h3 class="h3">Please sign in through Google:</h3>-->
+<!--    </div>-->
+<!--    <div class="container-fluid">-->
+<!--        <a href="{% url 'social:begin' 'google-oauth2' %}">-->
+<!--            <button class="button1">Login With Google</button>-->
+<!--        </a>-->
+<!--    </div>-->
 </body>
 {% endblock %}
