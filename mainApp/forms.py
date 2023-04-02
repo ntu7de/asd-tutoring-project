@@ -112,6 +112,7 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
         exclude = ()
 
 
+
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
     hourly_rate = forms.DecimalField(widget=forms.TextInput(attrs={'placeholder':'ex: 12.50'}), required=False)
