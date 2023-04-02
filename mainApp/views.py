@@ -285,9 +285,11 @@ def detail(request, classnumber):
     # Trying to use those ids to obtain the tutor object to use other info like name, rate etc.; This doesn't work because after I get the object a, I can't access fields like first_name etc.
     for i in tutorInfo:
         a = Tutor.objects.filter(Q(user__username__icontains=i.tutor))
-        print(a.id)
+        # print(a.first_name)
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': a})
 
+def tutordetail(request):
+    return render(request,'mainApp/tutordetail.html')
 
 # def searchClasses(request):
 #     all_classes = {}

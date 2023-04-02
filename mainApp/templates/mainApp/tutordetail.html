@@ -20,47 +20,5 @@
     </ul>
   </div>
 </nav>
-<div class="container">
-  {% if classinfo %}
-  <ul>
-    {% for class in classinfo %}
-    <div class="d-flex justify-content-center" id="tags">
-      <u>
-        <h2>{{class.classname}}</h2>
-      </u>
-    </div>
-
-    {% endfor %}
-    {% else %}
-    <p>Error please select a valid class</p>
-    {% endif %}
-    <br>
-
-    {% if tutorinfo %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Hourly Rate</th>
-          <th scope="col">Timing</th>
-        </tr>
-      </thead>
-      {% for tutor in tutors %}
-      <tbody>
-       <a href="classList/tutordetail"><tr>
-          <th scope="row">Mark</th>
-          <td>Floryan</td>
-          <td>12</td>
-          <td>9-5</td>
-        </tr></a> 
-      </tbody>
-      {% endfor %}
-    </table>
-  </ul>
-  {% else %}
-  <p>No Tutors are available</p>
-  {% endif %}
-
-</div>
+<h1>This is tutor detail page</h1>
 {% endblock %}

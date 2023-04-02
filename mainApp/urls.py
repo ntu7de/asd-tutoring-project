@@ -18,4 +18,5 @@ urlpatterns = [
     path('classes/', views.searchClasses, name = 'classes'),
     path('classList/', views.StudentSearch, name = 'classList'),
     path('classList/<int:classnumber>/', views.detail, name='detail'),
+    path('classList/tutordetail',views.tutordetail,name='tutordetail')
 ]
