@@ -6,9 +6,8 @@ from mainApp.models import User, Profile, Tutor, Classes
 class TutorTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="tester", password="password")
-        self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year=1,
-                                                   email="email", pronouns="pronouns", major="major", is_tutor=True,
-                                                   is_student=False, fun_fact="fact")
+        self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year="1",
+                                                   pronouns="pronouns", major="major", fun_fact="fact")
         self.user.tutor = Tutor.objects.create(user=self.user, hourly_rate=10, monday_hours="10-2", tuesday_hours="5-6",
                                                wednesday_hours="10-2", thursday_hours="5-6", friday_hours="none")
 
@@ -19,12 +18,10 @@ class TutorTestCase(TestCase):
         tutor = self.user.profile
         self.assertEqual(tutor.first_name, 'f_name')
         self.assertEqual(tutor.last_name, 'l_name')
-        self.assertEqual(tutor.year, 1)
-        self.assertEqual(tutor.email, 'email')
+        self.assertEqual(tutor.year, "1")
         self.assertEqual(tutor.pronouns, 'pronouns')
         self.assertEqual(tutor.major, 'major')
-        self.assertEqual(tutor.is_tutor, True)
-        self.assertEqual(tutor.is_student, False)
+        self.assertEqual(tutor.tutor_or_student, "tutor")
         self.assertEqual(tutor.fun_fact, 'fact')
 
     def test_tutor_hours(self):
@@ -44,9 +41,8 @@ class TutorTestCase(TestCase):
 class ListTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="tester", password="password")
-        self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year=1,
-                                                   email="email", pronouns="pronouns", major="major", is_tutor=True,
-                                                   is_student=False, fun_fact="fact")
+        self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year="1",
+                                                   pronouns="pronouns", major="major", fun_fact="fact")
         self.user.tutor = Tutor.objects.create(user=self.user, hourly_rate=10, monday_hours="10-2", tuesday_hours="5-6",
                                                wednesday_hours="10-2", thursday_hours="5-6", friday_hours="none")
         # Every test needs a client.
@@ -68,4 +64,4 @@ class ListTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Check that the rendered context contains 1 class.
-        self.assertEqual(len(response.context['AllClasses']), 1)
+        self.assertEqual(len(response.context['info']), 1)
