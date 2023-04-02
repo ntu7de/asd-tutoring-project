@@ -9,10 +9,11 @@ class TutorTestCase(TestCase):
         self.user.profile = Profile.objects.create(user=self.user, first_name="f_name", last_name="l_name", year="1",
                                                    pronouns="pronouns", major="major", tutor_or_student="tutor",
                                                    fun_fact="fact")
-        # self.user.tutor = Tutor.objects.create(user=self.user, hourly_rate=10, monday_start='09:00', monday_end='12:00',
-        #                                        tuesday_start='09:00', tuesday_end='12:00', wednesday_start="09:00",
-        #                                        wednesday_end="12:00", thursday_start="09:00", thursday_end="12:00",
-        #                                        friday_start="09:00", friday_end="12:00")
+        self.user.tutor = Tutor.objects.create(user=self.user, hourly_rate=10, monday_start="9:00 AM",
+                                               monday_end="12:00 PM", tuesday_start="9:00 AM", tuesday_end="12:00 PM",
+                                               wednesday_start="9:00 AM", wednesday_end="12:00 PM",
+                                               thursday_start="9:00 AM", thursday_end="12:00 PM",
+                                               friday_start="9:00 AM", friday_end="12:00 PM")
         self.client = Client()
 
 
@@ -29,22 +30,23 @@ class TutorTestCase(TestCase):
         self.assertEqual(tutor.tutor_or_student, "tutor")
         self.assertEqual(tutor.fun_fact, 'fact')
 
-    # def test_tutor_hours(self):
-    #     """
-    #     testing to see if the tutor object keeps the correct data
-    #     """
-    #     tutor = self.user.tutor
-    #     self.assertEqual(tutor.hourly_rate, 10)
-        # self.assertEqual(tutor.monday_start, "09:00")
-        # self.assertEqual(tutor.monday_end, "12:00")
-        # self.assertEqual(tutor.tuesday_start, "09:00")
-        # self.assertEqual(tutor.tuesday_end, "12:00")
-        # self.assertEqual(tutor.wednesday_start, "09:00")
-        # self.assertEqual(tutor.wednesday_end, "12:00")
-        # self.assertEqual(tutor.thursday_start, "09:00")
-        # self.assertEqual(tutor.thursday_end, "12:00")
-        # self.assertEqual(tutor.friday_start, "09:00")
-        # self.assertEqual(tutor.friday_end, "12:00")
+    def test_tutor_hours(self):
+        """
+        testing to see if the tutor object keeps the correct data
+        """
+        tutor = self.user.tutor
+        self.assertEqual(tutor.hourly_rate, 10)
+        self.assertEqual(tutor.monday_start, "9:00 AM")
+        self.assertEqual(tutor.monday_end, "12:00 PM")
+        self.assertEqual(tutor.tuesday_start, "9:00 AM")
+        self.assertEqual(tutor.tuesday_end, "12:00 PM")
+        self.assertEqual(tutor.wednesday_start, "9:00 AM")
+        self.assertEqual(tutor.wednesday_end, "12:00 PM")
+        self.assertEqual(tutor.thursday_start, "9:00 AM")
+        self.assertEqual(tutor.thursday_end, "12:00 PM")
+        self.assertEqual(tutor.friday_start, "9:00 AM")
+        self.assertEqual(tutor.friday_end, "12:00 PM")
+
     # def test_accountDisplay(self):
     #     """
     #     test to see if the accountDisplay page works correctly
