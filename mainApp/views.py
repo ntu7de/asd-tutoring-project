@@ -279,6 +279,15 @@ def accountSettings2t(request): #the tutor settings that a tutor sees when they 
             return redirect('classes') #send them to the classes page
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
+
+
+def accountDisplay(request): # display account settings for tutors/students
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+
+
+
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
