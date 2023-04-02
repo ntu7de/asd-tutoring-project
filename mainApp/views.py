@@ -315,6 +315,24 @@ def searchClasses(request):
 #                 tutuor_class_data.save()
 #
 #     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+def classes(request):
+    model = Classes
+    url = 'https://api.devhub.virginia.edu/v1/courses'
+    response = requests.get(url)
+    data = response.json()
+    courses = data["class_schedules"]["records"]
+    AllClasses = {}
+    for i in courses:
+        Classes.objects.create(subject=i[0], catalogNumber=i[1], classSection=i[2], classNumber=i[3], className=i[4],
+                               instructor=i[6]
+                               ).save()
+
+    AllClasses = Classes.objects.all().order_by('-classID')
+    # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
+
+    return render(request, 'mainApp/classes.html',
+                  {"AllClasses": AllClasses}
+                  )
 
 def StudentSearch(request):
     model = Classes
@@ -343,21 +361,4 @@ def accountSettings2t(request): #the tutor settings that a tutor sees when they 
             return redirect('classes') #send them to the classes page
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
-def classes(request):
-    model = Classes
-    url = 'https://api.devhub.virginia.edu/v1/courses'
-    response = requests.get(url)
-    data = response.json()
-    courses = data["class_schedules"]["records"]
-    AllClasses = {}
-    for i in courses:
-        Classes.objects.create(subject=i[0], catalogNumber=i[1], classSection=i[2], classNumber=i[3], className=i[4],
-                               instructor=i[6]
-                               ).save()
 
-    AllClasses = Classes.objects.all().order_by('-classID')
-    # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
-
-    return render(request, 'mainApp/classes.html',
-                  {"AllClasses": AllClasses}
-                  )
