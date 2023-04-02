@@ -153,7 +153,6 @@ def studentsetting(request): #the account settings page for students
     studentform = StudentForm #the form that allows them to update their student information
 
     # the field information that is currently in the database for student and profile
-    classes = student.classes
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
@@ -182,19 +181,9 @@ def studentsetting(request): #the account settings page for students
                     profile.major = major
                 if not profileform2.data['fun_fact']:
                     profile.fun_fact = fun_fact
-
                 profileform2.save()
-        if 'edit_student' in request.POST: #if they're working with the STUDENT FORM
-            studentform = studentform(request.POST, instance=student)
-            if studentform.is_valid():
-                # this is here so we keep it as the stuff that is already in the database if it's not updated
-                if not studentform.data['classes']:
-                    student.classes = classes
-
-                student.save()
     context = {
         'form': ProfileForm2,
-        'form2': StudentForm,
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
@@ -218,7 +207,7 @@ def accountSettings(request): #the first form that someone sees when they first 
             if profile.tutor_or_student == "Tutor": #sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
             else: #sends you to initially filling in your student settings
-                return redirect('accountSettings2s')
+                return redirect('student')
         else:
             return redirect('accountSettings2s')
     form = ProfileForm()
@@ -341,18 +330,6 @@ def StudentSearch(request):
     else:
         return render(request,'mainApp/classList.html',context_dict)
 
-
-
-def accountSettings2s(request): #the student settings that a student sees when they first log in (right after initial account settings)
-    if request.method == "POST":
-        form = FirstStudentForm(request.POST) #the student form that requires you to add everything
-        if form.is_valid():
-            student = form.save(commit=False)
-            student.user = request.user #connects the student to the user
-            student.save()
-            return redirect('student') #send them to the student home page
-    form = FirstStudentForm()
-    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 
 
