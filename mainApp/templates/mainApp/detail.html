@@ -35,31 +35,32 @@
     <p>Error please select a valid class</p>
     {% endif %}
     <br>
+
+    {% if tutorinfo %}
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">#</th>
           <th scope="col">First</th>
           <th scope="col">Last</th>
-          <th scope="col">Handle</th>
+          <th scope="col">Hourly Rate</th>
+          <th scope="col">Timing</th>
         </tr>
       </thead>
-      {% if tutorinfo %}
-      {% for tutor in tutorinfo %}
+      {% for tutor in tutors %}
       <tbody>
         <tr>
-          <th scope="row">1</th>
-          <td>{{tutor.name}}</td>
-          <td>Otto</td>
-          <td>@mdo</td>
+          <th scope="row">Mark</th>
+          <td>Floryan</td>
+          <td>12</td>
+          <td>9-5</td>
         </tr>
       </tbody>
       {% endfor %}
     </table>
   </ul>
-    {% else %}
-    <p>No Tutors are available</p>
-    {% endif %}
+  {% else %}
+  <p>No Tutors are available</p>
+  {% endif %}
 
 </div>
 {% endblock %}
