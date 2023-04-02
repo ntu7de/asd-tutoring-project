@@ -149,8 +149,6 @@ def tutorsetting(request): #the account settings page for tutors
 def studentsetting(request): #the account settings page for students
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
-    student = get_object_or_404(Student, user=user) #student info of the user logged in
-    studentform = StudentForm #the form that allows them to update their student information
 
     # the field information that is currently in the database for student and profile
     first_name = profile.first_name
@@ -207,6 +205,8 @@ def accountSettings(request): #the first form that someone sees when they first 
             if profile.tutor_or_student == "Tutor": #sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
             else: #sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="") #creates an instance of a student
+                stud.save() #saves that instance
                 return redirect('student')
         else:
             return redirect('accountSettings2s')
