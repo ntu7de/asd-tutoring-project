@@ -362,3 +362,7 @@ def accountSettings2t(request): #the tutor settings that a tutor sees when they 
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
+def accountDisplay(request): #display account information
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
