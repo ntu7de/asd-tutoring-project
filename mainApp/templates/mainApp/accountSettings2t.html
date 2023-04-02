@@ -19,4 +19,11 @@
                     type="submit">Submit
             </button>
         </form>
+    {% if messages %}
+<ul class="messages" style="list-style: none;">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }} text-center"  {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}
