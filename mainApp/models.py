@@ -16,11 +16,21 @@ class Profile(models.Model):
 class Tutor(models.Model): #tutor profile!
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
-    monday_hours = models.CharField(max_length=200)
-    tuesday_hours = models.CharField(max_length=200)
-    wednesday_hours = models.CharField(max_length=200)
-    thursday_hours = models.CharField(max_length=200)
-    friday_hours = models.CharField(max_length=200)
+    monday_start = models.TimeField()
+    monday_end = models.TimeField()
+    tuesday_start = models.TimeField()
+    tuesday_end = models.TimeField()
+    wednesday_start = models.TimeField()
+    wednesday_end = models.TimeField()
+    thursday_start = models.TimeField()
+    thursday_end = models.TimeField()
+    friday_start = models.TimeField()
+    friday_end = models.TimeField()
+    # monday_hours = models.CharField(max_length=200)
+    # tuesday_hours = models.CharField(max_length=200)
+    # wednesday_hours = models.CharField(max_length=200)
+    # thursday_hours = models.CharField(max_length=200)
+    # friday_hours = models.CharField(max_length=200)
     # classes = models.CharField(max_length=200)
 
 class Student(models.Model):
@@ -31,17 +41,20 @@ class Student(models.Model):
 class Classes(models.Model):
     # classID = models.AutoField(primary_key=True, null = False)
     # classID = models.AutoField(primary_key=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, default='')
-    catalognumber = models.CharField(max_length=100, default='', primary_key= True)
+    catalognumber = models.CharField(max_length=100, default='')
     classsection = models.CharField(max_length=100, default='')
-    classnumber = models.CharField(max_length=100, default='')
+    classnumber = models.CharField(max_length=100, default='', primary_key= True, unique= True)
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
 
     def __str__(self):
         return self.classname
 
+class tutorClasses(models.Model):
+    tutor = models.OneToOneField(User, on_delete=models.CASCADE)
+    classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
 
 # class TutorClasses(models.Model):
 #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)

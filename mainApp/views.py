@@ -1,10 +1,10 @@
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Profile, Tutor, Student
+from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm
 from django.contrib import messages
 from django.db.models import Q
 
@@ -38,11 +38,21 @@ def tutorsetting(request): #the account settings page for tutors
     tutorform = TutorForm #the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
-    monday_hours = tutor.monday_hours
-    tuesday_hours = tutor.tuesday_hours
-    wednesday_hours = tutor.wednesday_hours
-    thursday_hours = tutor.thursday_hours
-    friday_hours = tutor.friday_hours
+    monday_start = tutor.monday_start
+    monday_end = tutor.monday_end
+    tuesday_start = tutor.tuesday_start
+    tuesday_end = tutor.tuesday_end
+    wednesday_start = tutor.wednesday_start
+    wednesday_end = tutor.wednesday_end
+    thursday_start = tutor.thursday_start
+    thursday_end = tutor.thursday_end
+    friday_start = tutor.friday_start
+    friday_end = tutor.friday_end
+    # monday_hours = tutor.monday_hours
+    # tuesday_hours = tutor.tuesday_hours
+    # wednesday_hours = tutor.wednesday_hours
+    # thursday_hours = tutor.thursday_hours
+    # friday_hours = tutor.friday_hours
     hourly_rate = tutor.hourly_rate
     first_name = profile.first_name
     last_name = profile.last_name
@@ -82,16 +92,36 @@ def tutorsetting(request): #the account settings page for tutors
                 # these if statements exist so that if the fields aren't directly updated they stay the same
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if not tutorform.data['monday_hours']:
-                    tutor.monday_hours = monday_hours
-                if not tutorform.data['tuesday_hours']:
-                    tutor.tuesday_hours = tuesday_hours
-                if not tutorform.data['wednesday_hours']:
-                    tutor.wednesday_hours = wednesday_hours
-                if not tutorform.data['thursday_hours']:
-                    tutor.thursday_hours = thursday_hours
-                if not tutorform.data['friday_hours']:
-                    tutor.friday_hours = friday_hours
+                if not tutorform.data['monday_start']:
+                    tutor.monday_start = monday_start
+                if not tutorform.data['monday_end']:
+                    tutor.monday_end = monday_end
+                if not tutorform.data['tuesday_start']:
+                    tutor.tuesday_start = tuesday_start
+                if not tutorform.data['tuesday_end']:
+                    tutor.tuesday_end = tuesday_end
+                if not tutorform.data['wednesday_start']:
+                    tutor.wednesday_start = wednesday_start
+                if not tutorform.data['wednesday_end']:
+                    tutor.wednesday_end = wednesday_end
+                if not tutorform.data['thursday_start']:
+                    tutor.thursday_start = thursday_start
+                if not tutorform.data['thursday_end']:
+                    tutor.thursday_end = thursday_end
+                if not tutorform.data['friday_start']:
+                    tutor.friday_start = friday_start
+                if not tutorform.data['friday_end']:
+                    tutor.friday_end = friday_end
+                # if not tutorform.data['monday_hours']:
+                #     tutor.monday_hours = monday_hours
+                # if not tutorform.data['tuesday_hours']:
+                #     tutor.tuesday_hours = tuesday_hours
+                # if not tutorform.data['wednesday_hours']:
+                #     tutor.wednesday_hours = wednesday_hours
+                # if not tutorform.data['thursday_hours']:
+                #     tutor.thursday_hours = thursday_hours
+                # if not tutorform.data['friday_hours']:
+                #     tutor.friday_hours = friday_hours
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -166,55 +196,40 @@ def accountSettings(request): #the first form that someone sees when they first 
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
-# def searchClasses(request):
-#     all_classes = {}
-#     if 'name' in request.GET:
-#         # name = request.GET['class']
-#         subject = request.GET['name'].split(' ')[0]
-#         courseNumber = request.GET['name'].split(' ')[1]
-#         url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
-#         response = requests.get(url)
-#         data = response.json()
-#
-#         name = ''
-#         for c in data:
-#             name = c['descr']
-#             # classname = c['descr']
-#             class_data = Classes(
-#                 user=request.user,
-#                 subject=c['subject'],
-#                 catalognumber=c['catalog_nbr'],
-#                 classsection=c['class_section'],
-#                 classnumber=c['class_nbr'],
-#                 classname=c['descr'],
-#             )
-#             class_data.save()
-#             all_classes = Classes.objects.filter(user=request.user)
-#         if len(data) == 0:
-#             messages.add_message(request, messages.WARNING, 'No classes found')
-#         else:
-#             messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-#
-#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
-
 
 def searchClasses(request):
     all_classes = {}
+    courseNumber = ''
     if 'name' in request.GET:
-        subject = request.GET['name'].split(' ')[0]
-        try:
+        input = request.GET['name'].split(' ')
+        inputLength = len(input)
+
+        subject = request.GET['name'].split(' ')[0].upper()
+        if inputLength < 0:
+            # try:
             courseNumber = request.GET['name'].split(' ')[1]
-        except IndexError:
-            messages.add_message(request, messages.WARNING, 'Incorrect Form')
+            # except IndexError:
+            #     # messages.add_message(request, messages.WARNING, 'Incorrect Form')
+            #     pass
         else:
-            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject + '&catalog_nbr=' + courseNumber
+            # url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01'
+            url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
+
+            if inputLength == 1:
+                url += '&class_nbr=' + subject
+            if inputLength == 2:
+                courseNumber = request.GET['name'].split(' ')[1]
+                url += '&subject=' + subject + '&catalog_nbr=' + courseNumber
+            if inputLength == 3:
+                url += '&keyword=' + request.GET['name']
             response = requests.get(url)
             data = response.json()
             name = ''
+            classNumber = ''
             for c in data:
                 name = c['descr']
+                classNumber = c['class_nbr']
                 class_data = Classes(
-                    user=request.user,
                     subject=c['subject'],
                     catalognumber=c['catalog_nbr'],
                     classsection=c['class_section'],
@@ -222,12 +237,67 @@ def searchClasses(request):
                     classname=c['descr'],
                 )
                 class_data.save()
-            all_classes = Classes.objects.filter(user=request.user)
+            all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(request, messages.WARNING, 'No classes found')
             else:
-                messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+                tutuor_class_data = tutorClasses(
+                    classes_id=classNumber,
+                    tutor_id=request.user.id,
+                )
+                tutuor_class_data.save()
+                messages.add_message(request, messages.INFO,  name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
+
+
+# def searchClasses(request):
+#     all_classes = {}
+#     url = ' '
+#     if 'name' in request.GET:
+#         input1 = request.GET['name']
+#         input_length = len(input1)
+#         # if input_length == 0:
+#         #     messages.add_message(request, messages.WARNING, 'Please enter a class name')
+#         if input_length == 1:
+#             classnnbr = request.GET['name'].split(' ')[0].upper()
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + classnnbr
+#         elif input_length == 2:
+#             subject = request.GET['name'].split(' ')[0].upper()
+#             courseNumber = request.GET['name'].split(' ')[1]
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject  + '&catalog_nbr=' + courseNumber
+#         elif input_length > 2:
+#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
+#         else:
+#             messages.add_message(request, messages.WARNING, 'Please enter a class name')
+#         response = requests.get(url)
+#         data = response.json()
+#         for c in data:
+#                 name = c['descr']
+#                 classNumber = c['class_nbr']
+#                 class_data = Classes(
+#                     # user=request.user,
+#                     subject=c['subject'],
+#                     catalognumber=c['catalog_nbr'],
+#                     classsection=c['class_section'],
+#                     classnumber=c['class_nbr'],
+#                     classname=c['descr'],
+#                 )
+#                 class_data.save()
+#                 all_classes = Classes.objects.all()
+#         if len(data) == 0:
+#                 messages.error(request, 'No classes found')
+#
+#         else:
+#                 # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
+#                 messages.success(request, 'Class ' + name + ' added successfully')
+#                 tutuor_class_data = tutorClasses(
+#                 classes_id=classNumber,
+#                 tutor_id=request.user.id,
+#                 )
+#                 tutuor_class_data.save()
+#
+#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 def StudentSearch(request):
     model = Classes
