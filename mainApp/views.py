@@ -249,8 +249,8 @@ def searchClasses(request):
             classNumber = ''
             a = 0
             for c in data:
-                if (c["component"] == "LEC" and a==0):
-                    a+=1
+                if (c["component"] == "LEC" and a == 0):
+                    a += 1
                     name = c['descr']
                     classNumber = c['class_nbr']
                     class_data = Classes(
@@ -259,9 +259,9 @@ def searchClasses(request):
                         classsection=c['class_section'],
                         classnumber=c['class_nbr'],
                         classname=c['descr'],
-                )
+                    )
                 class_data.save()
-                
+
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -277,8 +277,11 @@ def searchClasses(request):
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
 
-def detail(request):
-    return render(request, 'mainApp/detail.html')
+def detail(request, classnumber):
+    model = Classes
+    classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
+    tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutorinfo': tutorInfo})
 
 
 # def searchClasses(request):
@@ -332,16 +335,13 @@ def detail(request):
 def StudentSearch(request):
     model = Classes
     data = Classes.objects.all()
-    context_dict = {
-        'info': data
-    }
     q = request.GET.get('search')
     if q:
         classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
-        return render(request, 'mainApp/classList.html', context_dict)
+        return render(request, 'mainApp/classList.html', {'info': data})
 
 
 # the student settings that a student sees when they first log in (right after initial account settings)

@@ -17,5 +17,5 @@ urlpatterns = [
     path('student/', views.student, name = 'student'),
     path('classes/', views.searchClasses, name = 'classes'),
     path('classList/', views.StudentSearch, name = 'classList'),
-    path('<int:pk>/', views.detail, name='detail'),
+    path('classList/<int:classnumber>/', views.detail, name='detail'),
 ]
