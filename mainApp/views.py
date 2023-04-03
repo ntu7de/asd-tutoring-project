@@ -251,7 +251,7 @@ def searchClasses(request):
             classNumber = ''
             a = 0
             for c in data:
-                if (c["component"] == "LEC" and a == 0):
+                if (a == 0):
                     a += 1
                     name = c['descr']
                     classNumber = c['class_nbr']
