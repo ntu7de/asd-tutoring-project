@@ -42,8 +42,6 @@ def tutorsetting(request):  # the account settings page for tutors
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
-    tutorID = tutor.id
-    user_id = request.user.id
     monday_start = tutor.monday_start
     monday_end = tutor.monday_end
     tuesday_start = tutor.tuesday_start
@@ -54,8 +52,29 @@ def tutorsetting(request):  # the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
+    # if(monday_start == None and monday_end == None  and tuesday_start == None and tuesday_end == None and wednesday_start == None and wednesday_end == None and thursday_start == None and thursday_end == None and friday_start == None and friday_end == None):
+    #     messages.error(request, 'Please enter your availability')
+    # if (monday_start == None and monday_end != None):
+    #     messages.error(request, 'Please enter a start time for Monday')
+    # if (monday_start != None and monday_end == None):
+    #     messages.error(request, 'Please enter an end time for Monday')
+    # if (tuesday_start == None and tuesday_end != None):
+    #     messages.error(request, 'Please enter a start time for Tuesday')
+
+    # if (monday_start > monday_end):
+    #     messages.error(request, 'Monday start time cannot be after Monday end time')
+    # if (tuesday_start > tuesday_end):
+    #     messages.error(request, 'Tuesday start time cannot be after Tuesday end time')
+    # if (wednesday_start > wednesday_end):
+    #     messages.error(request, 'Wednesday start time cannot be after Wednesday end time')
+    # if (thursday_start > thursday_end):
+    #     messages.error(request, 'Thursday start time cannot be after Thursday end time')
+    # if (friday_start > friday_end):
+    #     messages.error(request, 'Friday start time cannot be after Friday end time')
 
     hourly_rate = tutor.hourly_rate
+    # if len(hourly_rate) > 5:
+    #     messages.error(request, 'Hourly rate cannot be more than 4 digits')
 
     first_name = profile.first_name
     last_name = profile.last_name
@@ -69,57 +88,33 @@ def tutorsetting(request):  # the account settings page for tutors
         if 'edit_profile' in request.POST:  # if they're workin with the PROFILE FORM
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
-                profileform2.data.mutable = True
-                if profileform2.data['pronouns'] == "She/Her" and pronouns != "She/Her":
-                    profileform2.data['pronouns'] = pronouns
-                if profileform2.data['year'] == "First" and year != "First":
-                    profileform2.data['year'] = year
+
+                # all of these if statements exist so that if the fields aren't directly updated they stay the same
                 if not profileform2.data['first_name']:
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                # if not profileform2.data['year']:
-                #     profile.year = year
+                if not profileform2.data['year']:
+                    profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                # if not profileform2.data['pronouns']:
-                #     profile.pronouns = pronouns
+                if not profileform2.data['pronouns']:
+                    profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
                 if not profileform2.data['fun_fact']:
                     profile.fun_fact = fun_fact
-                profileform2.save()
 
+                profileform2.save()
         if 'edit_tutor' in request.POST:  # if they're working with the TUTOR FORM
 
             tutorform = tutorform(request.POST, instance=tutor)
-            tutorform.data._mutable = True
             if tutorform.is_valid():
                 tutorform.data['id'] = tutorID
                 tutorform.data['user_id'] = user_id
 
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if tutorform.data['monday_start'] == '9:00 AM' and monday_start != '9:00 AM':
-                    tutorform.data['monday_start'] = monday_start
-                if tutorform.data['monday_end'] == '9:00 AM' and monday_end != '9:00 AM':
-                    tutorform.data['monday_end'] = monday_end
-                if tutorform.data['tuesday_start'] == '9:00 AM' and tuesday_start != '9:00 AM':
-                    tutorform.data['tuesday_start'] = tuesday_start
-                if tutorform.data['tuesday_end'] == '9:00 AM' and tuesday_end != '9:00 AM':
-                    tutorform.data['tuesday_end'] = tuesday_end
-                if tutorform.data['wednesday_start'] == '9:00 AM' and wednesday_start != '9:00 AM':
-                    tutorform.data['wednesday_start'] = wednesday_start
-                if tutorform.data['wednesday_end'] == '9:00 AM' and wednesday_end != '9:00 AM':
-                    tutorform.data['wednesday_end'] = wednesday_end
-                if tutorform.data['thursday_start'] == '9:00 AM' and thursday_start != '9:00 AM':
-                    tutorform.data['thursday_start'] = thursday_start
-                if tutorform.data['thursday_end'] == '9:00 AM' and thursday_end != '9:00 AM':
-                    tutorform.data['thursday_end'] = thursday_end
-                if tutorform.data['friday_start'] == '9:00 AM' and friday_start != '9:00 AM':
-                    tutorform.data['friday_start'] = friday_start
-                if tutorform.data['friday_end'] == '9:00 AM' and friday_end != '9:00 AM':
-                    tutorform.data['friday_end'] = friday_end
                 if not tutorform.data['monday_start']:
                     tutor.monday_start = monday_start
                 if not tutorform.data['monday_end']:
@@ -140,6 +135,16 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if not tutorform.data['friday_end']:
                     tutor.friday_end = friday_end
+                # if not tutorform.data['monday_hours']:
+                #     tutor.monday_hours = monday_hours
+                # if not tutorform.data['tuesday_hours']:
+                #     tutor.tuesday_hours = tuesday_hours
+                # if not tutorform.data['wednesday_hours']:
+                #     tutor.wednesday_hours = wednesday_hours
+                # if not tutorform.data['thursday_hours']:
+                #     tutor.thursday_hours = thursday_hours
+                # if not tutorform.data['friday_hours']:
+                #     tutor.friday_hours = friday_hours
                 tutor.save()
     context = {
         'form': ProfileForm2,
