@@ -413,3 +413,8 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
+
+def accountDisplay(request):
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
