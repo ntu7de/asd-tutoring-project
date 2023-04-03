@@ -350,7 +350,6 @@ def classes(request):
     courses = data["class_schedules"]["records"]
     AllClasses = {}
     for i in courses:
-        print(i[0]+i[1]+i[4])
         Classes.objects.create(subject=i[0], catalogNumber=i[1], classSection=i[2], classNumber=i[3], className=i[4],
                                instructor=i[6]
                                ).save()
