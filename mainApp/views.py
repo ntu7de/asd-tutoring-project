@@ -52,12 +52,29 @@ def tutorsetting(request):  # the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
-    # monday_hours = tutor.monday_hours
-    # tuesday_hours = tutor.tuesday_hours
-    # wednesday_hours = tutor.wednesday_hours
-    # thursday_hours = tutor.thursday_hours
-    # friday_hours = tutor.friday_hours
+    # if(monday_start == None and monday_end == None  and tuesday_start == None and tuesday_end == None and wednesday_start == None and wednesday_end == None and thursday_start == None and thursday_end == None and friday_start == None and friday_end == None):
+    #     messages.error(request, 'Please enter your availability')
+    # if (monday_start == None and monday_end != None):
+    #     messages.error(request, 'Please enter a start time for Monday')
+    # if (monday_start != None and monday_end == None):
+    #     messages.error(request, 'Please enter an end time for Monday')
+    # if (tuesday_start == None and tuesday_end != None):
+    #     messages.error(request, 'Please enter a start time for Tuesday')
+
+    # if (monday_start > monday_end):
+    #     messages.error(request, 'Monday start time cannot be after Monday end time')
+    # if (tuesday_start > tuesday_end):
+    #     messages.error(request, 'Tuesday start time cannot be after Tuesday end time')
+    # if (wednesday_start > wednesday_end):
+    #     messages.error(request, 'Wednesday start time cannot be after Wednesday end time')
+    # if (thursday_start > thursday_end):
+    #     messages.error(request, 'Thursday start time cannot be after Thursday end time')
+    # if (friday_start > friday_end):
+    #     messages.error(request, 'Friday start time cannot be after Friday end time')
+
     hourly_rate = tutor.hourly_rate
+    if len(hourly_rate) > 4:
+        messages.error(request, 'Hourly rate cannot be more than 4 digits')
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
@@ -133,18 +150,11 @@ def tutorsetting(request):  # the account settings page for tutors
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
-
-def studentsetting(request):  # the account settings page for students
-    user = request.user  # using this to access the profile of the user logged in
-    # profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)
-    # student info of the user logged in
-    student = get_object_or_404(Student, user=user)
-    # the form that allows them to update their student information
-    studentform = StudentForm
+def studentsetting(request): #the account settings page for students
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
 
     # the field information that is currently in the database for student and profile
-    classes = student.classes
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
@@ -173,19 +183,9 @@ def studentsetting(request):  # the account settings page for students
                     profile.major = major
                 if not profileform2.data['fun_fact']:
                     profile.fun_fact = fun_fact
-
                 profileform2.save()
-        if 'edit_student' in request.POST:  # if they're working with the STUDENT FORM
-            studentform = studentform(request.POST, instance=student)
-            if studentform.is_valid():
-                # this is here so we keep it as the stuff that is already in the database if it's not updated
-                if not studentform.data['classes']:
-                    student.classes = classes
-
-                student.save()
     context = {
         'form': ProfileForm2,
-        'form2': StudentForm,
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
@@ -210,8 +210,10 @@ def accountSettings(request):
             profile.save()
             if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
-            else:  # sends you to initially filling in your student settings
-                return redirect('accountSettings2s')
+            else: #sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="") #creates an instance of a student
+                stud.save() #saves that instance
+                return redirect('student')
         else:
             return redirect('accountSettings2s')
     form = ProfileForm()
@@ -338,6 +340,24 @@ def tutordetail(request):
 #                 tutuor_class_data.save()
 #
 #     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+def classes(request):
+    model = Classes
+    url = 'https://api.devhub.virginia.edu/v1/courses'
+    response = requests.get(url)
+    data = response.json()
+    courses = data["class_schedules"]["records"]
+    AllClasses = {}
+    for i in courses:
+        Classes.objects.create(subject=i[0], catalogNumber=i[1], classSection=i[2], classNumber=i[3], className=i[4],
+                               instructor=i[6]
+                               ).save()
+
+    AllClasses = Classes.objects.all().order_by('-classID')
+    # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
+
+    return render(request, 'mainApp/classes.html',
+                  {"AllClasses": AllClasses}
+                  )
 
 def StudentSearch(request):
     model = Classes
@@ -350,19 +370,6 @@ def StudentSearch(request):
     else:
         return render(request, 'mainApp/classList.html', {'info': data})
 
-
-# the student settings that a student sees when they first log in (right after initial account settings)
-def accountSettings2s(request):
-    if request.method == "POST":
-        # the student form that requires you to add everything
-        form = FirstStudentForm(request.POST)
-        if form.is_valid():
-            student = form.save(commit=False)
-            student.user = request.user  # connects the student to the user
-            student.save()
-            return redirect('student')  # send them to the student home page
-    form = FirstStudentForm()
-    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
@@ -394,6 +401,3 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
-    return render(request, 'mainApp/classes.html',
-                  {"AllClasses": AllClasses}
-                  )

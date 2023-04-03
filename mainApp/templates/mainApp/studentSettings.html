@@ -1,5 +1,5 @@
 <!--adapted from: https://bbbootstrap.com/snippets/bootstrap-edit-profile-accounts-setting-template-80240656-->
-{% extends "mainApp/base.html" %}
+{% extends "mainApp/studentBase.html" %}
 {% load static %}
 {% block body %}
 <html lang="en">
@@ -21,12 +21,5 @@
         </form>
     <div> </div>
     <div> </div>
-    <h4 class="pb-4 border-bottom" style="text-align:center; font-family:Avantgarde;">Student Settings </h4>
-        <form method="post" style="text-align:center; font-family:Avantgarde; border-radius:12px">
-            {% csrf_token %}
-            {{ form2.as_p }}
-            <button class="button is-success is-fullwidth is-medium mt-2"
-                    type="submit">Submit
-            </button>
-        </form>
+    <h4 class="pb-4 border-bottom" style="text-align:center; font-family:Avantgarde;"></h4>
 {% endblock body %}

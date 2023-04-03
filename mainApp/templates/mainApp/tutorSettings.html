@@ -1,5 +1,5 @@
 <!--adapted from: https://bbbootstrap.com/snippets/bootstrap-edit-profile-accounts-setting-template-80240656-->
-{% extends "mainApp/base.html" %}
+{% extends "mainApp/tutorBase.html" %}
 {% load static %}
 {% block body %}
 <html lang="en">
@@ -29,4 +29,11 @@
                     type="submit">Submit
             </button>
         </form>
+    {% if messages %}
+<ul class="messages" style="list-style: none;">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }} text-center"  {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endblock %}
