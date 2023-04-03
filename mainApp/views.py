@@ -73,8 +73,9 @@ def tutorsetting(request):  # the account settings page for tutors
     #     messages.error(request, 'Friday start time cannot be after Friday end time')
 
     hourly_rate = tutor.hourly_rate
-    if len(hourly_rate) > 4:
-        messages.error(request, 'Hourly rate cannot be more than 4 digits')
+    # if len(hourly_rate) > 5:
+    #     messages.error(request, 'Hourly rate cannot be more than 4 digits')
+
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
@@ -251,7 +252,7 @@ def searchClasses(request):
             classNumber = ''
             a = 0
             for c in data:
-                if (c["component"] == "LEC" and a == 0):
+                if (a == 0):
                     a += 1
                     name = c['descr']
                     classNumber = c['class_nbr']
@@ -288,9 +289,10 @@ def detail(request, classnumber):
     # ^^Trying to get all the tutor ids related to the selected class; This works
     # Trying to use those ids to obtain the tutor object to use other info like name, rate etc.; This doesn't work because after I get the object a, I can't access fields like first_name etc.
     for i in tutorInfo:
-        a = Tutor.objects.filter(Q(user__username__icontains=i.tutor))
-        # print(a.first_name)
-    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': a})
+        tutor = get_object_or_404(Profile, user=i.tutor)
+        #this works and gets you the tutor object ^
+        print(tutor.first_name+" "+tutor.last_name)
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutor})
 
 def tutordetail(request):
     return render(request,'mainApp/tutordetail.html')
