@@ -97,8 +97,29 @@ def tutorsetting(request):  # the account settings page for tutors
             if tutorform.is_valid():
                 tutorform.data['id'] = tutorID
                 tutorform.data['user_id'] = user_id
+
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
+                if tutorform.data['monday_start'] == '9:00 AM' and monday_start != '9:00 AM':
+                    tutorform.data['monday_start'] = monday_start
+                if tutorform.data['monday_end'] == '9:00 AM' and monday_end != '9:00 AM':
+                    tutorform.data['monday_end'] = monday_end
+                if tutorform.data['tuesday_start'] == '9:00 AM' and tuesday_start != '9:00 AM':
+                    tutorform.data['tuesday_start'] = tuesday_start
+                if tutorform.data['tuesday_end'] == '9:00 AM' and tuesday_end != '9:00 AM':
+                    tutorform.data['tuesday_end'] = tuesday_end
+                if tutorform.data['wednesday_start'] == '9:00 AM' and wednesday_start != '9:00 AM':
+                    tutorform.data['wednesday_start'] = wednesday_start
+                if tutorform.data['wednesday_end'] == '9:00 AM' and wednesday_end != '9:00 AM':
+                    tutorform.data['wednesday_end'] = wednesday_end
+                if tutorform.data['thursday_start'] == '9:00 AM' and thursday_start != '9:00 AM':
+                    tutorform.data['thursday_start'] = thursday_start
+                if tutorform.data['thursday_end'] == '9:00 AM' and thursday_end != '9:00 AM':
+                    tutorform.data['thursday_end'] = thursday_end
+                if tutorform.data['friday_start'] == '9:00 AM' and friday_start != '9:00 AM':
+                    tutorform.data['friday_start'] = friday_start
+                if tutorform.data['friday_end'] == '9:00 AM' and friday_end != '9:00 AM':
+                    tutorform.data['friday_end'] = friday_end
                 if not tutorform.data['monday_start']:
                     tutor.monday_start = monday_start
                 if not tutorform.data['monday_end']:
