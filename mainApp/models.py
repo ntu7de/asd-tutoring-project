@@ -59,23 +59,6 @@ class Tutor(models.Model):
         super().__init__(args, kwargs)
         self.errors = None
 
-    # def clean(self):
-    #     cleaned_data = super().clean()
-    #
-    #     # check if a new selection has been made
-    #     for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']:
-    #         start_field = f"{day}_start"
-    #         end_field = f"{day}_end"
-    #
-    #         if cleaned_data.get(start_field) == "Select Time":
-    #             cleaned_data[start_field] = None
-    #
-    #         if cleaned_data.get(end_field) == "Select Time":
-    #             cleaned_data[end_field] = None
-    #         if self.errors:
-    #             raise ValidationError("There are errors in the form")
-    #
-    #     return cleaned_data
 
 
 class Student(models.Model):
