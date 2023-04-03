@@ -73,8 +73,9 @@ def tutorsetting(request):  # the account settings page for tutors
     #     messages.error(request, 'Friday start time cannot be after Friday end time')
 
     hourly_rate = tutor.hourly_rate
-    if len(hourly_rate) > 4:
-        messages.error(request, 'Hourly rate cannot be more than 4 digits')
+    # if len(hourly_rate) > 5:
+    #     messages.error(request, 'Hourly rate cannot be more than 4 digits')
+
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
@@ -251,7 +252,7 @@ def searchClasses(request):
             classNumber = ''
             a = 0
             for c in data:
-                if (c["component"] == "LEC" and a == 0):
+                if (a == 0):
                     a += 1
                     name = c['descr']
                     classNumber = c['class_nbr']
