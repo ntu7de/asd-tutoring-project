@@ -1,6 +1,5 @@
 from django.test import TestCase, Client
 from mainApp.models import User, Profile, Tutor, Classes
-from django.shortcuts import get_object_or_404
 # Create your tests here.
 
 
@@ -67,12 +66,11 @@ class TutorTestCase(TestCase):
         self.assertEqual(profile.tutor_or_student, "tutor")
         self.assertEqual(profile.fun_fact, 'fact')
 
-
     def test_client_status_code(self):
         """
         test multiple client response status codes to make sure they are all 200 OK.
         """
-        self.client.force_login(self.user) # login
+        self.client.force_login(self.user)  # login
 
         login_response = self.client.get('/login/')
         self.assertEqual(login_response.status_code, 200)
@@ -94,6 +92,31 @@ class TutorTestCase(TestCase):
         student_response = self.client.get('/student/')
         self.assertEqual(student_response.status_code, 200)
 
+    def test_client_template(self):
+        """
+        test multiple client responses to make sure they use the correct template.
+        """
+        self.client.force_login(self.user)  # login
+
+        login_response = self.client.get('/login/')
+        self.assertTemplateUsed(login_response, 'mainApp/login.html')
+
+        # accountSettings isn't being used anymore - checking anyway
+        account_settings_response = self.client.get('/accountSettings/')
+        self.assertTemplateUsed(account_settings_response, 'mainApp/accountSettings.html')
+
+        tutor_response = self.client.get('/tutor/')
+        self.assertTemplateUsed(tutor_response, 'mainApp/tutor.html')
+
+        # tutorSettings doesn't work perfectly yet
+        # tutor_settings_response = self.client.get('/tutorsetting/')
+        # self.assertTemplateUsed(tutor_settings_response, 'mainApp/tutorSettings.html')
+
+        student_settings_response = self.client.get('/studentsetting/')
+        self.assertTemplateUsed(student_settings_response, 'mainApp/studentSettings.html')
+
+        student_response = self.client.get('/student/')
+        self.assertTemplateUsed(student_response, 'mainApp/student.html')
 
 
 # from https://docs.djangoproject.com/en/2.1/topics/testing/tools/
