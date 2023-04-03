@@ -237,7 +237,9 @@ def searchClasses(request):
                         classsection=c['class_section'],
                         classnumber=c['class_nbr'],
                         classname=c['descr'],
+                        body=c['subject']+c['catalog_nbr']+c['descr'],
                     )
+                    # print(class_data.body)
                 class_data.save()
 
             all_classes = Classes.objects.all()
@@ -259,12 +261,13 @@ def detail(request, classnumber):
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
-    # ^^Trying to get all the tutor ids related to the selected class; This works
-    # Trying to use those ids to obtain the tutor object to use other info like name, rate etc.; This doesn't work because after I get the object a, I can't access fields like first_name etc.
+    tutors0=[]
     for i in tutorInfo:
-        a = Tutor.objects.filter(Q(user__username__icontains=i.tutor))
-        # print(a.first_name)
-    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': a})
+        profile = get_object_or_404(Profile, user=i.tutor)
+        tutor = get_object_or_404(Tutor, user= i.tutor)
+        tutors0.append((profile,tutor))
+   
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 def tutordetail(request):
     return render(request,'mainApp/tutordetail.html')
@@ -340,7 +343,8 @@ def StudentSearch(request):
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
-        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
+        classes = Classes.objects.filter(
+            Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
@@ -377,3 +381,8 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
+
+def accountDisplay(request):
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
