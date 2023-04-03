@@ -288,11 +288,18 @@ def detail(request, classnumber):
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
     # ^^Trying to get all the tutor ids related to the selected class; This works
     # Trying to use those ids to obtain the tutor object to use other info like name, rate etc.; This doesn't work because after I get the object a, I can't access fields like first_name etc.
+    tutors0=[]
     for i in tutorInfo:
-        tutor = get_object_or_404(Profile, user=i.tutor)
-        #this works and gets you the tutor object ^
-        print(tutor.first_name+" "+tutor.last_name)
-    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutor})
+        profile = get_object_or_404(Profile, user=i.tutor)
+        tutor = get_object_or_404(Tutor, user= i.tutor)
+        # tutors0.append([tutor,profile])
+        tutors0.append(tutor)
+        # print(tutor.hourly_rate)
+    # print(tutors0)
+    # for i in tutors0:
+    #     print(i)
+    #     print(i[0].hourly_rate)
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 def tutordetail(request):
     return render(request,'mainApp/tutordetail.html')

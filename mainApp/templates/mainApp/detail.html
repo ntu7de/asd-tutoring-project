@@ -36,7 +36,7 @@
     {% endif %}
     <br>
 
-    {% if tutorinfo %}
+    {% if tutors %}
     <table class="table">
       <thead>
         <tr>
@@ -48,12 +48,23 @@
       </thead>
       {% for tutor in tutors %}
       <tbody>
-       <a href="classList/tutordetail"><tr>
-          <th scope="row">Mark</th>
-          <td>Floryan</td>
-          <td>12</td>
-          <td>9-5</td>
-        </tr></a> 
+        <a href="classList/tutordetail">
+          <tr>
+            <td scope="row">{{tutor.first_name}}</td>
+            <td>{{tutor.last_name}}</td>
+            <td>{{tutor.hourly_rate}}</td>
+            <td>Mon: {{tutor.monday_start}} - {{tutor.monday_end}}
+              <br>
+              Tue: {{tutor.tuesday_start}} - {{tutor.tuesday_end}}
+              <br>
+              Wed: {{tutor.wednesday_start}} - {{tutor.wednesday_end}}
+              <br>
+              Thur: {{tutor.wednesday_start}} - {{tutor.wednesday_end}}
+              <br>
+              Fri: {{tutor.wednesday_start}} - {{tutor.wednesday_end}}
+            </td>
+          </tr>
+        </a>
       </tbody>
       {% endfor %}
     </table>
