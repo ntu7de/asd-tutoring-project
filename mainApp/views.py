@@ -261,7 +261,9 @@ def searchClasses(request):
                         classsection=c['class_section'],
                         classnumber=c['class_nbr'],
                         classname=c['descr'],
+                        # body=c['subject']+c['catalog_nbr']+c['descr'],
                     )
+                    # print(class_data.body)
                 class_data.save()
 
             all_classes = Classes.objects.all()
@@ -348,6 +350,7 @@ def classes(request):
     courses = data["class_schedules"]["records"]
     AllClasses = {}
     for i in courses:
+        print(i[0]+i[1]+i[4])
         Classes.objects.create(subject=i[0], catalogNumber=i[1], classSection=i[2], classNumber=i[3], className=i[4],
                                instructor=i[6]
                                ).save()
@@ -364,7 +367,9 @@ def StudentSearch(request):
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
-        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
+        classes = Classes.objects.filter(
+            # Q(body__icontains=q)
+            Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
