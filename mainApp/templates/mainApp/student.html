@@ -19,7 +19,29 @@
 
         <!-- Thumbnails -->
 
-
+        {% if info %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Course Mnemonic</th>
+          <th scope="col">Course Name</th>
+<!--          <th scope="col">Tutor</th>-->
+        </tr>
+      </thead>
+      {% for class in info %}
+      <tbody>
+<!--        <a href="classList/tutordetail">-->
+          <tr>
+            <td scope="row">{{class.subject}} {{class.catalognumber}}</td>
+            <td>{{class.classname}}</td>
+<!--        </a>-->
+          </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  {% else %}
+  <p>No Classes Selected</p>
+  {% endif %}
 <!--        <div class="album py-5 bg-light">-->
 <!--            <div class="container">-->
 <!--                &lt;!&ndash; iterate through classes &ndash;&gt;-->
