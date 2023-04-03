@@ -69,16 +69,21 @@ def tutorsetting(request):  # the account settings page for tutors
         if 'edit_profile' in request.POST:  # if they're workin with the PROFILE FORM
             profileform2 = ProfileForm2(request.POST, instance=profile)
             if profileform2.is_valid():
+                profileform2.data.mutable = True
+                if profileform2.data['pronouns'] == "She/Her" and pronouns != "She/Her":
+                    profileform2.data['pronouns'] = pronouns
+                if profileform2.data['year'] == "First" and year != "First":
+                    profileform2.data['year'] = year
                 if not profileform2.data['first_name']:
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
-                    profile.year = year
+                # if not profileform2.data['year']:
+                #     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
-                    profile.pronouns = pronouns
+                # if not profileform2.data['pronouns']:
+                #     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
                 if not profileform2.data['fun_fact']:
