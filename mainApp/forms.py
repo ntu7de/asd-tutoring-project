@@ -16,7 +16,6 @@ Years =(
     ("Fourth", "Fourth"), ("Grad", "Grad")
 ) #choices for the year choice field
 TimeSelections = (
-    ("Select Time", "Select Time"),
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
     ("10:00 AM", "10:00 AM"),

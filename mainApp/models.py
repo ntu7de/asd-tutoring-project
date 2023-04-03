@@ -44,6 +44,7 @@ class Profile(models.Model):
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+
     monday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
     monday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
     tuesday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
@@ -59,6 +60,28 @@ class Tutor(models.Model):
         super().__init__(args, kwargs)
         self.errors = None
 
+
+
+
+    #     super().clean()
+    #
+    #     # Check if end time is later than start time for each day
+    #     if self.monday_start >= self.monday_end:
+    #         raise ValidationError("Monday end time must be later than start time.")
+    #     if self.tuesday_start >= self.tuesday_end:
+    #         raise ValidationError("Tuesday end time must be later than start time.")
+    #     if self.wednesday_start >= self.wednesday_end:
+    #         raise ValidationError("Wednesday end time must be later than start time.")
+    #     if self.thursday_start >= self.thursday_end:
+    #         raise ValidationError("Thursday end time must be later than start time.")
+    #     if self.friday_start >= self.friday_end:
+    #         raise ValidationError("Friday end time must be later than start time.")
+    # # monday_hours = models.CharField(max_length=200)
+    # tuesday_hours = models.CharField(max_length=200)
+    # wednesday_hours = models.CharField(max_length=200)
+    # thursday_hours = models.CharField(max_length=200)
+    # friday_hours = models.CharField(max_length=200)
+    # classes = models.CharField(max_length=200)
 
 
 class Student(models.Model):
