@@ -293,12 +293,12 @@ def detail(request, classnumber):
         profile = get_object_or_404(Profile, user=i.tutor)
         tutor = get_object_or_404(Tutor, user= i.tutor)
         # tutors0.append([tutor,profile])
-        tutors0.append(tutor)
+        tutors0.append((profile,tutor))
         # print(tutor.hourly_rate)
     # print(tutors0)
-    # for i in tutors0:
-    #     print(i)
-    #     print(i[0].hourly_rate)
+    for i in tutors0:
+        print(i)
+        print(i[1].hourly_rate)
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 def tutordetail(request):
