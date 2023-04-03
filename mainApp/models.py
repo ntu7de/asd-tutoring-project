@@ -103,7 +103,7 @@ class Classes(models.Model):
     classnumber = models.CharField(max_length=100, default='', primary_key= True, unique= True)
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
-    # body = models.TextField(default='')
+    body = models.TextField(default='')
     def __str__(self):
         return self.classname
 
