@@ -73,8 +73,9 @@ def tutorsetting(request):  # the account settings page for tutors
     #     messages.error(request, 'Friday start time cannot be after Friday end time')
 
     hourly_rate = tutor.hourly_rate
-    if len(hourly_rate) > 4:
-        messages.error(request, 'Hourly rate cannot be more than 4 digits')
+    # if len(hourly_rate) > 5:
+    #     messages.error(request, 'Hourly rate cannot be more than 4 digits')
+
     first_name = profile.first_name
     last_name = profile.last_name
     year = profile.year
