@@ -258,11 +258,8 @@ def searchClasses(request):
                         classsection=c['class_section'],
                         classnumber=c['class_nbr'],
                         classname=c['descr'],
-<<<<<<< HEAD
-                        # body=c['subject']+c['catalog_nbr']+c['descr'],
-=======
                         body=c['subject']+c['catalog_nbr']+c['descr'],
->>>>>>> main
+
                     )
                     # print(class_data.body)
                 class_data.save()

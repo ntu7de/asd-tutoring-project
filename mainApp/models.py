@@ -96,12 +96,8 @@ class Classes(models.Model):
     classnumber = models.CharField(max_length=100, default='', primary_key= True, unique= True)
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
-<<<<<<< HEAD
-    # body = models.TextField(default='')
-
-=======
     body = models.TextField(default='')
->>>>>>> main
+
     def __str__(self):
         return self.classname
 
