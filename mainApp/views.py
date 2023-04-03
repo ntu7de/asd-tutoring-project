@@ -296,9 +296,9 @@ def detail(request, classnumber):
         tutors0.append((profile,tutor))
         # print(tutor.hourly_rate)
     # print(tutors0)
-    for i in tutors0:
-        print(i)
-        print(i[1].hourly_rate)
+    # for i in tutors0:
+    #     print(i)
+    #     print(i[1].hourly_rate)
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 def tutordetail(request):
