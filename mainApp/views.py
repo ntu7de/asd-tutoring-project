@@ -192,7 +192,9 @@ def tutor(request):  # tutor home page
 
 
 def student(request):  # student home page
-    return render(request, 'mainApp/student.html')
+    # model = Classes
+    data = Classes.objects.all()
+    return render(request, 'mainApp/student.html', {'info': data})
 
 
 @login_required
