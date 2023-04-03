@@ -66,6 +66,13 @@ class TutorTestCase(TestCase):
         self.assertEqual(profile.tutor_or_student, "tutor")
         self.assertEqual(profile.fun_fact, 'fact')
 
+    def test_tutor_time_change(self):
+        # once we get a tutor time info page this will be more helpful
+        tutor = self.user.tutor
+        tutor.hourly_rate = 12  # change tutor's hourly rate
+
+        self.assertEqual(self.user.tutor.hourly_rate, 12)
+
     def test_client_status_code(self):
         """
         test multiple client response status codes to make sure they are all 200 OK.
