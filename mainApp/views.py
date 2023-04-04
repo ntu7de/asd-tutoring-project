@@ -1,5 +1,8 @@
 import requests
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template import loader
+from django.utils.safestring import mark_safe
 from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -110,16 +113,7 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if not tutorform.data['friday_end']:
                     tutor.friday_end = friday_end
-                # if not tutorform.data['monday_hours']:
-                #     tutor.monday_hours = monday_hours
-                # if not tutorform.data['tuesday_hours']:
-                #     tutor.tuesday_hours = tuesday_hours
-                # if not tutorform.data['wednesday_hours']:
-                #     tutor.wednesday_hours = wednesday_hours
-                # if not tutorform.data['thursday_hours']:
-                #     tutor.thursday_hours = thursday_hours
-                # if not tutorform.data['friday_hours']:
-                #     tutor.friday_hours = friday_hours
+
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -196,7 +190,15 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+def classesdetail(request, classnumber):
+    # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    currentClass = Classes.objects.get(classnumber = classnumber)
+    template = loader.get_template('mainApp/classesdetail.html')
+    context = {
+        'Classes' : currentClass,
+    }
 
+    return HttpResponse(template.render(context, request))
 
 def searchClasses(request):
     all_classes = {}
@@ -235,10 +237,9 @@ def searchClasses(request):
                             classes_id=classNumber,
                             tutor_id=request.user.id,
                         )
-
+                        classNumber = str(classNumber)
                         tutuor_class_data.save()
-                        messages.add_message(request, messages.INFO,
-                                             subject + catalog_nbr + ": " + name )
+                        messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -286,9 +287,10 @@ def searchClasses(request):
                                         classes_id=classNumber,
                                         tutor_id=request.user.id,
                                     )
+                                    classNumber = str(classNumber)
                                     tutuor_class_data.save()
-                                    messages.add_message(request, messages.INFO,
-                                                         subject + catalog_nbr + ": " + name)
+                                    messages.add_message(request, messages.INFO, mark_safe(
+                                        '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -329,9 +331,10 @@ def searchClasses(request):
                                 classes_id=classNumber,
                                 tutor_id=request.user.id,
                             )
+                            classNumber = str(classNumber)
                             tutuor_class_data.save()
-                            messages.add_message(request, messages.INFO,
-                                                 subject + catalog_nbr + ": " + name)
+                            messages.add_message(request, messages.INFO, mark_safe(
+                                '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
