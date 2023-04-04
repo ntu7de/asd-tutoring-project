@@ -215,28 +215,33 @@ def searchClasses(request):
             response = requests.get(url)
             data = response.json()
             # messages.add_message(request, messages.INFO,url)
+            currentClasses = []
             if len(data) > 1:
                 for c in data:
                     name = c['descr']
-                    classNumber = c['class_nbr']
-                    class_data = Classes(
-                        subject=c['subject'],
-                        catalognumber=c['catalog_nbr'],
-                        classsection=c['class_section'],
-                        classnumber=c['class_nbr'],
-                        classname=c['descr'],
+                    if name in currentClasses:
+                        i = 1
+                    else:
+                        currentClasses.append(name)
+                        classNumber = c['class_nbr']
+                        class_data = Classes(
+                            subject=c['subject'],
+                            catalognumber=c['catalog_nbr'],
+                            classsection=c['class_section'],
+                            classnumber=c['class_nbr'],
+                            classname=c['descr'],
 
-                        body=c['subject']+' ' +c['catalog_nbr']+' '+c['descr'],
+                            body=c['subject']+' ' +c['catalog_nbr']+' '+c['descr'],
 
-                    )
-                    class_data.save()
-                    tutuor_class_data = tutorClasses(
-                        classes_id=classNumber,
-                        tutor_id=request.user.id,
-                    )
-                    tutuor_class_data.save()
-                    messages.add_message(request, messages.INFO,
-                                         name + ' added successfully')
+                        )
+                        class_data.save()
+                        tutuor_class_data = tutorClasses(
+                            classes_id=classNumber,
+                            tutor_id=request.user.id,
+                        )
+                        tutuor_class_data.save()
+                        messages.add_message(request, messages.INFO,
+                                             name + ' added successfully')
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -259,24 +264,32 @@ def searchClasses(request):
                         response = requests.get(url)
                         data = response.json()
                         if len(data) == 1:
-                            name = data[0]['descr']
-                            classNumber = data[0]['class_nbr']
-                            class_data = Classes(
-                                subject=data[0]['subject'],
-                                catalognumber=data[0]['catalog_nbr'],
-                                classsection=data[0]['class_section'],
-                                classnumber=data[0]['class_nbr'],
-                                classname=data[0]['descr'],
-                                body=data[0]['subject']+data[0]['catalog_nbr']+data[0]['descr'],
-                            )
-                            class_data.save()
-                            tutuor_class_data = tutorClasses(
-                                classes_id=classNumber,
-                                tutor_id=request.user.id,
-                            )
-                            tutuor_class_data.save()
-                            messages.add_message(request, messages.INFO,
-                                                 name + ' added successfully')
+                            currentClasses = []
+                            for c in data:
+                                name = c['descr']
+                                if name in currentClasses:
+                                    i = 1
+                                else:
+                                    currentClasses.append(name)
+                                    classNumber = c['class_nbr']
+                                    class_data = Classes(
+                                        subject=c['subject'],
+                                        catalognumber=c['catalog_nbr'],
+                                        classsection=c['class_section'],
+                                        classnumber=c['class_nbr'],
+                                        classname=c['descr'],
+
+                                        body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+
+                                    )
+                                    class_data.save()
+                                    tutuor_class_data = tutorClasses(
+                                        classes_id=classNumber,
+                                        tutor_id=request.user.id,
+                                    )
+                                    tutuor_class_data.save()
+                                    messages.add_message(request, messages.INFO,
+                                                         name + ' added successfully')
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -292,25 +305,32 @@ def searchClasses(request):
                     response = requests.get(url)
                     data = response.json()
                 if len(data) > 1:
+                    currentClasses = []
                     for c in data:
                         name = c['descr']
-                        classNumber = c['class_nbr']
-                        class_data = Classes(
-                        subject=c['subject'],
-                        catalognumber=c['catalog_nbr'],
-                        classsection=c['class_section'],
-                        classnumber=c['class_nbr'],
-                        classname=c['descr'],
-                        body=c['subject']+c['catalog_nbr']+c['descr'],
-                    )
-                        class_data.save()
-                        tutuor_class_data = tutorClasses(
-                        classes_id=classNumber,
-                        tutor_id=request.user.id,
-                    )
-                        tutuor_class_data.save()
-                        messages.add_message(request, messages.INFO,
-                                         name + ' added successfully')
+                        if name in currentClasses:
+                            i = 1
+                        else:
+                            currentClasses.append(name)
+                            classNumber = c['class_nbr']
+                            class_data = Classes(
+                                subject=c['subject'],
+                                catalognumber=c['catalog_nbr'],
+                                classsection=c['class_section'],
+                                classnumber=c['class_nbr'],
+                                classname=c['descr'],
+
+                                body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+
+                            )
+                            class_data.save()
+                            tutuor_class_data = tutorClasses(
+                                classes_id=classNumber,
+                                tutor_id=request.user.id,
+                            )
+                            tutuor_class_data.save()
+                            messages.add_message(request, messages.INFO,
+                                                 name + ' added successfully')
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
