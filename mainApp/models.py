@@ -49,6 +49,7 @@ class Request(models.Model):
     approved = models.BooleanField
     date = models.CharField(max_length=100)
 
+
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
