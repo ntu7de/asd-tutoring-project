@@ -20,4 +20,5 @@ urlpatterns = [
     path('classList/<int:classnumber>/', views.detail, name='detail'),
     path('classList/tutordetail',views.tutordetail,name='tutordetail'),
     path('accountDisplay/', views.accountDisplay, name='accountDisplay'),
+    path('accountDisplayStudent/', views.accountDisplayStudent, name='accountDisplay'),
 ]
