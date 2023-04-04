@@ -174,7 +174,8 @@ def tutor(request):  # tutor home page
 
 
 def student(request):  # student home page
-    return render(request, 'mainApp/student.html')
+    data = Classes.objects.all()
+    return render(request, 'mainApp/student.html', {'info': data})
 
 
 @login_required
@@ -201,7 +202,6 @@ def accountSettings(request):
 
 def searchClasses(request):
     all_classes = {}
-
     if 'name' in request.GET:
         input_value = request.GET['name']
         # data = ''
@@ -220,6 +220,8 @@ def searchClasses(request):
                     else:
                         currentClasses.append(name)
                         classNumber = c['class_nbr']
+                        catalog_nbr = c['catalog_nbr']
+                        subject = c['subject']
                         class_data = Classes(
                             subject=c['subject'],
                             catalognumber=c['catalog_nbr'],
@@ -235,9 +237,10 @@ def searchClasses(request):
                             classes_id=classNumber,
                             tutor_id=request.user.id,
                         )
+
                         tutuor_class_data.save()
                         messages.add_message(request, messages.INFO,
-                                             name)
+                                             subject + catalog_nbr + ": " + name)
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -267,6 +270,8 @@ def searchClasses(request):
                                     i = 1
                                 else:
                                     currentClasses.append(name)
+                                    catalog_nbr = c['catalog_nbr']
+                                    subject = c['subject']
                                     classNumber = c['class_nbr']
                                     class_data = Classes(
                                         subject=c['subject'],
@@ -285,7 +290,7 @@ def searchClasses(request):
                                     )
                                     tutuor_class_data.save()
                                     messages.add_message(request, messages.INFO,
-                                                         name)
+                                                         subject + catalog_nbr + ": " + name)
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -309,6 +314,8 @@ def searchClasses(request):
                         else:
                             currentClasses.append(name)
                             classNumber = c['class_nbr']
+                            catalog_nbr = c['catalog_nbr']
+                            subject = c['subject']
                             class_data = Classes(
                                 subject=c['subject'],
                                 catalognumber=c['catalog_nbr'],
@@ -326,7 +333,7 @@ def searchClasses(request):
                             )
                             tutuor_class_data.save()
                             messages.add_message(request, messages.INFO,
-                                                 name)
+                                                 subject + catalog_nbr + ": " + name)
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -351,53 +358,6 @@ def tutordetail(request):
     return render(request, 'mainApp/tutordetail.html')
 
 
-# def searchClasses(request):
-#     all_classes = {}
-#     url = ' '
-#     if 'name' in request.GET:
-#         input1 = request.GET['name']
-#         input_length = len(input1)
-#         # if input_length == 0:
-#         #     messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         if input_length == 1:
-#             classnnbr = request.GET['name'].split(' ')[0].upper()
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + classnnbr
-#         elif input_length == 2:
-#             subject = request.GET['name'].split(' ')[0].upper()
-#             courseNumber = request.GET['name'].split(' ')[1]
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject  + '&catalog_nbr=' + courseNumber
-#         elif input_length > 2:
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
-#         else:
-#             messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         response = requests.get(url)
-#         data = response.json()
-#         for c in data:
-#                 name = c['descr']
-#                 classNumber = c['class_nbr']
-#                 class_data = Classes(
-#                     # user=request.user,
-#                     subject=c['subject'],
-#                     catalognumber=c['catalog_nbr'],
-#                     classsection=c['class_section'],
-#                     classnumber=c['class_nbr'],
-#                     classname=c['descr'],
-#                 )
-#                 class_data.save()
-#                 all_classes = Classes.objects.all()
-#         if len(data) == 0:
-#                 messages.error(request, 'No classes found')
-#
-#         else:
-#                 # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-#                 messages.success(request, 'Class ' + name + ' added successfully')
-#                 tutuor_class_data = tutorClasses(
-#                 classes_id=classNumber,
-#                 tutor_id=request.user.id,
-#                 )
-#                 tutuor_class_data.save()
-#
-#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
