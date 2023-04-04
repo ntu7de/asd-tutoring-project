@@ -38,10 +38,8 @@ def home(request):
 
 def tutorsetting(request):  # the account settings page for tutors
     user = request.user  # using this to access the profile of the user logged in
-    # profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)
-    # tutor info of the user logged in
-    tutor = get_object_or_404(Tutor, user=user)
+    profile = get_object_or_404(Profile, user=user) # profile of the user logged in
+    tutor = get_object_or_404(Tutor, user=user) # tutor info of the user logged in
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
@@ -93,9 +91,6 @@ def tutorsetting(request):  # the account settings page for tutors
             user_id = request.user
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-                tutorform.data['id'] = tutorID
-                tutorform.data['user_id'] = user_id
-
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
                 if not tutorform.data['monday_start']:
@@ -430,3 +425,8 @@ def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+
+def accountDisplayStudent(request): #the user version of account display
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
