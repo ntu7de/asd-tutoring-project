@@ -47,6 +47,8 @@ class Request(models.Model):
     startTime = models.CharField(max_length=100, null=True, blank=True)
     endTime = models.CharField(max_length=100, null=True, blank=True)
     approved = models.BooleanField
+    date = models.CharField(max_length=100)
+
 
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
