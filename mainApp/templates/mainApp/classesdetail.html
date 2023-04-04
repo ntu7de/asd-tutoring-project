@@ -4,12 +4,13 @@
 
 
 <body>
-
+<!--<form method="GET">-->
+    <form method="POST"  >
+        {% csrf_token %}
 <h1>{{ Classes.subject }} {{ Classes.catalognumber}} {{Classes.classname}}</h1>
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add Class</button>
-<!--<p>Phone: {{ mymember.phone }}</p>-->
-<!--<p>Member since: {{ mymember.joined_date }}</p>-->
 
+</form>
 <p>Back to <a href="/classes">Search</a></p>
 
 </body>
