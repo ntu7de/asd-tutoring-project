@@ -1,5 +1,8 @@
 import requests
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template import loader
+from django.utils.safestring import mark_safe
 from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -35,10 +38,8 @@ def home(request):
 
 def tutorsetting(request):  # the account settings page for tutors
     user = request.user  # using this to access the profile of the user logged in
-    # profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)
-    # tutor info of the user logged in
-    tutor = get_object_or_404(Tutor, user=user)
+    profile = get_object_or_404(Profile, user=user) # profile of the user logged in
+    tutor = get_object_or_404(Tutor, user=user) # tutor info of the user logged in
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
@@ -90,9 +91,6 @@ def tutorsetting(request):  # the account settings page for tutors
             user_id = request.user
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-                tutorform.data['id'] = tutorID
-                tutorform.data['user_id'] = user_id
-
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
                 if not tutorform.data['monday_start']:
@@ -115,16 +113,7 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if not tutorform.data['friday_end']:
                     tutor.friday_end = friday_end
-                # if not tutorform.data['monday_hours']:
-                #     tutor.monday_hours = monday_hours
-                # if not tutorform.data['tuesday_hours']:
-                #     tutor.tuesday_hours = tuesday_hours
-                # if not tutorform.data['wednesday_hours']:
-                #     tutor.wednesday_hours = wednesday_hours
-                # if not tutorform.data['thursday_hours']:
-                #     tutor.thursday_hours = thursday_hours
-                # if not tutorform.data['friday_hours']:
-                #     tutor.friday_hours = friday_hours
+
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -201,11 +190,18 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+def classesdetail(request, classnumber):
+    # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    currentClass = Classes.objects.get(classnumber = classnumber)
+    template = loader.get_template('mainApp/classesdetail.html')
+    context = {
+        'Classes' : currentClass,
+    }
 
+    return HttpResponse(template.render(context, request))
 
 def searchClasses(request):
     all_classes = {}
-
     if 'name' in request.GET:
         input_value = request.GET['name']
         # data = ''
@@ -215,27 +211,35 @@ def searchClasses(request):
             response = requests.get(url)
             data = response.json()
             # messages.add_message(request, messages.INFO,url)
+            currentClasses = []
             if len(data) > 1:
                 for c in data:
                     name = c['descr']
-                    classNumber = c['class_nbr']
-                    class_data = Classes(
-                        subject=c['subject'],
-                        catalognumber=c['catalog_nbr'],
-                        classsection=c['class_section'],
-                        classnumber=c['class_nbr'],
-                        classname=c['descr'],
-                        body=c['subject']+c['catalog_nbr']+c['descr'],
-                    )
-                    # print(class_data.body)                    
-                    class_data.save()
-                    tutuor_class_data = tutorClasses(
-                        classes_id=classNumber,
-                        tutor_id=request.user.id,
-                    )
-                    tutuor_class_data.save()
-                    messages.add_message(request, messages.INFO,
-                                         name + ' added successfully')
+                    if name in currentClasses:
+                        i = 1
+                    else:
+                        currentClasses.append(name)
+                        classNumber = c['class_nbr']
+                        catalog_nbr = c['catalog_nbr']
+                        subject = c['subject']
+                        class_data = Classes(
+                            subject=c['subject'],
+                            catalognumber=c['catalog_nbr'],
+                            classsection=c['class_section'],
+                            classnumber=c['class_nbr'],
+                            classname=c['descr'],
+
+                            body=c['subject']+c['catalog_nbr']+c['descr'],
+
+                        )
+                        class_data.save()
+                        tutuor_class_data = tutorClasses(
+                            classes_id=classNumber,
+                            tutor_id=request.user.id,
+                        )
+                        classNumber = str(classNumber)
+                        tutuor_class_data.save()
+                        messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -258,24 +262,35 @@ def searchClasses(request):
                         response = requests.get(url)
                         data = response.json()
                         if len(data) == 1:
-                            name = data[0]['descr']
-                            classNumber = data[0]['class_nbr']
-                            class_data = Classes(
-                                subject=data[0]['subject'],
-                                catalognumber=data[0]['catalog_nbr'],
-                                classsection=data[0]['class_section'],
-                                classnumber=data[0]['class_nbr'],
-                                classname=data[0]['descr'],
-                                body=data[0]['subject']+data[0]['catalog_nbr']+data[0]['descr'],
-                            )
-                            class_data.save()
-                            tutuor_class_data = tutorClasses(
-                                classes_id=classNumber,
-                                tutor_id=request.user.id,
-                            )
-                            tutuor_class_data.save()
-                            messages.add_message(request, messages.INFO,
-                                                 name + ' added successfully')
+                            currentClasses = []
+                            for c in data:
+                                name = c['descr']
+                                if name in currentClasses:
+                                    i = 1
+                                else:
+                                    currentClasses.append(name)
+                                    catalog_nbr = c['catalog_nbr']
+                                    subject = c['subject']
+                                    classNumber = c['class_nbr']
+                                    class_data = Classes(
+                                        subject=c['subject'],
+                                        catalognumber=c['catalog_nbr'],
+                                        classsection=c['class_section'],
+                                        classnumber=c['class_nbr'],
+                                        classname=c['descr'],
+
+                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
+
+                                    )
+                                    class_data.save()
+                                    tutuor_class_data = tutorClasses(
+                                        classes_id=classNumber,
+                                        tutor_id=request.user.id,
+                                    )
+                                    classNumber = str(classNumber)
+                                    tutuor_class_data.save()
+                                    messages.add_message(request, messages.INFO, mark_safe(
+                                        '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -291,25 +306,35 @@ def searchClasses(request):
                     response = requests.get(url)
                     data = response.json()
                 if len(data) > 1:
+                    currentClasses = []
                     for c in data:
                         name = c['descr']
-                        classNumber = c['class_nbr']
-                        class_data = Classes(
-                        subject=c['subject'],
-                        catalognumber=c['catalog_nbr'],
-                        classsection=c['class_section'],
-                        classnumber=c['class_nbr'],
-                        classname=c['descr'],
-                        body=c['subject']+c['catalog_nbr']+c['descr'],
-                    )
-                        class_data.save()
-                        tutuor_class_data = tutorClasses(
-                        classes_id=classNumber,
-                        tutor_id=request.user.id,
-                    )
-                        tutuor_class_data.save()
-                        messages.add_message(request, messages.INFO,
-                                         name + ' added successfully')
+                        if name in currentClasses:
+                            i = 1
+                        else:
+                            currentClasses.append(name)
+                            classNumber = c['class_nbr']
+                            catalog_nbr = c['catalog_nbr']
+                            subject = c['subject']
+                            class_data = Classes(
+                                subject=c['subject'],
+                                catalognumber=c['catalog_nbr'],
+                                classsection=c['class_section'],
+                                classnumber=c['class_nbr'],
+                                classname=c['descr'],
+
+                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
+
+                            )
+                            class_data.save()
+                            tutuor_class_data = tutorClasses(
+                                classes_id=classNumber,
+                                tutor_id=request.user.id,
+                            )
+                            classNumber = str(classNumber)
+                            tutuor_class_data.save()
+                            messages.add_message(request, messages.INFO, mark_safe(
+                                '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -331,53 +356,8 @@ def detail(request, classnumber):
 def tutordetail(request):
     return render(request,'mainApp/tutordetail.html')
 
-# def searchClasses(request):
-#     all_classes = {}
-#     url = ' '
-#     if 'name' in request.GET:
-#         input1 = request.GET['name']
-#         input_length = len(input1)
-#         # if input_length == 0:
-#         #     messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         if input_length == 1:
-#             classnnbr = request.GET['name'].split(' ')[0].upper()
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + classnnbr
-#         elif input_length == 2:
-#             subject = request.GET['name'].split(' ')[0].upper()
-#             courseNumber = request.GET['name'].split(' ')[1]
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject  + '&catalog_nbr=' + courseNumber
-#         elif input_length > 2:
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
-#         else:
-#             messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         response = requests.get(url)
-#         data = response.json()
-#         for c in data:
-#                 name = c['descr']
-#                 classNumber = c['class_nbr']
-#                 class_data = Classes(
-#                     # user=request.user,
-#                     subject=c['subject'],
-#                     catalognumber=c['catalog_nbr'],
-#                     classsection=c['class_section'],
-#                     classnumber=c['class_nbr'],
-#                     classname=c['descr'],
-#                 )
-#                 class_data.save()
-#                 all_classes = Classes.objects.all()
-#         if len(data) == 0:
-#                 messages.error(request, 'No classes found')
-#
-#         else:
-#                 # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-#                 messages.success(request, 'Class ' + name + ' added successfully')
-#                 tutuor_class_data = tutorClasses(
-#                 classes_id=classNumber,
-#                 tutor_id=request.user.id,
-#                 )
-#                 tutuor_class_data.save()
-#
-#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+
+
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -448,3 +428,8 @@ def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+
+def accountDisplayStudent(request): #the user version of account display
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
