@@ -198,40 +198,102 @@ def accountSettings(request):
 
 def searchClasses(request):
     all_classes = {}
-    courseNumber = ''
+
     if 'name' in request.GET:
-        input = request.GET['name'].split(' ')
-        inputLength = len(input)
-
-        subject = request.GET['name'].split(' ')[0].upper()
-        if inputLength < 0:
-            # try:
-            courseNumber = request.GET['name'].split(' ')[1]
-            # except IndexError:
-            #     # messages.add_message(request, messages.WARNING, 'Incorrect Form')
-            #     pass
-        else:
-            # url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01'
+        input_value = request.GET['name']
+        # data = ''
+        if input_value.isdigit():
             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
-
-            if inputLength == 1:
-                url += '&class_nbr=' + subject
-            if inputLength == 2:
-                courseNumber = request.GET['name'].split(' ')[1]
-                url += '&subject=' + subject + '&catalog_nbr=' + courseNumber
-            if inputLength == 3:
-                url += '&keyword=' + request.GET['name']
+            url += '&catalog_nbr=' + input_value
             response = requests.get(url)
             data = response.json()
-            name = ''
-            classNumber = ''
-            a = 0
-            for c in data:
-                if (a == 0):
-                    a += 1
+            workingClasses = []
+            # messages.add_message(request, messages.INFO,url)
+            if len(data) > 1:
+                # workingClasses = []
+                for c in data:
                     name = c['descr']
-                    classNumber = c['class_nbr']
-                    class_data = Classes(
+                    if name in workingClasses:
+                        # messages.add_message(request,messages.INFO, name + 'name')
+                        i =1
+                    else:
+                        workingClasses.append(name)
+                        classNumber = c['class_nbr']
+                        class_data = Classes(
+                            subject=c['subject'],
+                            catalognumber=c['catalog_nbr'],
+                            classsection=c['class_section'],
+                            classnumber=c['class_nbr'],
+                            classname=c['descr'],
+                            body=c['subject']+' ' +c['catalog_nbr']+' '+c['descr'],
+                        )
+                        class_data.save()
+                        tutor_class_data = tutorClasses(
+                            classes_id=classNumber,
+                            tutor_id=request.user.id,
+                        )
+                        tutor_class_data.save()
+                        messages.add_message(request, messages.INFO,
+                                             name + ' added successfully')
+            all_classes = Classes.objects.all()
+            if len(data) == 0:
+                messages.add_message(
+                    request, messages.WARNING, 'No classes found')
+        else:
+            input = input_value.split(' ')
+            inputLength = len(input)
+            first = input[0].upper()
+            if inputLength < 0:
+                courseNumber = input[1]
+            else:
+                url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
+                if inputLength == 1:
+                    url += '&subject=' + first
+                    try:
+                        response = requests.get(url)
+                        data = response.json()
+                    except requests.exceptions.RequestException:
+                        url += '&catalog_nbr=' + first
+                        response = requests.get(url)
+                        data = response.json()
+                        if len(data) == 1:
+                            name = data[0]['descr']
+                            classNumber = data[0]['class_nbr']
+                            class_data = Classes(
+                                subject=data[0]['subject'],
+                                catalognumber=data[0]['catalog_nbr'],
+                                classsection=data[0]['class_section'],
+                                classnumber=data[0]['class_nbr'],
+                                classname=data[0]['descr'],
+                                body=data[0]['subject']+data[0]['catalog_nbr']+data[0]['descr'],
+                            )
+                            class_data.save()
+                            tutor_class_data = tutorClasses(
+                                classes_id=classNumber,
+                                tutor_id=request.user.id,
+                            )
+                            tutor_class_data.save()
+                            messages.add_message(request, messages.INFO,
+                                                 name + ' added successfully')
+                elif inputLength == 2:
+                    second = request.GET['name'].split(' ')[1]
+                    url += '&subject=' + first + '&catalog_nbr=' + second
+                    try:
+                        response = requests.get(url)
+                        data = response.json()
+                    except requests.exceptions.RequestException:
+                        url += '&keyword=' + request.GET['name']
+                        response = requests.get(url)
+                        data = response.json()
+                elif inputLength == 3:
+                    url += '&keyword=' + request.GET['name']
+                    response = requests.get(url)
+                    data = response.json()
+                if len(data) > 1:
+                    for c in data:
+                        name = c['descr']
+                        classNumber = c['class_nbr']
+                        class_data = Classes(
                         subject=c['subject'],
                         catalognumber=c['catalog_nbr'],
                         classsection=c['class_section'],
@@ -239,23 +301,19 @@ def searchClasses(request):
                         classname=c['descr'],
                         body=c['subject']+c['catalog_nbr']+c['descr'],
                     )
-                    # print(class_data.body)
-                class_data.save()
-
+                        class_data.save()
+                        tutor_class_data = tutorClasses(
+                        classes_id=classNumber,
+                        tutor_id=request.user.id,
+                    )
+                        tutor_class_data.save()
+                        messages.add_message(request, messages.INFO,
+                                         name + ' added successfully')
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
                     request, messages.WARNING, 'No classes found')
-            else:
-                tutuor_class_data = tutorClasses(
-                    classes_id=classNumber,
-                    tutor_id=request.user.id,
-                )
-                tutuor_class_data.save()
-                messages.add_message(request, messages.INFO,
-                                     name + ' added successfully')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
-
 
 def detail(request, classnumber):
     model = Classes
