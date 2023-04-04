@@ -40,29 +40,34 @@ class Profile(models.Model):
     major = models.CharField(max_length=100)
     tutor_or_student = models.CharField(max_length=100, default="tutor")
     fun_fact = models.CharField(max_length=200)
-
+#
+# class Tutor(models.Model): #tutor profile!
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
+#     monday_start = models.TimeField()
+#     monday_end = models.TimeField()
+#     tuesday_start = models.TimeField()
+#     tuesday_end = models.TimeField()
+#     wednesday_start = models.TimeField()
+#     wednesday_end = models.TimeField()
+#     thursday_start = models.TimeField()
+#     thursday_end = models.TimeField()
+#     friday_start = models.TimeField()
+#     friday_end = models.TimeField()
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
-
-    monday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    monday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    tuesday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    tuesday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    wednesday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    wednesday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    thursday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    thursday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    friday_start = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-    friday_end = models.CharField(max_length=100, choices=TimeSelections, null=True, blank=True)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(args, kwargs)
-        self.errors = None
-
-
-
-
+    monday_start = models.CharField(max_length=100, null=True, blank=True)
+    monday_end = models.CharField(max_length=100, null=True, blank=True)
+    tuesday_start = models.CharField(max_length=100, null=True, blank=True)
+    tuesday_end = models.CharField(max_length=100, null=True, blank=True)
+    wednesday_start = models.CharField(max_length=100, null=True, blank=True)
+    wednesday_end = models.CharField(max_length=100, null=True, blank=True)
+    thursday_start = models.CharField(max_length=100, null=True, blank=True)
+    thursday_end = models.CharField(max_length=100, null=True, blank=True)
+    friday_start = models.CharField(max_length=100, null=True, blank=True)
+    friday_end = models.CharField(max_length=100, null=True, blank=True)
+    # def clean(self):
     #     super().clean()
     #
     #     # Check if end time is later than start time for each day
@@ -83,13 +88,15 @@ class Tutor(models.Model):
     # friday_hours = models.CharField(max_length=200)
     # classes = models.CharField(max_length=200)
 
-
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.CharField(max_length=200)
 
 
 class Classes(models.Model):
+    # classID = models.AutoField(primary_key=True, null = False)
+    # classID = models.AutoField(primary_key=True)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, default='')
     catalognumber = models.CharField(max_length=100, default='')
     classsection = models.CharField(max_length=100, default='')
@@ -104,4 +111,22 @@ class tutorClasses(models.Model):
     tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
 
-
+# class TutorClasses(models.Model):
+#     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+#     classID = models.ForeignKey(Classes, on_delete=models.CASCADE)
+#     rate = models.FloatField()
+#
+#
+# # class TutorTime(models.Model):
+# #     sessionID = models.AutoField(primary_key=True)
+# #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+# #     day = models.CharField(max_length=20)
+# #     start_time = models.TimeField()
+# #     end_time = models.TimeField()
+# #     location = models.CharField(max_length=100)
+# #
+# #
+# # class SessionBooked(models.Model):
+# #     sessionID = models.ForeignKey(TutorTime, on_delete=models.CASCADE)
+# #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+# #     studentID = models.ForeignKey(Student, on_delete=models.CASCADE)
