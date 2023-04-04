@@ -198,12 +198,19 @@ def classesdetail(request, classnumber):
         'Classes' : currentClass,
     }
     if request.method == 'POST':
+        classes_id = classnumber
+        tutor_id = request.user.id
         tutor_class_data = tutorClasses(
             classes_id=classnumber,
             tutor_id=request.user.id,
         )
-        tutor_class_data.save()
-        return redirect('/classes')
+
+        tutorClasses(request.POST, classes_id= classes_id, tutor_id= tutor_id)
+        if tutorClasses:
+            messages.add_message(request, messages.INFO, "Class already added")
+        else:
+            tutor_class_data.save()
+            return redirect('/classes')
 
     return HttpResponse(template.render(context, request))
 
