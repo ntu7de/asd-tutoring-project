@@ -423,7 +423,7 @@ def accountDisplay(request):
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
 
-def accountDisplayStudent(request):
+def accountDisplayStudent(request): #the user version of account display
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
