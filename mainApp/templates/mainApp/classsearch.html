@@ -35,7 +35,11 @@
    {% if messages %}
 <ul class="messages" style="list-style: none;">
     {% for message in messages %}
+
     <li {% if message.tags %} class="{{ message.tags }} text-center"  {% endif %}>{{ message }}</li>
+    <button type="submit" class="btn btn-success"  aria-hidden="true">ADD</button>
+
+
     {% endfor %}
 </ul>
 {% endif %}
