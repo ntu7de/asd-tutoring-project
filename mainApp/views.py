@@ -201,6 +201,8 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+
+
 def searchClasses(request):
     all_classes = {}
 
