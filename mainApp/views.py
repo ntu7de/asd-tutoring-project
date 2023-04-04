@@ -240,7 +240,7 @@ def searchClasses(request):
 
                         tutuor_class_data.save()
                         messages.add_message(request, messages.INFO,
-                                             subject + catalog_nbr + ": " + name)
+                                             subject + catalog_nbr + ": " + name )
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -354,8 +354,10 @@ def detail(request, classnumber):
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 
+
 def tutordetail(request):
     return render(request, 'mainApp/tutordetail.html')
+
 
 
 def classes(request):
