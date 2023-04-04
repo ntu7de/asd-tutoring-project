@@ -241,7 +241,7 @@ def searchClasses(request):
                         )
                         tutuor_class_data.save()
                         messages.add_message(request, messages.INFO,
-                                             name + ' added successfully')
+                                             name )
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -289,7 +289,7 @@ def searchClasses(request):
                                     )
                                     tutuor_class_data.save()
                                     messages.add_message(request, messages.INFO,
-                                                         name + ' added successfully')
+                                                         name )
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -330,7 +330,7 @@ def searchClasses(request):
                             )
                             tutuor_class_data.save()
                             messages.add_message(request, messages.INFO,
-                                                 name + ' added successfully')
+                                                 name )
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
