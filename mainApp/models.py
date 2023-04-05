@@ -42,7 +42,10 @@ class Profile(models.Model):
     fun_fact = models.CharField(max_length=200)
 
 class Request(models.Model):
-    studentID = models.CharField(max_length=100, null=True, blank=True)
+
+    requestID = models.AutoField(primary_key=True)
+    studentID= models.CharField(max_length=100, null=True, blank=True)
+
     tutorID = models.CharField(max_length=100, null=True, blank=True)
     startTime = models.CharField(max_length=100, null=True, blank=True)
     endTime = models.CharField(max_length=100, null=True, blank=True)
