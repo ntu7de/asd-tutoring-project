@@ -197,6 +197,20 @@ def classesdetail(request, classnumber):
     context = {
         'Classes' : currentClass,
     }
+    if request.method == 'POST':
+        classes_id = classnumber
+        tutor_id = request.user.id
+        tutor_class_data = tutorClasses(
+            classes_id=classnumber,
+            tutor_id=request.user.id,
+        )
+
+        tutorClasses(request.POST, classes_id= classes_id, tutor_id= tutor_id)
+        if tutorClasses:
+            messages.add_message(request, messages.INFO, "Class already added")
+        else:
+            tutor_class_data.save()
+            return redirect('/classes')
 
     return HttpResponse(template.render(context, request))
 
@@ -233,12 +247,9 @@ def searchClasses(request):
 
                         )
                         class_data.save()
-                        tutuor_class_data = tutorClasses(
-                            classes_id=classNumber,
-                            tutor_id=request.user.id,
-                        )
+                      
                         classNumber = str(classNumber)
-                        tutuor_class_data.save()
+                        # tutuor_class_data.save()
                         messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
@@ -283,12 +294,12 @@ def searchClasses(request):
 
                                     )
                                     class_data.save()
-                                    tutuor_class_data = tutorClasses(
-                                        classes_id=classNumber,
-                                        tutor_id=request.user.id,
-                                    )
+                                    # tutuor_class_data = tutorClasses(
+                                    #     classes_id=classNumber,
+                                    #     tutor_id=request.user.id,
+                                    # )
                                     classNumber = str(classNumber)
-                                    tutuor_class_data.save()
+                                    # tutuor_class_data.save()
                                     messages.add_message(request, messages.INFO, mark_safe(
                                         '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
                 elif inputLength == 2:
@@ -327,12 +338,12 @@ def searchClasses(request):
 
                             )
                             class_data.save()
-                            tutuor_class_data = tutorClasses(
-                                classes_id=classNumber,
-                                tutor_id=request.user.id,
-                            )
+                            # tutuor_class_data = tutorClasses(
+                            #     classes_id=classNumber,
+                            #     tutor_id=request.user.id,
+                            # )
                             classNumber = str(classNumber)
-                            tutuor_class_data.save()
+                            # tutuor_class_data.save()
                             messages.add_message(request, messages.INFO, mark_safe(
                                 '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
             all_classes = Classes.objects.all()
