@@ -22,9 +22,11 @@ class AdminClasses(admin.ModelAdmin):
 @admin.register(tutorClasses)
 class AdminClasses(admin.ModelAdmin):
     model = tutorClasses
+
 @admin.register(Request)
 class AdminClasses(admin.ModelAdmin):
     model = Request
+
 #
 # @admin.register(TutorClasses)
 # class AdminClasses(admin.ModelAdmin):

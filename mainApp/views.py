@@ -243,7 +243,7 @@ def searchClasses(request):
                             classnumber=c['class_nbr'],
                             classname=c['descr'],
 
-                            body=c['subject']+' ' +c['catalog_nbr']+' '+c['descr'],
+                            body=c['subject']+c['catalog_nbr']+c['descr'],
 
                         )
                         class_data.save()
@@ -290,7 +290,7 @@ def searchClasses(request):
                                         classnumber=c['class_nbr'],
                                         classname=c['descr'],
 
-                                        body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                                     )
                                     class_data.save()
@@ -334,7 +334,7 @@ def searchClasses(request):
                                 classnumber=c['class_nbr'],
                                 classname=c['descr'],
 
-                                body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                             )
                             class_data.save()
@@ -393,6 +393,9 @@ def StudentSearch(request):
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
+        q = q.strip(" ")
+        q = q.replace(":","")
+        q = q.replace(" ","")
         classes = Classes.objects.filter(
             Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
