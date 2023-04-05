@@ -364,7 +364,7 @@ def detail(request, classnumber):
    
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
-def tutordetail(request):
+def tutordetail(request,tutorid):
     return render(request,'mainApp/tutordetail.html')
 
 
