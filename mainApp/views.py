@@ -364,8 +364,15 @@ def detail(request, classnumber):
    
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
-def tutordetail(request,tutorid):
-    return render(request,'mainApp/tutordetail.html')
+def tutordetail(request,profileid):
+    profile = get_object_or_404(Profile,id=profileid)
+    tutorpro = get_object_or_404(Tutor,user = profile.user)
+    classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
+    classes= []
+    for i in classesTaught:
+        Class = i.classes
+        classes.append(Class)
+    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
 
 
 

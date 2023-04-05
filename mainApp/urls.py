@@ -18,7 +18,7 @@ urlpatterns = [
     path('classes/', views.searchClasses, name = 'classes'),
     path('classList/', views.StudentSearch, name = 'classList'),
     path('classList/<int:classnumber>/', views.detail, name='detail'),
-    path('classList/tutordetail/<int:tutorid>/',views.tutordetail,name='tutordetail'),
+    path('classList/tutordetail/<int:profileid>/',views.tutordetail,name='tutordetail'),
     path('accountDisplay/', views.accountDisplay, name='accountDisplay'),
 
     path('classes/<int:classnumber>/', views.classesdetail, name = 'classesdetail'),
