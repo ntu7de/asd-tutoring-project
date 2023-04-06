@@ -26,6 +26,7 @@ class AdminClasses(admin.ModelAdmin):
 @admin.register(Request)
 class AdminClasses(admin.ModelAdmin):
     model = Request
+
 #
 # @admin.register(TutorClasses)
 # class AdminClasses(admin.ModelAdmin):

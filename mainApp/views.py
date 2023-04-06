@@ -246,7 +246,7 @@ def searchClasses(request):
                             classnumber=c['class_nbr'],
                             classname=c['descr'],
 
-                            body=c['subject']+' ' +c['catalog_nbr']+' '+c['descr'],
+                            body=c['subject']+c['catalog_nbr']+c['descr'],
 
                         )
                         class_data.save()
@@ -293,7 +293,7 @@ def searchClasses(request):
                                         classnumber=c['class_nbr'],
                                         classname=c['descr'],
 
-                                        body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                                     )
                                     class_data.save()
@@ -337,7 +337,7 @@ def searchClasses(request):
                                 classnumber=c['class_nbr'],
                                 classname=c['descr'],
 
-                                body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                             )
                             class_data.save()
@@ -367,8 +367,15 @@ def detail(request, classnumber):
    
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
-def tutordetail(request):
-    return render(request,'mainApp/tutordetail.html')
+def tutordetail(request,profileid):
+    profile = get_object_or_404(Profile,id=profileid)
+    tutorpro = get_object_or_404(Tutor,user = profile.user)
+    classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
+    classes= []
+    for i in classesTaught:
+        Class = i.classes
+        classes.append(Class)
+    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
 
 
 
@@ -396,6 +403,9 @@ def StudentSearch(request):
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
+        q = q.strip(" ")
+        q = q.replace(":","")
+        q = q.replace(" ","")
         classes = Classes.objects.filter(
             Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
                                          )
