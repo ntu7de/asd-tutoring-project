@@ -41,14 +41,7 @@ class Profile(models.Model):
     tutor_or_student = models.CharField(max_length=100, default="tutor")
     fun_fact = models.CharField(max_length=200)
 
-class Request(models.Model):
-    requestID = models.AutoField(primary_key=True)
-    studentID= models.CharField(max_length=100, null=True, blank=True)
-    tutorID = models.CharField(max_length=100, null=True, blank=True)
-    startTime = models.CharField(max_length=100, null=True, blank=True)
-    endTime = models.CharField(max_length=100, null=True, blank=True)
-    approved = models.BooleanField
-    date = models.CharField(max_length=100)
+
 
 
 class Tutor(models.Model):
@@ -107,6 +100,15 @@ class Classes(models.Model):
 class tutorClasses(models.Model):
     tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
+
+class request(models.Model):
+    startTime = models.CharField(max_length=100, null=True, blank=True)
+    endTime = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    approved = models.CharField(max_length=100, null=True, blank=True)
+    date = models.CharField(max_length=100, null=True, blank=True)
 
 # class TutorClasses(models.Model):
 #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
