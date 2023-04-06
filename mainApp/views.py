@@ -383,7 +383,7 @@ def detail(request, classnumber):
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
         tutor = get_object_or_404(Tutor, user= i.tutor)
-        tutors0.append((profile,tutor))
+        tutors0.append((profile,tutor,i.comment))
    
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
