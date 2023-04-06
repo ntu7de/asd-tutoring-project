@@ -184,7 +184,7 @@ def student(request):  # student home page
         #location
         location = i.location
         print(location)
-        #status of approval
+        #status of approvall
         approved = i.approved
         print(approved)
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
