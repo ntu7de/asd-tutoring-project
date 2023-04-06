@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.utils.safestring import mark_safe
-from .models import Classes, Profile, Tutor, Student, tutorClasses
+from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -166,6 +166,28 @@ def tutor(request):  # tutor home page
 
 
 def student(request):  # student home page
+    student = request.user
+    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the tutor first name
+        profile = get_object_or_404(Profile, user=i.tutor.user) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the tutor last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        #location
+        location = i.location
+        print(location)
+        #status of approval
+        approved = i.approved
+        print(approved)
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
     return render(request, 'mainApp/student.html')
 
 
