@@ -102,12 +102,12 @@ class tutorClasses(models.Model):
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
     comment = models.CharField(max_length=200, default='')
 
-class request(models.Model):
+class Request(models.Model):
     startTime = models.CharField(max_length=100, null=True, blank=True)
     endTime = models.CharField(max_length=100, null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True)
     tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
     approved = models.CharField(max_length=100, null=True, blank=True)
     date = models.CharField(max_length=100, null=True, blank=True)
 

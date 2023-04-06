@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Classes, Profile, Tutor, Student, tutorClasses, request
+from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 
 
 # Register your models here.
@@ -23,9 +23,9 @@ class AdminClasses(admin.ModelAdmin):
 class AdminClasses(admin.ModelAdmin):
     model = tutorClasses
 
-@admin.register(request)
+@admin.register(Request)
 class AdminClasses(admin.ModelAdmin):
-    model = request
+    model = Request
 #
 # @admin.register(TutorClasses)
 # class AdminClasses(admin.ModelAdmin):
