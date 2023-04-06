@@ -100,6 +100,7 @@ class Classes(models.Model):
 class tutorClasses(models.Model):
     tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=200, default='')
 
 class request(models.Model):
     startTime = models.CharField(max_length=100, null=True, blank=True)
