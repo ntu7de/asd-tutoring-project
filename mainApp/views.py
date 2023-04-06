@@ -183,12 +183,10 @@ def student(request):  # student home page
         end_time = i.endTime
         #location
         location = i.location
-        print(location)
         #status of approvall
         approved = i.approved
-        print(approved)
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
-    return render(request, 'mainApp/student.html')
+    return render(request, 'mainApp/student.html', {'requestlist': requestlist})
 
 
 @login_required
