@@ -162,11 +162,11 @@ def studentsetting(request):  # the account settings page for students
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
-
+@login_required
 def tutor(request):  # tutor home page
     return render(request, 'mainApp/tutor.html')
 
-
+@login_required
 def student(request):  # student home page
     student = request.user
     requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
@@ -212,6 +212,7 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+@login_required
 def classesdetail(request, classnumber):
     # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
     currentClass = Classes.objects.get(classnumber = classnumber)
@@ -239,6 +240,7 @@ def classesdetail(request, classnumber):
 
     return HttpResponse(template.render(context, request))
 
+@login_required
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
@@ -377,7 +379,7 @@ def searchClasses(request):
                     request, messages.WARNING, 'No classes found')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
-
+@login_required
 def detail(request, classnumber):
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
@@ -390,6 +392,7 @@ def detail(request, classnumber):
 
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
+@login_required
 def tutordetail(request,profileid):
     profile = get_object_or_404(Profile,id=profileid)
     tutorpro = get_object_or_404(Tutor,user = profile.user)
@@ -401,7 +404,7 @@ def tutordetail(request,profileid):
     return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
 
 
-
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -421,7 +424,7 @@ def classes(request):
                   {"AllClasses": AllClasses}
                   )
 
-
+@login_required
 def StudentSearch(request):
     model = Classes
     data = Classes.objects.all()
@@ -438,6 +441,7 @@ def StudentSearch(request):
         return render(request, 'mainApp/classList.html', {'info': data})
 
 
+@login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
     if request.method == "POST":
@@ -451,7 +455,7 @@ def accountSettings2t(request):
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
-
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -467,12 +471,13 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
-
+@login_required
 def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
 
+@login_required
 def accountDisplayStudent(request): #the user version of account display
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
