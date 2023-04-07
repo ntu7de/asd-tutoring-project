@@ -36,7 +36,7 @@ def home(request):
         return redirect('student')
     return render(request, 'mainApp/home.html')
 
-
+@login_required
 def tutorsetting(request):  # the account settings page for tutors
     user = request.user  # using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
