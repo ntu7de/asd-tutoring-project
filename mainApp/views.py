@@ -168,10 +168,6 @@ def tutor(request):  # tutor home page
 
 
 def student(request):  # student home page
-<<<<<<< HEAD
-    data = Classes.objects.all()
-    return render(request, 'mainApp/student.html', {'info': data})
-=======
     student = request.user
     requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
     requestlist = [] #the array that we will put all of the relevant info for each request into
@@ -193,7 +189,6 @@ def student(request):  # student home page
         approved = i.approved
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
     return render(request, 'mainApp/student.html', {'requestlist': requestlist})
->>>>>>> main
 
 
 @login_required
@@ -236,8 +231,6 @@ def classesdetail(request, classnumber):
         tutorClass = tutorClasses.objects.filter(classes_id=classes_id, tutor_id=tutor_id)
         # tutorClasses(request.POST, classes_id=classes_id, tutor_id=tutor_id)
 
-<<<<<<< HEAD
-=======
         if tutorClass:
             messages.add_message(request, messages.INFO, "Class already added")
         else:
@@ -246,7 +239,6 @@ def classesdetail(request, classnumber):
 
     return HttpResponse(template.render(context, request))
 
->>>>>>> main
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
@@ -276,11 +268,7 @@ def searchClasses(request):
                             classnumber=c['class_nbr'],
                             classname=c['descr'],
 
-<<<<<<< HEAD
-                            body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
-=======
                             body=c['subject']+c['catalog_nbr']+c['descr'],
->>>>>>> main
 
                         )
                         class_data.save()
@@ -397,20 +385,9 @@ def detail(request, classnumber):
     tutors0 = []
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
-<<<<<<< HEAD
         tutor = get_object_or_404(Tutor, user=i.tutor)
         tutors0.append((profile, tutor))
 
-    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
-
-
-
-def tutordetail(request):
-    return render(request, 'mainApp/tutordetail.html')
-=======
-        tutor = get_object_or_404(Tutor, user= i.tutor)
-        tutors0.append((profile,tutor,i.comment))
-   
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 def tutordetail(request,profileid):
@@ -422,7 +399,6 @@ def tutordetail(request,profileid):
         Class = i.classes
         classes.append(Class)
     return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
->>>>>>> main
 
 
 
@@ -493,11 +469,6 @@ def classes(request):
 
 
 def accountDisplay(request):
-<<<<<<< HEAD
-    user = request.user  # using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
-=======
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
@@ -506,4 +477,3 @@ def accountDisplayStudent(request): #the user version of account display
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
->>>>>>> main
