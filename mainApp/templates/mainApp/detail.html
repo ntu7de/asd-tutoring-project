@@ -38,34 +38,37 @@
     <br>
 
     {% if tutors %}
-    <table class="table">
-      <thead>
+    <table class="table table-striped table-bordered table-hover">
+      <thead class="thead-dark">
         <tr>
           <th scope="col">First</th>
           <th scope="col">Last</th>
           <th scope="col">Hourly Rate</th>
           <th scope="col">Timing</th>
+          <th scope="col">Comments</th>
         </tr>
       </thead>
       {% for tutor in tutors %}
       <tbody>
-        <a href="classList/tutordetail">
-          <tr>
-            <td scope="row">{{tutor.0.first_name}}</td>
-            <td>{{tutor.0.last_name}}</td>
-            <td>{{tutor.1.hourly_rate}}</td>
-            <td>Mon: {{tutor.1.monday_start}} - {{tutor.1.monday_end}}
-              <br>
-              Tue: {{tutor.1.tuesday_start}} - {{tutor.1.tuesday_end}}
-              <br>
-              Wed: {{tutor.1.wednesday_start}} - {{tutor.1.wednesday_end}}
-              <br>
-              Thur: {{tutor.1.thursday_start}} - {{tutor.1.thursday_end}}
-              <br>
-              Fri: {{tutor.1.friday_start}} - {{tutor.1.friday_end}}
-            </td>
-          </tr>
-        </a>
+
+        <tr onclick="window.location='/classList/tutordetail/{{ tutor.0.id }}/'">
+
+          <td scope="row">{{tutor.0.first_name}}</td>
+          <td>{{tutor.0.last_name}}</td>
+          <td>{{tutor.1.hourly_rate}}</td>
+          <td>Mon: {{tutor.1.monday_start}} - {{tutor.1.monday_end}}
+            <br>
+            Tue: {{tutor.1.tuesday_start}} - {{tutor.1.tuesday_end}}
+            <br>
+            Wed: {{tutor.1.wednesday_start}} - {{tutor.1.wednesday_end}}
+            <br>
+            Thur: {{tutor.1.thursday_start}} - {{tutor.1.thursday_end}}
+            <br>
+            Fri: {{tutor.1.friday_start}} - {{tutor.1.friday_end}}
+          </td>
+          <td>{{tutor.2}}</td>
+        </tr>
+
       </tbody>
       {% endfor %}
     </table>

@@ -1,6 +1,9 @@
 import requests
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Profile, Tutor, Student, tutorClasses
+from django.template import loader
+from django.utils.safestring import mark_safe
+from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -111,16 +114,7 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if not tutorform.data['friday_end']:
                     tutor.friday_end = friday_end
-                # if not tutorform.data['monday_hours']:
-                #     tutor.monday_hours = monday_hours
-                # if not tutorform.data['tuesday_hours']:
-                #     tutor.tuesday_hours = tuesday_hours
-                # if not tutorform.data['wednesday_hours']:
-                #     tutor.wednesday_hours = wednesday_hours
-                # if not tutorform.data['thursday_hours']:
-                #     tutor.thursday_hours = thursday_hours
-                # if not tutorform.data['friday_hours']:
-                #     tutor.friday_hours = friday_hours
+
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -174,8 +168,32 @@ def tutor(request):  # tutor home page
 
 
 def student(request):  # student home page
+<<<<<<< HEAD
     data = Classes.objects.all()
     return render(request, 'mainApp/student.html', {'info': data})
+=======
+    student = request.user
+    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the tutor first name
+        profile = get_object_or_404(Profile, user=i.tutor.user) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the tutor last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        #location
+        location = i.location
+        #status of approvall
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+    return render(request, 'mainApp/student.html', {'requestlist': requestlist})
+>>>>>>> main
 
 
 @login_required
@@ -199,7 +217,36 @@ def accountSettings(request):
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+def classesdetail(request, classnumber):
+    # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    currentClass = Classes.objects.get(classnumber = classnumber)
+    template = loader.get_template('mainApp/classesdetail.html')
+    context = {
+        'Classes' : currentClass,
+    }
+    if request.method == 'POST':
+        classes_id = classnumber
+        tutor_id = request.user.id
+        comment = request.POST.get('comment')
+        tutor_class_data = tutorClasses(
+            classes_id=classnumber,
+            tutor_id=request.user.id,
+            comment = comment,
+        )
+        tutorClass = tutorClasses.objects.filter(classes_id=classes_id, tutor_id=tutor_id)
+        # tutorClasses(request.POST, classes_id=classes_id, tutor_id=tutor_id)
 
+<<<<<<< HEAD
+=======
+        if tutorClass:
+            messages.add_message(request, messages.INFO, "Class already added")
+        else:
+            tutor_class_data.save()
+            return redirect('/classes')
+
+    return HttpResponse(template.render(context, request))
+
+>>>>>>> main
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
@@ -229,18 +276,18 @@ def searchClasses(request):
                             classnumber=c['class_nbr'],
                             classname=c['descr'],
 
+<<<<<<< HEAD
                             body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+=======
+                            body=c['subject']+c['catalog_nbr']+c['descr'],
+>>>>>>> main
 
                         )
                         class_data.save()
-                        tutuor_class_data = tutorClasses(
-                            classes_id=classNumber,
-                            tutor_id=request.user.id,
-                        )
-
-                        tutuor_class_data.save()
-                        messages.add_message(request, messages.INFO,
-                                             subject + catalog_nbr + ": " + name )
+                      
+                        classNumber = str(classNumber)
+                        # tutuor_class_data.save()
+                        messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -280,17 +327,18 @@ def searchClasses(request):
                                         classnumber=c['class_nbr'],
                                         classname=c['descr'],
 
-                                        body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                                     )
                                     class_data.save()
-                                    tutuor_class_data = tutorClasses(
-                                        classes_id=classNumber,
-                                        tutor_id=request.user.id,
-                                    )
-                                    tutuor_class_data.save()
-                                    messages.add_message(request, messages.INFO,
-                                                         subject + catalog_nbr + ": " + name)
+                                    # tutuor_class_data = tutorClasses(
+                                    #     classes_id=classNumber,
+                                    #     tutor_id=request.user.id,
+                                    # )
+                                    classNumber = str(classNumber)
+                                    # tutuor_class_data.save()
+                                    messages.add_message(request, messages.INFO, mark_safe(
+                                        '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
                     url += '&subject=' + first + '&catalog_nbr=' + second
@@ -323,17 +371,18 @@ def searchClasses(request):
                                 classnumber=c['class_nbr'],
                                 classname=c['descr'],
 
-                                body=c['subject'] + ' ' + c['catalog_nbr'] + ' ' + c['descr'],
+                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
 
                             )
                             class_data.save()
-                            tutuor_class_data = tutorClasses(
-                                classes_id=classNumber,
-                                tutor_id=request.user.id,
-                            )
-                            tutuor_class_data.save()
-                            messages.add_message(request, messages.INFO,
-                                                 subject + catalog_nbr + ": " + name)
+                            # tutuor_class_data = tutorClasses(
+                            #     classes_id=classNumber,
+                            #     tutor_id=request.user.id,
+                            # )
+                            classNumber = str(classNumber)
+                            # tutuor_class_data.save()
+                            messages.add_message(request, messages.INFO, mark_safe(
+                                '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -348,6 +397,7 @@ def detail(request, classnumber):
     tutors0 = []
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
+<<<<<<< HEAD
         tutor = get_object_or_404(Tutor, user=i.tutor)
         tutors0.append((profile, tutor))
 
@@ -357,6 +407,22 @@ def detail(request, classnumber):
 
 def tutordetail(request):
     return render(request, 'mainApp/tutordetail.html')
+=======
+        tutor = get_object_or_404(Tutor, user= i.tutor)
+        tutors0.append((profile,tutor,i.comment))
+   
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
+
+def tutordetail(request,profileid):
+    profile = get_object_or_404(Profile,id=profileid)
+    tutorpro = get_object_or_404(Tutor,user = profile.user)
+    classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
+    classes= []
+    for i in classesTaught:
+        Class = i.classes
+        classes.append(Class)
+    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
+>>>>>>> main
 
 
 
@@ -385,6 +451,9 @@ def StudentSearch(request):
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
+        q = q.strip(" ")
+        q = q.replace(":","")
+        q = q.replace(" ","")
         classes = Classes.objects.filter(
             Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
         )
@@ -424,6 +493,17 @@ def classes(request):
 
 
 def accountDisplay(request):
+<<<<<<< HEAD
     user = request.user  # using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+=======
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+
+def accountDisplayStudent(request): #the user version of account display
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
+>>>>>>> main
