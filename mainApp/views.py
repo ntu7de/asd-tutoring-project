@@ -184,7 +184,7 @@ def tutor(request):  # tutor home page
         approved = i.approved
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
         if request.method == 'POST':
-            if 'approve' in request.POST:
+            if 'approve' in request.POST: #approving and denying
                 i.approved = "approved"
                 i.save()
                 return redirect('tutor')
