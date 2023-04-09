@@ -33,14 +33,21 @@
           <td>{{request.3}}</td>
           <td>{{request.4}}</td>
           <td>{{request.5}}</td>
+          {% if request.6 == "pending" %}
+          <td>
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Approve</button>
+              <button type="button" class="btn btn-outline-danger">Deny</button>
+          </td>
+          {% else %}
           <td>{{request.6}}</td>
+          {% endif %}
         </tr>
       </tbody>
       {% endfor %}
     </table>
   </ul>
   {% else %}
-  <p>You have not been requested by any students at this time!</p>
+  <p>You have not been requested by any students yet!</p>
   {% endif %}
 
 {% endblock %}
