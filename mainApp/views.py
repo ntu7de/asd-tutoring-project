@@ -162,7 +162,38 @@ def studentsetting(request): #the account settings page for students
 
 
 def tutor(request):  # tutor home page
-    return render(request, 'mainApp/tutor.html')
+    u = request.user
+    tutor = get_object_or_404(Tutor, user=u)
+    requests = Request.objects.filter(tutor__lte=tutor) #get all of the requests associated with the tutor
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the student first name
+        profile = get_object_or_404(Profile, user=i.student) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the student last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        # #location
+        location = i.location
+        #status of approval
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if request.method == 'POST':
+            if 'approve' in request.POST: #approving and denying
+                i.approved = "approved"
+                i.save()
+                return redirect('tutor')
+            else:
+                i.approved = "denied"
+                i.save()
+                return redirect('tutor')
+
+    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
 
 
 def student(request):  # student home page
