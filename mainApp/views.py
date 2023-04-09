@@ -183,6 +183,16 @@ def tutor(request):  # tutor home page
         #status of approval
         approved = i.approved
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if request.method == 'POST':
+            if 'approve' in request.POST: #approving and denying
+                i.approved = "approved"
+                i.save()
+                return redirect('tutor')
+            else:
+                i.approved = "denied"
+                i.save()
+                return redirect('tutor')
+
     return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
 
 
