@@ -228,6 +228,8 @@ def accountSettings(request):
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():  # form isn't valid right now
+            # if not form.email.to_python(request, value= str).__contains__("@"):
+            #     return redirect('login')
             profile = form.save(commit=False)
             # makes it so that the google auth user is connected to this profile
             profile.user = request.user
