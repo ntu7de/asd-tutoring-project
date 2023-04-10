@@ -75,11 +75,11 @@ def tutorsetting(request):  # the account settings page for tutors
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
@@ -94,25 +94,25 @@ def tutorsetting(request):  # the account settings page for tutors
             if tutorform.is_valid():
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if not tutorform.data['monday_start']:
+                if tutorform.data['monday_start'] == "Select Time":
                     tutor.monday_start = monday_start
-                if not tutorform.data['monday_end']:
+                if tutorform.data['monday_end'] == "Select Time":
                     tutor.monday_end = monday_end
-                if not tutorform.data['tuesday_start']:
+                if tutorform.data['tuesday_start'] == "Select Time":
                     tutor.tuesday_start = tuesday_start
-                if not tutorform.data['tuesday_end']:
+                if tutorform.data['tuesday_end'] == "Select Time":
                     tutor.tuesday_end = tuesday_end
-                if not tutorform.data['wednesday_start']:
+                if tutorform.data['wednesday_start'] == "Select Time":
                     tutor.wednesday_start = wednesday_start
-                if not tutorform.data['wednesday_end']:
+                if tutorform.data['wednesday_end'] == "Select Time":
                     tutor.wednesday_end = wednesday_end
-                if not tutorform.data['thursday_start']:
+                if tutorform.data['thursday_start'] == "Select Time":
                     tutor.thursday_start = thursday_start
-                if not tutorform.data['thursday_end']:
+                if tutorform.data['thursday_end'] == "Select Time":
                     tutor.thursday_end = thursday_end
-                if not tutorform.data['friday_start']:
+                if tutorform.data['friday_start'] == "Select Time":
                     tutor.friday_start = friday_start
-                if not tutorform.data['friday_end']:
+                if tutorform.data['friday_end'] == "Select Time":
                     tutor.friday_end = friday_end
 
                 tutor.save()
