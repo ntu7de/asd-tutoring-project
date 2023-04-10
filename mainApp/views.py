@@ -146,11 +146,11 @@ def studentsetting(request):  # the account settings page for students
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
