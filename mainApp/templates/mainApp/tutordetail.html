@@ -118,18 +118,71 @@ function showPopup() {
   document.getElementById("popup").style.display = "block";
 }
 </script>
+<!--<script>-->
+<!--  function showTimes() {-->
+<!--    const mondayHours = "Monday Hours: " + "{{tutor.1.monday_start}}" + "-" + "{{tutor.1.monday_end}}";-->
+<!--    const tuesdayHours = "Tuesday Hours: " + "{{tutor.1.tuesday_start}}" + "-" + "{{tutor.1.tuesday_end}}";-->
+<!--    const wednesdayHours = "Wednesday Hours: " + "{{tutor.1.wednesday_start}}" + "-" + "{{tutor.1.wednesday_end}}";-->
+<!--    const thursdayHours = "Thursday Hours: " + "{{tutor.1.thursday_start}}" + "-" + "{{tutor.1.thursday_end}}";-->
+<!--    const fridayHours = "Friday Hours: " + "{{tutor.1.friday_start}}" + "-" + "{{tutor.1.friday_end}}";-->
+<!--    const availableTimes = [mondayHours, tuesdayHours, wednesdayHours, thursdayHours, fridayHours];-->
+<!--    alert(availableTimes.join("\n"));-->
+<!--  }-->
+<!--</script>-->
 <script>
-  function showTimes() {
-    const mondayHours = "Monday Hours: " + "{{tutor.1.monday_start}}" + "-" + "{{tutor.1.monday_end}}";
-    const tuesdayHours = "Tuesday Hours: " + "{{tutor.1.tuesday_start}}" + "-" + "{{tutor.1.tuesday_end}}";
-    const wednesdayHours = "Wednesday Hours: " + "{{tutor.1.wednesday_start}}" + "-" + "{{tutor.1.wednesday_end}}";
-    const thursdayHours = "Thursday Hours: " + "{{tutor.1.thursday_start}}" + "-" + "{{tutor.1.thursday_end}}";
-    const fridayHours = "Friday Hours: " + "{{tutor.1.friday_start}}" + "-" + "{{tutor.1.friday_end}}";
-    const availableTimes = [mondayHours, tuesdayHours, wednesdayHours, thursdayHours, fridayHours];
-    alert(availableTimes.join("\n"));
+function showTimes() {
+  // Prompt the user to select a day
+  const dayPrompt = "Select a day (Monday-Friday):";
+  let day = prompt(dayPrompt);
+  while (!['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].includes(day)) {
+    alert("Please select a valid day (Monday-Friday).");
+    day = prompt(dayPrompt);
   }
-</script>
 
+  // Get the available hours for the specified day
+  let start = '';
+  let end = '';
+  switch (day) {
+    case 'Monday':
+      start = "{{tutor.1.monday_start}}";
+      end = "{{tutor.1.monday_end}}";
+      break;
+    case 'Tuesday':
+      start = "{{tutor.1.tuesday_start}}";
+      end = "{{tutor.1.tuesday_end}}";
+      break;
+    case 'Wednesday':
+      start = "{{tutor.1.wednesday_start}}";
+      end = "{{tutor.1.wednesday_end}}";
+      break;
+    case 'Thursday':
+      start = "{{tutor.1.thursday_start}}";
+      end = "{{tutor.1.thursday_end}}";
+      break;
+    case 'Friday':
+      start = "{{tutor.1.friday_start}}";
+      end = "{{tutor.1.friday_end}}";
+      break;
+  }
+
+  // Prompt the user to select a start time
+  const startPrompt = "Select a start time for " + day + " between " + start + " and " + end + ":";
+  let startTime = prompt(startPrompt);
+  while (startTime < start || startTime > end) {
+    alert("Please select a valid start time between " + start + " and " + end + ".");
+    startTime = prompt(startPrompt);
+  }
+  // Prompt the user to select an end time
+  const endPrompt = "Select an end time for " + day + " between " + startTime + " and " + end + ":";
+  let endTime = prompt(endPrompt);
+  while (endTime < startTime || endTime > end) {
+    alert("Please select a valid end time between " + startTime + " and " + end + ".");
+    endTime = prompt(endPrompt);
+  }
+  // Display the selected range
+  alert("You have selected " + startTime + " - " + endTime + " on " + day + ".");
+}
+</script>
 
 
 
