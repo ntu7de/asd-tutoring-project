@@ -64,6 +64,16 @@
                 <p><b><i>Email:</i></b> {{tutor.0.email}}</p>
                 <p><b><i>Rate:</i></b> {{tutor.1.hourly_rate}}</p>
                 <p><b><i>Fun Fact:</i></b> {{tutor.0.fun_fact}}</p>
+<!--                <p><b><i>Monday Hours:</i></b> {{tutor.1.monday_start}}- {{tutor.1.monday_end}}</p>-->
+<!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Request Monday Tutoring</button>-->
+<!--                <p><b><i>Tuesday Hours:</i></b> {{tutor.1.tuesday_start}}- {{tutor.1.tuesday_end}}</p>-->
+<!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Request Tuesday Tutoring</button>-->
+<!--                <p><b><i>Wednesday Hours:</i></b> {{tutor.1.wednesday_start}}- {{tutor.1.wednesday_end}}</p>-->
+<!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Request Wednesday Tutoring</button>-->
+<!--                <p><b><i>Thursday Hours:</i></b> {{tutor.1.thursday_start}}- {{tutor.1.thursday_end}}</p>-->
+<!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Request Thursday Tutoring</button>-->
+<!--                <p><b><i>Friday Hours:</i></b> {{tutor.1.friday_start}}- {{tutor.1.friday_end}}</p>-->
+<!--                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Request Friday Tutoring</button>-->
               </div>
             </div>
             <div class="mb-5">
@@ -72,11 +82,8 @@
                 {%for class in tutor.2%}
                 <tbody>
                   <tr onclick="">
-
                     <td scope="row">{{class.subject}} {{class.catalognumber}}:<b> {{class.classname}}</td>
-
                   </tr>
-
                 </tbody>
                 {% endfor %}
               </table>
@@ -85,6 +92,35 @@
                 <p class="lead fw-normal mb-0">Recent Reviews</p>
                 <!-- have a show reviews page -->
                 <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+<!--                <p class="lead fw-normal mb-0">Request Tutoring</p>-->
+                 <button class="btn btn-outline-success my-2 my-sm-0" onclick="showPopup()" type="submit">Request Tutoring</button>
+<!--                <button onclick="showPopup()">Request Tutoring</button>-->
+
+<div id="popup" style="display:none">
+  <h2>Select a class:</h2>
+  <table class="table table-striped table-bordered table-hover">
+  {%for class in tutor.2%}
+  <tbody>
+  <tr onclick="">
+    <td scope="row">{{class.subject}} {{class.catalognumber}}:<b> {{class.classname}}</td>
+
+  </tr>
+ </tbody>
+  {% endfor %}
+
+     </table>
+
+<script>
+function showPopup() {
+  document.getElementById("popup").style.display = "block";
+}
+</script>
+
+  <button onclick="hidePopup()">Close</button>
+
+<!--                <p class="mb-0"><a href="#!" class="text-muted"> optional text here</a></p>-->
               </div>
               <div class="row g-2">
                 <!-- Rating go here -->
