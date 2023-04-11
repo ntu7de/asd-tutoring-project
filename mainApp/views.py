@@ -203,7 +203,7 @@ def tutor(request):  # tutor home page
 @login_required
 def student(request):  # student home page
     student = request.user
-    requests = Request.objects.filter(student=student)#get all of the requests associated with the student
+    requests = Request.objects.filter(student=student)#get all of the requests associated with the studen
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
         #the tutor first name
