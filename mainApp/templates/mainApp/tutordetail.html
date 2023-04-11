@@ -82,7 +82,7 @@
                 {%for class in tutor.2%}
                 <tbody>
                   <!-- show popup on click to request -->
-                  <tr onclick="">
+                  <tr onclick="showTimes()">
                     <td scope="row">{{class.subject}} {{class.catalognumber}}:<b> {{class.classname}}</td>
                   </tr>
                 </tbody>
@@ -104,7 +104,7 @@
   <table class="table table-striped table-bordered table-hover">
   {%for class in tutor.2%}
   <tbody>
-  <tr onclick="">
+  <tr onclick="showTimes()">
     <td scope="row">{{class.subject}} {{class.catalognumber}}:<b> {{class.classname}}</td>
 
   </tr>
@@ -118,6 +118,22 @@ function showPopup() {
   document.getElementById("popup").style.display = "block";
 }
 </script>
+<script>
+  function showTimes() {
+    const mondayHours = "Monday Hours: " + "{{tutor.1.monday_start}}" + "-" + "{{tutor.1.monday_end}}";
+    const tuesdayHours = "Tuesday Hours: " + "{{tutor.1.tuesday_start}}" + "-" + "{{tutor.1.tuesday_end}}";
+    const wednesdayHours = "Wednesday Hours: " + "{{tutor.1.wednesday_start}}" + "-" + "{{tutor.1.wednesday_end}}";
+    const thursdayHours = "Thursday Hours: " + "{{tutor.1.thursday_start}}" + "-" + "{{tutor.1.thursday_end}}";
+    const fridayHours = "Friday Hours: " + "{{tutor.1.friday_start}}" + "-" + "{{tutor.1.friday_end}}";
+    const availableTimes = [mondayHours, tuesdayHours, wednesdayHours, thursdayHours, fridayHours];
+    alert(availableTimes.join("\n"));
+  }
+</script>
+
+
+
+
+
 
   <button onclick="hidePopup()">Close</button>
 
