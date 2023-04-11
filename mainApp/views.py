@@ -513,10 +513,21 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            tutor = form.save(commit=False)
-            tutor.user = request.user  # connects the tutor to the user
-            tutor.save()
-            return redirect('classes')  # send them to the classes page
+            if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
+                    form.data['tuesday_start'] == form.data['tuesday_end'] or \
+                    form.data['wednesday_start'] == form.data['wednesday_end'] or \
+                    form.data['thursday_start'] == form.data['thursday_end'] or \
+                    form.data['friday_start'] == form.data['friday_end']:
+                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+                return redirect('accountSettings2t')
+            else:
+                tutor = form.save(commit=False)
+                tutor.user = request.user  # connects the tutor to the user
+                tutor.save()
+                return redirect('classes')  # send them to the classes page
+        else:
+            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            return redirect('accountSettings2t')
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
