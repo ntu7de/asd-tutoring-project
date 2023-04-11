@@ -1,7 +1,13 @@
 <!--adapted from: https://bbbootstrap.com/snippets/bootstrap-edit-profile-accounts-setting-template-80240656-->
-<!--{% extends "mainApp/studentBase.html" %}-->
 {% load static %}
 {% block body %}
+<link rel="stylesheet"
+      type="text/css"
+      href="{% static 'mainApp/css/bootstrap.css' %}"
+/>
+<head>
+    <link rel="stylesheet" href="{% static 'mainApp/accountSettings2s.css' %}" />
+</head>
 <!--https://getbootstrap.com/docs/5.0/examples/sign-in/?/-->
 <body class="text-center" style="color: #6c757d;">
     <main class="form-signin">
@@ -10,9 +16,9 @@
                 <form method="post" style="text-align:center; border-radius:12px">
                     {% csrf_token %}
                     {{ form.as_p }}
+                    <p class="text-danger p mb-3 fw-normal">One or more fields are invalid.</p>
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Submit</button>
                 </form>
-            <p class="text-danger p mb-3 fw-normal">One or more fields are invalid.</p>
         </div>
     </main>
 </body>
