@@ -45,6 +45,7 @@
           <th scope="col">Last</th>
           <th scope="col">Hourly Rate</th>
           <th scope="col">Timing</th>
+          <th scope="col">Comments</th>
         </tr>
       </thead>
       {% for tutor in tutors %}
@@ -65,7 +66,7 @@
             <br>
             Fri: {{tutor.1.friday_start}} - {{tutor.1.friday_end}}
           </td>
-
+          <td>{{tutor.2}}</td>
         </tr>
 
       </tbody>

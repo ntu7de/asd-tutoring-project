@@ -3,13 +3,14 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.utils.safestring import mark_safe
-from .models import Classes, Profile, Tutor, Student, tutorClasses
+from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm
 from django.contrib import messages
 from django.db.models import Q
+
 
 # Create your views here.
 
@@ -35,11 +36,11 @@ def home(request):
         return redirect('student')
     return render(request, 'mainApp/home.html')
 
-
+@login_required
 def tutorsetting(request):  # the account settings page for tutors
     user = request.user  # using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) # profile of the user logged in
-    tutor = get_object_or_404(Tutor, user=user) # tutor info of the user logged in
+    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
+    tutor = get_object_or_404(Tutor, user=user)  # tutor info of the user logged in
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
@@ -74,11 +75,11 @@ def tutorsetting(request):  # the account settings page for tutors
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
@@ -93,25 +94,25 @@ def tutorsetting(request):  # the account settings page for tutors
             if tutorform.is_valid():
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if not tutorform.data['monday_start']:
+                if tutorform.data['monday_start'] == "Select Time":
                     tutor.monday_start = monday_start
-                if not tutorform.data['monday_end']:
+                if tutorform.data['monday_end'] == "Select Time":
                     tutor.monday_end = monday_end
-                if not tutorform.data['tuesday_start']:
+                if tutorform.data['tuesday_start'] == "Select Time":
                     tutor.tuesday_start = tuesday_start
-                if not tutorform.data['tuesday_end']:
+                if tutorform.data['tuesday_end'] == "Select Time":
                     tutor.tuesday_end = tuesday_end
-                if not tutorform.data['wednesday_start']:
+                if tutorform.data['wednesday_start'] == "Select Time":
                     tutor.wednesday_start = wednesday_start
-                if not tutorform.data['wednesday_end']:
+                if tutorform.data['wednesday_end'] == "Select Time":
                     tutor.wednesday_end = wednesday_end
-                if not tutorform.data['thursday_start']:
+                if tutorform.data['thursday_start'] == "Select Time":
                     tutor.thursday_start = thursday_start
-                if not tutorform.data['thursday_end']:
+                if tutorform.data['thursday_end'] == "Select Time":
                     tutor.thursday_end = thursday_end
-                if not tutorform.data['friday_start']:
+                if tutorform.data['friday_start'] == "Select Time":
                     tutor.friday_start = friday_start
-                if not tutorform.data['friday_end']:
+                if tutorform.data['friday_end'] == "Select Time":
                     tutor.friday_end = friday_end
 
                 tutor.save()
@@ -121,9 +122,10 @@ def tutorsetting(request):  # the account settings page for tutors
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
-def studentsetting(request): #the account settings page for students
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+
+def studentsetting(request):  # the account settings page for students
+    user = request.user  # using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
 
     # the field information that is currently in the database for student and profile
     first_name = profile.first_name
@@ -144,11 +146,11 @@ def studentsetting(request): #the account settings page for students
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
@@ -160,13 +162,64 @@ def studentsetting(request): #the account settings page for students
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
-
+@login_required
 def tutor(request):  # tutor home page
-    return render(request, 'mainApp/tutor.html')
+    u = request.user
+    tutor = get_object_or_404(Tutor, user=u)
+    requests = Request.objects.filter(tutor__lte=tutor) #get all of the requests associated with the tutor
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the student first name
+        profile = get_object_or_404(Profile, user=i.student) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the student last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        # #location
+        location = i.location
+        #status of approval
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if request.method == 'POST':
+            if 'approve' in request.POST: #approving and denying
+                i.approved = "approved"
+                i.save()
+                return redirect('tutor')
+            else:
+                i.approved = "denied"
+                i.save()
+                return redirect('tutor')
 
+    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
 
+@login_required
 def student(request):  # student home page
-    return render(request, 'mainApp/student.html')
+    student = request.user
+    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the tutor first name
+        profile = get_object_or_404(Profile, user=i.tutor.user) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the tutor last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        #location
+        location = i.location
+        #status of approvall
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+    return render(request, 'mainApp/student.html', {'requestlist': requestlist})
 
 
 @login_required
@@ -175,21 +228,46 @@ def accountSettings(request):
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():  # form isn't valid right now
+            # if not form.email.to_python(request, value= str).__contains__("@"):
+            #     return redirect('login')
             profile = form.save(commit=False)
             # makes it so that the google auth user is connected to this profile
             profile.user = request.user
             profile.save()
             if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
-            else: #sends you to initially filling in your student settings
-                stud = Student.objects.create(user=request.user, classes="") #creates an instance of a student
-                stud.save() #saves that instance
+            else:  # sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+                stud.save()  # saves that instance
                 return redirect('student')
         else:
             return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+@login_required
+def accountSettings2s(request):
+    if request.method == "POST":
+        form = ProfileForm(request.POST)
+        if form.is_valid():  # form isn't valid right now
+            # if not form.email.to_python(request, value= str).__contains__("@"):
+            #     return redirect('login')
+            profile = form.save(commit=False)
+            # makes it so that the google auth user is connected to this profile
+            profile.user = request.user
+            profile.save()
+            if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
+                return redirect('accountSettings2t')
+            else:  # sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+                stud.save()  # saves that instance
+                return redirect('student')
+        else:
+            return redirect('accountSettings2s')
+    form = ProfileForm()
+    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
+
+@login_required
 def classesdetail(request, classnumber):
     # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
     currentClass = Classes.objects.get(classnumber = classnumber)
@@ -217,6 +295,7 @@ def classesdetail(request, classnumber):
 
     return HttpResponse(template.render(context, request))
 
+@login_required
 def searchClasses(request):
     all_classes = {}
     if 'name' in request.GET:
@@ -355,18 +434,20 @@ def searchClasses(request):
                     request, messages.WARNING, 'No classes found')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
+@login_required
 def detail(request, classnumber):
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
-    tutors0=[]
+    tutors0 = []
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
-        tutor = get_object_or_404(Tutor, user= i.tutor)
-        tutors0.append((profile,tutor))
-   
+        tutor = get_object_or_404(Tutor, user=i.tutor)
+        tutors0.append((profile, tutor))
+
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
+@login_required
 def tutordetail(request,profileid):
     profile = get_object_or_404(Profile,id=profileid)
     tutorpro = get_object_or_404(Tutor,user = profile.user)
@@ -378,7 +459,7 @@ def tutordetail(request,profileid):
     return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
 
 
-
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -398,6 +479,7 @@ def classes(request):
                   {"AllClasses": AllClasses}
                   )
 
+@login_required
 def StudentSearch(request):
     model = Classes
     data = Classes.objects.all()
@@ -408,13 +490,13 @@ def StudentSearch(request):
         q = q.replace(" ","")
         classes = Classes.objects.filter(
             Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
-                                         )
+        )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
         return render(request, 'mainApp/classList.html', {'info': data})
 
 
-
+@login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
     if request.method == "POST":
@@ -428,7 +510,7 @@ def accountSettings2t(request):
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
-
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -444,12 +526,13 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
-
+@login_required
 def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
 
+@login_required
 def accountDisplayStudent(request): #the user version of account display
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
