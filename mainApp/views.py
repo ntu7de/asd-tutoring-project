@@ -7,7 +7,7 @@ from .models import Classes, Profile, Tutor, Student, tutorClasses
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm, AlertForm
 from django.contrib import messages
 from django.db.models import Q
 
@@ -341,10 +341,7 @@ def searchClasses(request):
 
                             )
                             class_data.save()
-                            # tutuor_class_data = tutorClasses(
-                            #     classes_id=classNumber,
-                            #     tutor_id=request.user.id,
-                            # )
+
                             classNumber = str(classNumber)
                             # tutuor_class_data.save()
                             messages.add_message(request, messages.INFO, mark_safe(
@@ -372,10 +369,20 @@ def tutordetail(request,profileid):
     tutorpro = get_object_or_404(Tutor,user = profile.user)
     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
     classes= []
+
+    if request.method == 'POST':
+        form = AlertForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.student = request.user
+            form.tutor = tutorpro
+            form.save()
+            return redirect('classList')
+    form = AlertForm()
     for i in classesTaught:
         Class = i.classes
         classes.append(Class)
-    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)]})
+    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)], 'form':form})
 
 
 
