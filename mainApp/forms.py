@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from .models import  Profile
 from .models import Tutor
-from .models import Student
+from .models import Student, Request
 from django.core.exceptions import ValidationError
 Search = ( ("option1", "course mnemonic"),
            ("option2","course number"),
@@ -89,7 +89,13 @@ Pronouns = (
     ("They/Them", "They/Them"),
     ("She/They", "She/They"), ("He/They", "He/They"), ("Other", "Other")
 ) #choices for the year choice field
-
+Days = (
+    ("Monday", "Monday"),
+    ("Tuesday", "Tuesday"),
+    ("Wednesday", "Wednesday"),
+    ("Thursday", "Thursday"),
+    ("Friday", "Friday")
+) #choices for the day choice field
 class SearchForm(forms.Form): #the form you see when searching for classes
     search = forms.ChoiceField(choices=Search, required=True)
 
@@ -177,6 +183,18 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
         model = Tutor
         fields = ['hourly_rate', 'monday_start', 'monday_end', 'tuesday_start', 'tuesday_end', 'wednesday_start', 'wednesday_end', 'thursday_start', 'thursday_end', 'friday_start', 'friday_end']
         # fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
+        exclude = ()
+
+class AlertForm(forms.ModelForm):
+    startTime = forms.ChoiceField(choices=TimeSelections)
+    endTime = forms.ChoiceField(choices=TimeSelections)
+    day = forms.ChoiceField(choices=Days)
+    location = forms.CharField(max_length=100)
+    classname = forms.CharField(max_length=100)
+    # tutor = forms.CharField(max_length=100)
+    class Meta:
+        model = Request
+        fields = ['startTime', 'endTime', 'day', 'location','classname']
         exclude = ()
 
 
