@@ -510,10 +510,14 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            tutor = form.save(commit=False)
-            tutor.user = request.user  # connects the tutor to the user
-            tutor.save()
-            return redirect('classes')  # send them to the classes page
+            if not form.data['hourly_rate']:
+                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+                return redirect('accountSettings2t')
+            else:
+                tutor = form.save(commit=False)
+                tutor.user = request.user  # connects the tutor to the user
+                tutor.save()
+                return redirect('classes')  # send them to the classes page
         else:
             messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
             return redirect('accountSettings2t')
