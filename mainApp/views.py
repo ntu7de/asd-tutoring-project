@@ -514,6 +514,9 @@ def accountSettings2t(request):
             tutor.user = request.user  # connects the tutor to the user
             tutor.save()
             return redirect('classes')  # send them to the classes page
+        else:
+            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            return redirect('accountSettings2t')
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
