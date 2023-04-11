@@ -1,0 +1,31 @@
+{% extends "mainApp/tutorBase.html" %}
+{% load static %}
+{% block body %}
+
+<body>
+<!--<form method="GET">-->
+    <form method="POST"  >
+        {% csrf_token %}
+<h1>{{ Classes.subject }} {{ Classes.catalognumber}} {{Classes.classname}}</h1>
+        <input class="form-control mr-sm-2" type="search" placeholder="Add a comment about your comfortabilty with this class here" aria-label="Comment" name="comment">
+
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Add Class</button>
+
+</form>
+
+{% if messages %}
+<ul class="messages" style="list-style: none;">
+    {% for message in messages %}
+    <div class="col" id="tags">
+    <li {% if message.tags %} class="{{ message.tags }} text-primary"  {% endif %}>{{ message }}</li>
+        </div>
+    {% endfor %}
+
+</ul>
+
+{% endif %}
+<p>Back to <a href="/classes">Search</a></p>
+
+</body>
+</html>
+{% endblock %}

@@ -13,9 +13,35 @@
           </div>
         </div>
     </section>
-<!--    <div class="row">-->
-<!--        <h1 class="h1">Welcome {{ user.first_name}}</h1>-->
-<!--        <h1 class="h1">to the student page</h1>-->
-<!--    </div>-->
 
+    {% if requestlist %}
+    <table class="table table-striped table-bordered table-hover" style="padding-left: 40px">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Date</th>
+          <th scope="col">Start Time</th>
+          <th scope="col">End Time</th>
+          <th scope="col">Location</th>
+          <th scope="col">Approval Status</th>
+        </tr>
+      </thead>
+      {% for request in requestlist %}
+      <tbody>
+          <td scope="row">{{request.0}}</td>
+          <td>{{request.1}}</td>
+          <td>{{request.2}}</td>
+          <td>{{request.3}}</td>
+          <td>{{request.4}}</td>
+          <td>{{request.5}}</td>
+          <td>{{request.6}}</td>
+        </tr>
+      </tbody>
+      {% endfor %}
+    </table>
+  </ul>
+  {% else %}
+  <p>You have made no requests for tutors at this time!</p>
+  {% endif %}
 {% endblock body %}

@@ -1,12 +1,16 @@
 import requests
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Classes, Profile, Tutor, Student, tutorClasses
+from django.template import loader
+from django.utils.safestring import mark_safe
+from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 from django.shortcuts import render
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
-from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm
+from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm, AlertForm
 from django.contrib import messages
 from django.db.models import Q
+
 
 # Create your views here.
 
@@ -32,13 +36,11 @@ def home(request):
         return redirect('student')
     return render(request, 'mainApp/home.html')
 
-
+@login_required
 def tutorsetting(request):  # the account settings page for tutors
     user = request.user  # using this to access the profile of the user logged in
-    # profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)
-    # tutor info of the user logged in
-    tutor = get_object_or_404(Tutor, user=user)
+    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
+    tutor = get_object_or_404(Tutor, user=user)  # tutor info of the user logged in
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
@@ -52,29 +54,8 @@ def tutorsetting(request):  # the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
-    # if(monday_start == None and monday_end == None  and tuesday_start == None and tuesday_end == None and wednesday_start == None and wednesday_end == None and thursday_start == None and thursday_end == None and friday_start == None and friday_end == None):
-    #     messages.error(request, 'Please enter your availability')
-    # if (monday_start == None and monday_end != None):
-    #     messages.error(request, 'Please enter a start time for Monday')
-    # if (monday_start != None and monday_end == None):
-    #     messages.error(request, 'Please enter an end time for Monday')
-    # if (tuesday_start == None and tuesday_end != None):
-    #     messages.error(request, 'Please enter a start time for Tuesday')
-
-    # if (monday_start > monday_end):
-    #     messages.error(request, 'Monday start time cannot be after Monday end time')
-    # if (tuesday_start > tuesday_end):
-    #     messages.error(request, 'Tuesday start time cannot be after Tuesday end time')
-    # if (wednesday_start > wednesday_end):
-    #     messages.error(request, 'Wednesday start time cannot be after Wednesday end time')
-    # if (thursday_start > thursday_end):
-    #     messages.error(request, 'Thursday start time cannot be after Thursday end time')
-    # if (friday_start > friday_end):
-    #     messages.error(request, 'Friday start time cannot be after Friday end time')
 
     hourly_rate = tutor.hourly_rate
-    # if len(hourly_rate) > 5:
-    #     messages.error(request, 'Hourly rate cannot be more than 4 digits')
 
     first_name = profile.first_name
     last_name = profile.last_name
@@ -94,11 +75,11 @@ def tutorsetting(request):  # the account settings page for tutors
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
@@ -107,43 +88,33 @@ def tutorsetting(request):  # the account settings page for tutors
 
                 profileform2.save()
         if 'edit_tutor' in request.POST:  # if they're working with the TUTOR FORM
-
+            tutorID = tutor.user
+            user_id = request.user
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-
-                # these if statements exist so that if the fields aren't directly updated they stay the same
                 if not tutorform.data['hourly_rate']:
                     tutor.hourly_rate = hourly_rate
-                if not tutorform.data['monday_start']:
+                if tutorform.data['monday_start'] == "Select Time":
                     tutor.monday_start = monday_start
-                if not tutorform.data['monday_end']:
+                if tutorform.data['monday_end'] == "Select Time":
                     tutor.monday_end = monday_end
-                if not tutorform.data['tuesday_start']:
+                if tutorform.data['tuesday_start'] == "Select Time":
                     tutor.tuesday_start = tuesday_start
-                if not tutorform.data['tuesday_end']:
+                if tutorform.data['tuesday_end'] == "Select Time":
                     tutor.tuesday_end = tuesday_end
-                if not tutorform.data['wednesday_start']:
+                if tutorform.data['wednesday_start'] == "Select Time":
                     tutor.wednesday_start = wednesday_start
-                if not tutorform.data['wednesday_end']:
+                if tutorform.data['wednesday_end'] == "Select Time":
                     tutor.wednesday_end = wednesday_end
-                if not tutorform.data['thursday_start']:
+                if tutorform.data['thursday_start'] == "Select Time":
                     tutor.thursday_start = thursday_start
-                if not tutorform.data['thursday_end']:
+                if tutorform.data['thursday_end'] == "Select Time":
                     tutor.thursday_end = thursday_end
-                if not tutorform.data['friday_start']:
+                if tutorform.data['friday_start'] == "Select Time":
                     tutor.friday_start = friday_start
-                if not tutorform.data['friday_end']:
+                if tutorform.data['friday_end'] == "Select Time":
                     tutor.friday_end = friday_end
-                # if not tutorform.data['monday_hours']:
-                #     tutor.monday_hours = monday_hours
-                # if not tutorform.data['tuesday_hours']:
-                #     tutor.tuesday_hours = tuesday_hours
-                # if not tutorform.data['wednesday_hours']:
-                #     tutor.wednesday_hours = wednesday_hours
-                # if not tutorform.data['thursday_hours']:
-                #     tutor.thursday_hours = thursday_hours
-                # if not tutorform.data['friday_hours']:
-                #     tutor.friday_hours = friday_hours
+
                 tutor.save()
     context = {
         'form': ProfileForm2,
@@ -151,9 +122,10 @@ def tutorsetting(request):  # the account settings page for tutors
     }
     return render(request, 'mainApp/tutorSettings.html', context=context)
 
-def studentsetting(request): #the account settings page for students
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+
+def studentsetting(request):  # the account settings page for students
+    user = request.user  # using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
 
     # the field information that is currently in the database for student and profile
     first_name = profile.first_name
@@ -174,11 +146,11 @@ def studentsetting(request): #the account settings page for students
                     profile.first_name = first_name
                 if not profileform2.data['last_name']:
                     profile.last_name = last_name
-                if not profileform2.data['year']:
+                if profileform2.data['year'] == "Select a Year":
                     profile.year = year
                 if not profileform2.data['email']:
                     profile.email = email
-                if not profileform2.data['pronouns']:
+                if profileform2.data['pronouns'] == "Select Pronouns":
                     profile.pronouns = pronouns
                 if not profileform2.data['major']:
                     profile.major = major
@@ -190,13 +162,64 @@ def studentsetting(request): #the account settings page for students
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
-
+@login_required
 def tutor(request):  # tutor home page
-    return render(request, 'mainApp/tutor.html')
+    u = request.user
+    tutor = get_object_or_404(Tutor, user=u)
+    requests = Request.objects.filter(tutor__lte=tutor) #get all of the requests associated with the tutor
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the student first name
+        profile = get_object_or_404(Profile, user=i.student) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the student last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        # #location
+        location = i.location
+        #status of approval
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if request.method == 'POST':
+            if 'approve' in request.POST: #approving and denying
+                i.approved = "approved"
+                i.save()
+                return redirect('tutor')
+            else:
+                i.approved = "denied"
+                i.save()
+                return redirect('tutor')
 
+    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
 
+@login_required
 def student(request):  # student home page
-    return render(request, 'mainApp/student.html')
+    student = request.user
+    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requestlist = [] #the array that we will put all of the relevant info for each request into
+    for i in requests:
+        #the tutor first name
+        profile = get_object_or_404(Profile, user=i.tutor.user) #this will get us the tutor's profile
+        first_name = profile.first_name
+        #the tutor last name
+        last_name = profile.last_name
+        #the date
+        date = i.date
+        #the start time
+        start_time = i.startTime
+        #the end time
+        end_time = i.endTime
+        #location
+        location = i.location
+        #status of approvall
+        approved = i.approved
+        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+    return render(request, 'mainApp/student.html', {'requestlist': requestlist})
 
 
 @login_required
@@ -205,143 +228,245 @@ def accountSettings(request):
     if request.method == "POST":
         form = ProfileForm(request.POST)
         if form.is_valid():  # form isn't valid right now
+            # if not form.email.to_python(request, value= str).__contains__("@"):
+            #     return redirect('login')
             profile = form.save(commit=False)
             # makes it so that the google auth user is connected to this profile
             profile.user = request.user
             profile.save()
             if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
-            else: #sends you to initially filling in your student settings
-                stud = Student.objects.create(user=request.user, classes="") #creates an instance of a student
-                stud.save() #saves that instance
+            else:  # sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+                stud.save()  # saves that instance
                 return redirect('student')
         else:
             return redirect('accountSettings2s')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
+@login_required
+def accountSettings2s(request):
+    if request.method == "POST":
+        form = ProfileForm(request.POST)
+        if form.is_valid():  # form isn't valid right now
+            # if not form.email.to_python(request, value= str).__contains__("@"):
+            #     return redirect('login')
+            profile = form.save(commit=False)
+            # makes it so that the google auth user is connected to this profile
+            profile.user = request.user
+            profile.save()
+            if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
+                return redirect('accountSettings2t')
+            else:  # sends you to initially filling in your student settings
+                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+                stud.save()  # saves that instance
+                return redirect('student')
+        else:
+            return redirect('accountSettings2s')
+    form = ProfileForm()
+    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
+@login_required
+def classesdetail(request, classnumber):
+    # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    currentClass = Classes.objects.get(classnumber = classnumber)
+    template = loader.get_template('mainApp/classesdetail.html')
+    context = {
+        'Classes' : currentClass,
+    }
+    if request.method == 'POST':
+        classes_id = classnumber
+        tutor_id = request.user.id
+        comment = request.POST.get('comment')
+        tutor_class_data = tutorClasses(
+            classes_id=classnumber,
+            tutor_id=request.user.id,
+            comment = comment,
+        )
+        tutorClass = tutorClasses.objects.filter(classes_id=classes_id, tutor_id=tutor_id)
+        # tutorClasses(request.POST, classes_id=classes_id, tutor_id=tutor_id)
+
+        if tutorClass:
+            messages.add_message(request, messages.INFO, "Class already added")
+        else:
+            tutor_class_data.save()
+            return redirect('/classes')
+
+    return HttpResponse(template.render(context, request))
+
+@login_required
 def searchClasses(request):
     all_classes = {}
-    courseNumber = ''
     if 'name' in request.GET:
-        input = request.GET['name'].split(' ')
-        inputLength = len(input)
-
-        subject = request.GET['name'].split(' ')[0].upper()
-        if inputLength < 0:
-            # try:
-            courseNumber = request.GET['name'].split(' ')[1]
-            # except IndexError:
-            #     # messages.add_message(request, messages.WARNING, 'Incorrect Form')
-            #     pass
-        else:
-            # url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01'
+        input_value = request.GET['name']
+        # data = ''
+        if input_value.isdigit():
             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
-
-            if inputLength == 1:
-                url += '&class_nbr=' + subject
-            if inputLength == 2:
-                courseNumber = request.GET['name'].split(' ')[1]
-                url += '&subject=' + subject + '&catalog_nbr=' + courseNumber
-            if inputLength == 3:
-                url += '&keyword=' + request.GET['name']
+            url += '&catalog_nbr=' + input_value
             response = requests.get(url)
             data = response.json()
-            name = ''
-            classNumber = ''
-            a = 0
-            for c in data:
-                if (a == 0):
-                    a += 1
+            # messages.add_message(request, messages.INFO,url)
+            currentClasses = []
+            if len(data) > 1:
+                for c in data:
                     name = c['descr']
-                    classNumber = c['class_nbr']
-                    class_data = Classes(
-                        subject=c['subject'],
-                        catalognumber=c['catalog_nbr'],
-                        classsection=c['class_section'],
-                        classnumber=c['class_nbr'],
-                        classname=c['descr'],
-                    )
-                class_data.save()
+                    if name in currentClasses:
+                        i = 1
+                    else:
+                        currentClasses.append(name)
+                        classNumber = c['class_nbr']
+                        catalog_nbr = c['catalog_nbr']
+                        subject = c['subject']
+                        class_data = Classes(
+                            subject=c['subject'],
+                            catalognumber=c['catalog_nbr'],
+                            classsection=c['class_section'],
+                            classnumber=c['class_nbr'],
+                            classname=c['descr'],
 
+                            body=c['subject']+c['catalog_nbr']+c['descr'],
+
+                        )
+                        class_data.save()
+                      
+                        classNumber = str(classNumber)
+                        # tutuor_class_data.save()
+                        messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
                     request, messages.WARNING, 'No classes found')
+        else:
+            input = input_value.split(' ')
+            inputLength = len(input)
+            first = input[0].upper()
+            if inputLength < 0:
+                courseNumber = input[1]
             else:
-                tutuor_class_data = tutorClasses(
-                    classes_id=classNumber,
-                    tutor_id=request.user.id,
-                )
-                tutuor_class_data.save()
-                messages.add_message(request, messages.INFO,
-                                     name + ' added successfully')
+                url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
+                if inputLength == 1:
+                    url += '&subject=' + first
+                    try:
+                        response = requests.get(url)
+                        data = response.json()
+                    except requests.exceptions.RequestException:
+                        url += '&catalog_nbr=' + first
+                        response = requests.get(url)
+                        data = response.json()
+                        if len(data) == 1:
+                            currentClasses = []
+                            for c in data:
+                                name = c['descr']
+                                if name in currentClasses:
+                                    i = 1
+                                else:
+                                    currentClasses.append(name)
+                                    catalog_nbr = c['catalog_nbr']
+                                    subject = c['subject']
+                                    classNumber = c['class_nbr']
+                                    class_data = Classes(
+                                        subject=c['subject'],
+                                        catalognumber=c['catalog_nbr'],
+                                        classsection=c['class_section'],
+                                        classnumber=c['class_nbr'],
+                                        classname=c['descr'],
+
+                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
+
+                                    )
+                                    class_data.save()
+                                    # tutuor_class_data = tutorClasses(
+                                    #     classes_id=classNumber,
+                                    #     tutor_id=request.user.id,
+                                    # )
+                                    classNumber = str(classNumber)
+                                    # tutuor_class_data.save()
+                                    messages.add_message(request, messages.INFO, mark_safe(
+                                        '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
+                elif inputLength == 2:
+                    second = request.GET['name'].split(' ')[1]
+                    url += '&subject=' + first + '&catalog_nbr=' + second
+                    try:
+                        response = requests.get(url)
+                        data = response.json()
+                    except requests.exceptions.RequestException:
+                        url += '&keyword=' + request.GET['name']
+                        response = requests.get(url)
+                        data = response.json()
+                elif inputLength == 3:
+                    url += '&keyword=' + request.GET['name']
+                    response = requests.get(url)
+                    data = response.json()
+                if len(data) > 1:
+                    currentClasses = []
+                    for c in data:
+                        name = c['descr']
+                        if name in currentClasses:
+                            i = 1
+                        else:
+                            currentClasses.append(name)
+                            classNumber = c['class_nbr']
+                            catalog_nbr = c['catalog_nbr']
+                            subject = c['subject']
+                            class_data = Classes(
+                                subject=c['subject'],
+                                catalognumber=c['catalog_nbr'],
+                                classsection=c['class_section'],
+                                classnumber=c['class_nbr'],
+                                classname=c['descr'],
+
+                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
+
+                            )
+                            class_data.save()
+
+                            classNumber = str(classNumber)
+                            # tutuor_class_data.save()
+                            messages.add_message(request, messages.INFO, mark_safe(
+                                '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
+            all_classes = Classes.objects.all()
+            if len(data) == 0:
+                messages.add_message(
+                    request, messages.WARNING, 'No classes found')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
-
+@login_required
 def detail(request, classnumber):
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
-    # ^^Trying to get all the tutor ids related to the selected class; This works
-    # Trying to use those ids to obtain the tutor object to use other info like name, rate etc.; This doesn't work because after I get the object a, I can't access fields like first_name etc.
+    tutors0 = []
     for i in tutorInfo:
-        tutor = get_object_or_404(Profile, user=i.tutor)
-        #this works and gets you the tutor object ^
-        print(tutor.first_name+" "+tutor.last_name)
-    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutor})
+        profile = get_object_or_404(Profile, user=i.tutor)
+        tutor = get_object_or_404(Tutor, user=i.tutor)
+        tutors0.append((profile, tutor))
 
-def tutordetail(request):
-    return render(request,'mainApp/tutordetail.html')
+    return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
-# def searchClasses(request):
-#     all_classes = {}
-#     url = ' '
-#     if 'name' in request.GET:
-#         input1 = request.GET['name']
-#         input_length = len(input1)
-#         # if input_length == 0:
-#         #     messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         if input_length == 1:
-#             classnnbr = request.GET['name'].split(' ')[0].upper()
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&class_nbr=' + classnnbr
-#         elif input_length == 2:
-#             subject = request.GET['name'].split(' ')[0].upper()
-#             courseNumber = request.GET['name'].split(' ')[1]
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&subject=' + subject  + '&catalog_nbr=' + courseNumber
-#         elif input_length > 2:
-#             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1238&page=1' + '&keyword=' + input1
-#         else:
-#             messages.add_message(request, messages.WARNING, 'Please enter a class name')
-#         response = requests.get(url)
-#         data = response.json()
-#         for c in data:
-#                 name = c['descr']
-#                 classNumber = c['class_nbr']
-#                 class_data = Classes(
-#                     # user=request.user,
-#                     subject=c['subject'],
-#                     catalognumber=c['catalog_nbr'],
-#                     classsection=c['class_section'],
-#                     classnumber=c['class_nbr'],
-#                     classname=c['descr'],
-#                 )
-#                 class_data.save()
-#                 all_classes = Classes.objects.all()
-#         if len(data) == 0:
-#                 messages.error(request, 'No classes found')
-#
-#         else:
-#                 # messages.add_message(request, messages.INFO, 'Class ' + name + ' added successfully')
-#                 messages.success(request, 'Class ' + name + ' added successfully')
-#                 tutuor_class_data = tutorClasses(
-#                 classes_id=classNumber,
-#                 tutor_id=request.user.id,
-#                 )
-#                 tutuor_class_data.save()
-#
-#     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
+@login_required
+def tutordetail(request,profileid):
+    profile = get_object_or_404(Profile,id=profileid)
+    tutorpro = get_object_or_404(Tutor,user = profile.user)
+    classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
+    classes= []
+
+    if request.method == 'POST':
+        form = AlertForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.student = request.user
+            form.tutor = tutorpro
+            form.save()
+            return redirect('classList')
+    form = AlertForm()
+    for i in classesTaught:
+        Class = i.classes
+        classes.append(Class)
+    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)], 'form':form})
+
+
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -361,33 +486,49 @@ def classes(request):
                   {"AllClasses": AllClasses}
                   )
 
+@login_required
 def StudentSearch(request):
     model = Classes
     data = Classes.objects.all()
     q = request.GET.get('search')
     if q:
-        classes = Classes.objects.filter(Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
-                                         )
+        q = q.strip(" ")
+        q = q.replace(":","")
+        q = q.replace(" ","")
+        classes = Classes.objects.filter(
+            Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
+        )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
         return render(request, 'mainApp/classList.html', {'info': data})
 
 
-
+@login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
     if request.method == "POST":
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            tutor = form.save(commit=False)
-            tutor.user = request.user  # connects the tutor to the user
-            tutor.save()
-            return redirect('classes')  # send them to the classes page
+            if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
+                    form.data['tuesday_start'] == form.data['tuesday_end'] or \
+                    form.data['wednesday_start'] == form.data['wednesday_end'] or \
+                    form.data['thursday_start'] == form.data['thursday_start'] or \
+                    form.data['friday_start'] == form.data['friday_end']:
+                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+                return redirect('accountSettings2t')
+            else:
+                tutor = form.save(commit=False)
+                tutor.user = request.user  # connects the tutor to the user
+                tutor.save()
+                return redirect('classes')  # send them to the classes page
+        else:
+            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            return redirect('accountSettings2t')
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
 
-
+@login_required
 def classes(request):
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
@@ -403,8 +544,15 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
-
+@login_required
 def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile})
+    tutor = get_object_or_404(Tutor, user=user) #tutor of the user logged in
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor})
+
+@login_required
+def accountDisplayStudent(request): #the user version of account display
+    user = request.user #using this to access the profile of the user logged in
+    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+    return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})

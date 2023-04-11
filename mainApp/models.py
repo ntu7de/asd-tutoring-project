@@ -40,20 +40,9 @@ class Profile(models.Model):
     major = models.CharField(max_length=100)
     tutor_or_student = models.CharField(max_length=100, default="tutor")
     fun_fact = models.CharField(max_length=200)
-#
-# class Tutor(models.Model): #tutor profile!
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2)
-#     monday_start = models.TimeField()
-#     monday_end = models.TimeField()
-#     tuesday_start = models.TimeField()
-#     tuesday_end = models.TimeField()
-#     wednesday_start = models.TimeField()
-#     wednesday_end = models.TimeField()
-#     thursday_start = models.TimeField()
-#     thursday_end = models.TimeField()
-#     friday_start = models.TimeField()
-#     friday_end = models.TimeField()
+
+
+
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     hourly_rate = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
@@ -103,6 +92,7 @@ class Classes(models.Model):
     classnumber = models.CharField(max_length=100, default='', primary_key= True, unique= True)
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
+    body = models.TextField(default='')
 
     def __str__(self):
         return self.classname
@@ -110,6 +100,16 @@ class Classes(models.Model):
 class tutorClasses(models.Model):
     tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=200, default='')
+
+class Request(models.Model):
+    startTime = models.CharField(max_length=100, null=True, blank=True)
+    endTime = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    approved = models.CharField(max_length=100, null=True, blank=True)
+    date = models.CharField(max_length=100, null=True, blank=True)
 
 # class TutorClasses(models.Model):
 #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
