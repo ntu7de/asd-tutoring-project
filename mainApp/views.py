@@ -166,11 +166,14 @@ def studentsetting(request):  # the account settings page for students
 def tutor(request):  # tutor home page
     u = request.user
     tutor = get_object_or_404(Tutor, user=u)
-    requests = Request.objects.filter(tutor__lte=tutor) #get all of the requests associated with the tutor
+    requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
+    print(requests)
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
         #the student first name
-        profile = get_object_or_404(Profile, user=i.student) #this will get us the tutor's profile
+        user = i.student
+        profile = get_object_or_404(Profile, user=user) #this will get us the tutor's profile
+        print(profile)
         first_name = profile.first_name
         #the student last name
         last_name = profile.last_name
@@ -200,7 +203,7 @@ def tutor(request):  # tutor home page
 @login_required
 def student(request):  # student home page
     student = request.user
-    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requests = Request.objects.filter(student=student)#get all of the requests associated with the student
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
         #the tutor first name
