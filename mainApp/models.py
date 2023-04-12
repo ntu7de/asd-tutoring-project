@@ -68,26 +68,7 @@ class Tutor(models.Model):
     thursday_end = models.CharField(max_length=100, null=True, blank=True)
     friday_start = models.CharField(max_length=100, null=True, blank=True)
     friday_end = models.CharField(max_length=100, null=True, blank=True)
-    # def clean(self):
-    #     super().clean()
-    #
-    #     # Check if end time is later than start time for each day
-    #     if self.monday_start >= self.monday_end:
-    #         raise ValidationError("Monday end time must be later than start time.")
-    #     if self.tuesday_start >= self.tuesday_end:
-    #         raise ValidationError("Tuesday end time must be later than start time.")
-    #     if self.wednesday_start >= self.wednesday_end:
-    #         raise ValidationError("Wednesday end time must be later than start time.")
-    #     if self.thursday_start >= self.thursday_end:
-    #         raise ValidationError("Thursday end time must be later than start time.")
-    #     if self.friday_start >= self.friday_end:
-    #         raise ValidationError("Friday end time must be later than start time.")
-    # # monday_hours = models.CharField(max_length=200)
-    # tuesday_hours = models.CharField(max_length=200)
-    # wednesday_hours = models.CharField(max_length=200)
-    # thursday_hours = models.CharField(max_length=200)
-    # friday_hours = models.CharField(max_length=200)
-    # classes = models.CharField(max_length=200)
+
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -95,9 +76,6 @@ class Student(models.Model):
 
 
 class Classes(models.Model):
-    # classID = models.AutoField(primary_key=True, null = False)
-    # classID = models.AutoField(primary_key=True)
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=100, default='')
     catalognumber = models.CharField(max_length=100, default='')
     classsection = models.CharField(max_length=100, default='')
@@ -122,22 +100,4 @@ class Request(models.Model):
     approved = models.CharField(max_length=100, null=True, blank=True)
     date = models.CharField(max_length=100, null=True, blank=True)
 
-# class TutorClasses(models.Model):
-#     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
-#     classID = models.ForeignKey(Classes, on_delete=models.CASCADE)
-#     rate = models.FloatField()
-#
-#
-# # class TutorTime(models.Model):
-# #     sessionID = models.AutoField(primary_key=True)
-# #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
-# #     day = models.CharField(max_length=20)
-# #     start_time = models.TimeField()
-# #     end_time = models.TimeField()
-# #     location = models.CharField(max_length=100)
-# #
-# #
-# # class SessionBooked(models.Model):
-# #     sessionID = models.ForeignKey(TutorTime, on_delete=models.CASCADE)
-# #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
-# #     studentID = models.ForeignKey(Student, on_delete=models.CASCADE)
+
