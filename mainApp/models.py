@@ -42,18 +42,6 @@ class Profile(models.Model):
     fun_fact = models.CharField(max_length=200)
 
 
-class Request(models.Model):
-
-    requestID = models.AutoField(primary_key=True)
-    studentID= models.CharField(max_length=100, null=True, blank=True)
-
-    tutorID = models.CharField(max_length=100, null=True, blank=True)
-    startTime = models.CharField(max_length=100, null=True, blank=True)
-    endTime = models.CharField(max_length=100, null=True, blank=True)
-    approved = models.CharField(max_length=100, null=True, blank=True)
-    date = models.CharField(max_length=100)
-
-
 
 class Tutor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -83,6 +71,7 @@ class Classes(models.Model):
     classname = models.CharField(max_length=100, default='')
     instructor = models.CharField(max_length=200, default='')
     body = models.TextField(default='')
+
     def __str__(self):
         return self.classname
 
