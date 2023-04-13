@@ -111,6 +111,15 @@ class tutorClasses(models.Model):
     tutor = models.OneToOneField(User, on_delete=models.CASCADE)
     classes = models.ForeignKey(Classes, on_delete=models.CASCADE)
 
+class Request(models.Model):
+        startTime = models.CharField(max_length=100, null=True, blank=True)
+        endTime = models.CharField(max_length=100, null=True, blank=True)
+        location = models.CharField(max_length=100, null=True, blank=True)
+        tutor = models.ForeignKey(Tutor, on_delete=models.CASCADE)
+        student = models.ForeignKey(User, on_delete=models.CASCADE)
+        approved = models.CharField(max_length=100, null=True, blank=True)
+        date = models.CharField(max_length=100, null=True, blank=True)
+
 # class TutorClasses(models.Model):
 #     tstudentID = models.ForeignKey(Tutor, on_delete=models.CASCADE)
 #     classID = models.ForeignKey(Classes, on_delete=models.CASCADE)

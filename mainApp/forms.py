@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 from .models import  Profile
 from .models import Tutor
-from .models import Student
+from .models import Student, Request
 from django.core.exceptions import ValidationError
 Search = ( ("option1", "course mnemonic"),
            ("option2","course number"),
@@ -124,11 +124,6 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
     thursday_end = forms.ChoiceField(choices=TimeSelections, required=False)
     friday_start = forms.ChoiceField(choices=TimeSelections, required=False)
     friday_end = forms.ChoiceField(choices=TimeSelections, required=False)
-    # monday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # tuesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # wednesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # thursday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # friday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
 
     class Meta:
         model = Tutor
@@ -136,7 +131,18 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
         # fields = ['hourly_rate', 'monday_hours', 'tuesday_hours', 'wednesday_hours', 'thursday_hours', 'friday_hours']
         exclude = ()
 
+class AlertForm(forms.ModelForm):
+    startTime = forms.ChoiceField(choices=TimeSelections)
+    endTime = forms.ChoiceField(choices=TimeSelections)
+    day = forms.DateField(widget=forms.SelectDateWidget)
+    location = forms.CharField(max_length=100)
+    classname = forms.CharField(max_length=100)
+    # tutor = forms.CharField(max_length=100)
 
+    class Meta:
+        model = Request
+        fields = ['startTime', 'endTime', 'day', 'location','classname']
+        exclude = ()
 class StudentForm(forms.ModelForm): #the form you see that updates your student settings in "Account Settings"
     #the fields you can (BUT DON'T HAVE TO) update
     classes = forms.CharField(required=False)
