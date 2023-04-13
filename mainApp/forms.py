@@ -18,7 +18,6 @@ Years1 =(
 ) #choices for the year choice field
 Years =(
     ("Select a Year", "Select a Year"),
-]
     ("First", "First"),
     ("Second", "Second"),
     ("Third", "Third"),
@@ -133,6 +132,7 @@ TimeSelections1 = (
     ("7:30 PM", "7:30 PM"),
     ("8:00 PM", "8:00 PM"),
 )
+
 class SearchForm(forms.Form): #the form you see when searching for classes
     search = forms.ChoiceField(choices=Search, required=True)
 
@@ -222,14 +222,14 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
 class AlertForm(forms.ModelForm):
     startTime = forms.ChoiceField(choices=TimeSelections)
     endTime = forms.ChoiceField(choices=TimeSelections)
-    day = forms.DateField(widget=forms.SelectDateWidget)
+    date = forms.DateField(widget=forms.SelectDateWidget)
     location = forms.CharField(max_length=100)
     classname = forms.CharField(max_length=100)
     # tutor = forms.CharField(max_length=100)
 
     class Meta:
         model = Request
-        fields = ['startTime', 'endTime', 'day', 'location','classname']
+        fields = ['startTime', 'endTime', 'date', 'location','classname']
         exclude = ()
 
 

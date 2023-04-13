@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm, AlertForm
 from django.contrib import messages
 from django.db.models import Q
+import calendar
+from datetime import date, datetime
 
 
 # Create your views here.
@@ -445,11 +447,11 @@ def detail(request, classnumber):
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 @login_required
-def tutordetail(request,profileid):
-    profile = get_object_or_404(Profile,id=profileid)
-    tutorpro = get_object_or_404(Tutor,user = profile.user)
+def tutordetail(request, profileid):
+    profile = get_object_or_404(Profile, id=profileid)
+    tutorpro = get_object_or_404(Tutor, user=profile.user)
     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
-    classes= []
+    classes = []
 
     if request.method == 'POST':
         form = AlertForm(request.POST)
@@ -458,14 +460,73 @@ def tutordetail(request,profileid):
             form.student = request.user
             form.tutor = tutorpro
             form.approved = "pending"
-            form.save()
-            return redirect('classList')
+            d = date.today()
+            x = calendar.day_name[d.weekday()].lower()
+            start = x + '_start'
+            end = x + '_end'
+            # Check if the session start time is within TA's available hours
+            if form.startTime < getattr(tutorpro, start):
+                messages.add_message(request, messages.WARNING, 'Start time must be within the available hours')
+                return redirect('tutordetail', profileid=profileid)
+
+            # Check if the session end time is within TA's available hours
+            if form.endTime > getattr(tutorpro, end):
+                messages.add_message(request, messages.WARNING, 'End time must be within the available hours')
+                return redirect('tutordetail', profileid=profileid)
+
+            # Check if the session is no longer than 2 hours
+            # session_start = datetime.combine(form.date, form.startTime)
+            # session_end = datetime.combine(form.date, form.endTime)
+            # if (session_end - session_start).total_seconds() > 7200:
+            #     messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
+            #     return redirect('tutordetail', profileid=profileid)
+            #
+            # # Check if the session end time comes after the session start time
+            # if session_end <= session_start:
+            #     messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
+            #     return redirect('tutordetail', profileid=profileid)
+            # if form.endTime < getattr(tutorpro, end) and  form.startTime > getattr(tutorpro, start):
+            #     form.save()
+            #     return redirect('classList')
+
     form = AlertForm()
     for i in classesTaught:
         Class = i.classes
         classes.append(Class)
-    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)], 'form':form})
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
 
+# def tutordetail(request,profileid):
+#     profile = get_object_or_404(Profile,id=profileid)
+#     tutorpro = get_object_or_404(Tutor,user = profile.user)
+#     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
+#     classes= []
+#
+#     if request.method == 'POST':
+#         form = AlertForm(request.POST)
+#         if form.is_valid():
+#             form = form.save(commit=False)
+#             form.student = request.user
+#             form.tutor = tutorpro
+#             form.approved = "pending"
+#             d = date.today()
+#             x = calendar.day_name[d.weekday()]
+#             start = x + '_start'
+#             end = x + '_end'
+#
+#             if form.startTime < tutorpro:
+#                 messages.add_message(request, messages.WARNING, 'Start time must be within the available hours')
+#
+#             if form.endTime > tutorpro.end:
+#                 messages.INFO(request, messages.WARNING, 'End time must be within the available hours')
+#             else:
+#                 form.save()
+#                 return redirect('classList')
+#     form = AlertForm()
+#     for i in classesTaught:
+#         Class = i.classes
+#         classes.append(Class)
+#     return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)], 'form':form})
+#
 
 @login_required
 def classes(request):
