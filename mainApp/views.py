@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.db.models import Q
 import calendar
 from datetime import date, datetime
+import datetime
 
 
 # Create your views here.
@@ -460,8 +461,10 @@ def tutordetail(request, profileid):
             form.student = request.user
             form.tutor = tutorpro
             form.approved = "pending"
-            d = date.today()
-            x = calendar.day_name[d.weekday()].lower()
+            # d = date.today()
+            d = form.date
+            # x = calendar.day_name[d].lower()
+            x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
             start = x + '_start'
             end = x + '_end'
             # Check if the session start time is within TA's available hours
@@ -476,12 +479,11 @@ def tutordetail(request, profileid):
 
 
             # Check if the session is no longer than 2 hours
-            session_start = form.startTime
-            session_end =  form.endTime
+            session_start = datetime.datetime.strptime(form.startTime, '%I:%M %p')
+            session_end = datetime.datetime.strptime(form.endTime, '%I:%M %p')
             if (session_end - session_start).total_seconds() > 7200:
                 messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
                 return redirect('tutordetail', profileid=profileid)
-
             # # Check if the session end time comes after the session start time
             # if session_end <= session_start:
             #     messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
