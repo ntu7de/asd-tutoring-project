@@ -470,17 +470,18 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
 
             # Check if the session end time is within TA's available hours
-            if form.endTime > getattr(tutorpro, end):
+            elif form.endTime > getattr(tutorpro, end):
                 messages.add_message(request, messages.WARNING, 'End time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
 
+
             # Check if the session is no longer than 2 hours
-            # session_start = datetime.combine(form.date, form.startTime)
-            # session_end = datetime.combine(form.date, form.endTime)
-            # if (session_end - session_start).total_seconds() > 7200:
-            #     messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
-            #     return redirect('tutordetail', profileid=profileid)
-            #
+            session_start = form.startTime
+            session_end =  form.endTime
+            if (session_end - session_start).total_seconds() > 7200:
+                messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
+                return redirect('tutordetail', profileid=profileid)
+
             # # Check if the session end time comes after the session start time
             # if session_end <= session_start:
             #     messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
