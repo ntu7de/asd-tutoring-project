@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.db.models import Q
 import calendar
 from datetime import date, datetime
+import datetime
 
 
 # Create your views here.
@@ -460,8 +461,10 @@ def tutordetail(request, profileid):
             form.student = request.user
             form.tutor = tutorpro
             form.approved = "pending"
-            d = date.today()
-            x = calendar.day_name[d.weekday()].lower()
+            # d = date.today()
+            d = form.date
+            # x = calendar.day_name[d].lower()
+            x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
             start = x + '_start'
             end = x + '_end'
             # Check if the session start time is within TA's available hours
@@ -470,24 +473,26 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
 
             # Check if the session end time is within TA's available hours
-            if form.endTime > getattr(tutorpro, end):
+            elif form.endTime > getattr(tutorpro, end):
                 messages.add_message(request, messages.WARNING, 'End time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
 
+
             # Check if the session is no longer than 2 hours
-            # session_start = datetime.combine(form.date, form.startTime)
-            # session_end = datetime.combine(form.date, form.endTime)
-            # if (session_end - session_start).total_seconds() > 7200:
-            #     messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
-            #     return redirect('tutordetail', profileid=profileid)
-            #
+            session_start = datetime.datetime.strptime(form.startTime, '%I:%M %p')
+            session_end = datetime.datetime.strptime(form.endTime, '%I:%M %p')
+            if (session_end - session_start).total_seconds() > 7200:
+                messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
+                return redirect('tutordetail', profileid=profileid)
             # # Check if the session end time comes after the session start time
-            # if session_end <= session_start:
-            #     messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
-            #     return redirect('tutordetail', profileid=profileid)
-            # if form.endTime < getattr(tutorpro, end) and  form.startTime > getattr(tutorpro, start):
-            #     form.save()
-            #     return redirect('classList')
+            if session_end <= session_start:
+                messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
+                return redirect('tutordetail', profileid=profileid)
+
+            else:
+                form.save()
+                messages.add_message(request, messages.INFO, 'Tutor  request sent!')
+                return redirect('tutordetail', profileid=profileid)
 
     form = AlertForm()
     for i in classesTaught:
