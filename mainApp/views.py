@@ -485,12 +485,14 @@ def tutordetail(request, profileid):
                 messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
                 return redirect('tutordetail', profileid=profileid)
             # # Check if the session end time comes after the session start time
-            # if session_end <= session_start:
-            #     messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
-            #     return redirect('tutordetail', profileid=profileid)
-            # if form.endTime < getattr(tutorpro, end) and  form.startTime > getattr(tutorpro, start):
-            #     form.save()
-            #     return redirect('classList')
+            if session_end <= session_start:
+                messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
+                return redirect('tutordetail', profileid=profileid)
+
+            else:
+                form.save()
+                messages.add_message(request, messages.INFO, 'Tutor  request sent!')
+                return redirect('tutordetail', profileid=profileid)
 
     form = AlertForm()
     for i in classesTaught:
