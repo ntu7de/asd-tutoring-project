@@ -271,31 +271,32 @@ def accountSettings(request):
                 stud.save()  # saves that instance
                 return redirect('student')
         else:
-            return redirect('accountSettings2s')
+            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            return redirect('accountSettings')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
 
-@login_required
-def accountSettings2s(request):
-    if request.method == "POST":
-        form = ProfileForm(request.POST)
-        if form.is_valid():  # form isn't valid right now
-            # if not form.email.to_python(request, value= str).__contains__("@"):
-            #     return redirect('login')
-            profile = form.save(commit=False)
-            # makes it so that the google auth user is connected to this profile
-            profile.user = request.user
-            profile.save()
-            if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
-                return redirect('accountSettings2t')
-            else:  # sends you to initially filling in your student settings
-                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
-                stud.save()  # saves that instance
-                return redirect('student')
-        else:
-            return redirect('accountSettings2s')
-    form = ProfileForm()
-    return render(request, 'mainApp/accountSettings2s.html', {"form": form})
+# @login_required
+# def accountSettings2s(request):
+#     if request.method == "POST":
+#         form = ProfileForm(request.POST)
+#         if form.is_valid():  # form isn't valid right now
+#             # if not form.email.to_python(request, value= str).__contains__("@"):
+#             #     return redirect('login')
+#             profile = form.save(commit=False)
+#             # makes it so that the google auth user is connected to this profile
+#             profile.user = request.user
+#             profile.save()
+#             if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
+#                 return redirect('accountSettings2t')
+#             else:  # sends you to initially filling in your student settings
+#                 stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+#                 stud.save()  # saves that instance
+#                 return redirect('student')
+#         else:
+#             return redirect('accountSettings2s')
+#     form = ProfileForm()
+#     return render(request, 'mainApp/accountSettings2s.html', {"form": form})
 
 @login_required
 def classesdetail(request, classnumber):

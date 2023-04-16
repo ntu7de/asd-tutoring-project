@@ -53,8 +53,8 @@ body {
     color: #0d6efd;
 }
 .form-signin {
-    width: 100%;
-    max-width: 330px;
+    /*width: 100%;*/
+    /*max-width: 330px;*/
     height: 570px;
     padding: 15px;
     margin: auto;
