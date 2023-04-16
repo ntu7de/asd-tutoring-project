@@ -486,6 +486,7 @@ def tutordetail(request, profileid):
             form.tutor = tutorpro
             form.approved = "pending"
             d = form.date
+            classrequested = form.classname
             x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
             # messages.add_message(request, messages.INFO, x)
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
