@@ -57,21 +57,7 @@ def tutorsetting(request):  # the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
-    if checkTimes(monday_start, monday_end) == False:
-        messages.add_message(request, messages.ERROR, 'Your Monday times are invalid')
-        return redirect('tutorsetting')
-    if checkTimes(tuesday_start, tuesday_end) == False:
-        messages.add_message(request, messages.ERROR, 'Your Tuesday times are invalid')
-        return redirect('tutorsetting')
-    if checkTimes(wednesday_start, wednesday_end) == False:
-        messages.add_message(request, messages.ERROR, 'Your Wednesday times are invalid')
-        return redirect('tutorsetting')
-    if checkTimes(thursday_start, thursday_end) == False:
-        messages.add_message(request, messages.ERROR, 'Your Thursday times are invalid')
-        return redirect('tutorsetting')
-    if checkTimes(friday_start, friday_end) == False:
-        messages.add_message(request, messages.ERROR, 'Your Friday times are invalid')
-        return redirect('tutorsetting')
+
     hourly_rate = tutor.hourly_rate
 
     first_name = profile.first_name
@@ -131,21 +117,7 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if tutorform.data['friday_end'] == "Select Time":
                     tutor.friday_end = friday_end
-                if checkTimes(monday_start, monday_end) == False:
-                    messages.add_message(request, messages.ERROR, 'Your Monday times are invalid')
-                    return redirect('tutorsetting')
-                if checkTimes(tuesday_start, tuesday_end) == False:
-                    messages.add_message(request, messages.ERROR, 'Your Tuesday times are invalid')
-                    return redirect('tutorsetting')
-                if checkTimes(wednesday_start, wednesday_end) == False:
-                    messages.add_message(request, messages.ERROR, 'Your Wednesday times are invalid')
-                    return redirect('tutorsetting')
-                if checkTimes(thursday_start, thursday_end) == False:
-                    messages.add_message(request, messages.ERROR, 'Your Thursday times are invalid')
-                    return redirect('tutorsetting')
-                if checkTimes(friday_start, friday_end) == False:
-                    messages.add_message(request, messages.ERROR, 'Your Friday times are invalid')
-                    return redirect('tutorsetting')
+
 
                 tutor.save()
     context = {
@@ -477,7 +449,6 @@ def tutordetail(request, profileid):
     tutorpro = get_object_or_404(Tutor, user=profile.user)
     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
     classes = []
-
     if request.method == 'POST':
         form = AlertForm(request.POST)
         if form.is_valid():
@@ -491,10 +462,9 @@ def tutordetail(request, profileid):
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
                 messages.add_message(request, messages.WARNING, 'Tutor is not available on this day')
                 return redirect('tutordetail', profileid=profileid)
-
-
             start = x + '_start'
             end = x + '_end'
+            # messages.add_message(request, messages.INFO, getattr(tutorpro, start))
             # Check if the session start time is within TA's available hours
             if form.startTime < getattr(tutorpro, start):
                 messages.add_message(request, messages.WARNING, 'Start time must be within the available hours')
@@ -525,7 +495,6 @@ def tutordetail(request, profileid):
         Class = i.classes
         classes.append(Class)
     return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
-
 
 @login_required
 def classes(request):
@@ -620,9 +589,11 @@ def accountDisplayStudent(request): #the user version of account display
 
 
 def checkTimes(first, second):
-    if first == second:
+    session_start = datetime.datetime.strptime(first, '%I:%M %p')
+    session_end = datetime.datetime.strptime(second, '%I:%M %p')
+    if session_start == session_end:
         return False
-    if first > second:
+    if session_end > session_start:
         return False
     else:
         return True
