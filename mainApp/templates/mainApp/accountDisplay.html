@@ -5,11 +5,11 @@
     <body class="text-center">
     <main class="container" style = "padding-top: 40px; padding-bottom: 40px" >
         <main class="form-signin" style="width: 100%; max-width: 590px; height: 430px; padding-top: 40px;
-    padding-bottom: 40px; margin: auto;background-color: #f5f5f5; border-radius: 20px;">
+    padding-bottom: 40px; margin: auto;background-color: rgb(212, 241, 232); border-radius: 20px;">
             <h1 class="h3 mb-3 fw-normal" style="align-content: center">Profile Information:</h1>
 
             {% if profile %}
-            <ul style="display:block; list-style-type: disc; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; padding-inline-start: 0px;">
+            <ul style="display:block; list-style-type: disc; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; padding-inline-start: 0px; background-color: rgb(212, 241, 232);">
               <div class="col-lg-6 col-md-8 mx-auto" style="padding-right: 0px; padding-left: 0px">
                 <h2 class="lead text-muted">First name: {{ profile.first_name}}</h2>
                 <h2 class="lead text-muted">Last name: {{ profile.last_name}}</h2>
@@ -21,7 +21,7 @@
                 <h2 class="lead text-muted">Profile type: {{ profile.tutor_or_student}}</h2>
               </div>
             </ul>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick=location.href="/tutorsetting">Change Account Info</button>
+            <button class="btn my-2 my-sm-0" type="submit" onclick=location.href="/tutorsetting" style="background-color: rgb(13, 172, 122);"><h6 style="color: rgb(247, 253, 247);">Change Account Info</h6></button>
           {% else %}
               <p>No Profile</p>
               {% endif %}
@@ -29,14 +29,14 @@
     </main>
     </main>
 
-    <main class="container" style = "padding-bottom: 40px" >
-   <main class="form-signin" style="width: 100%; max-width: 630px; height: 340px; padding-top: 40px;
-padding-bottom: 40px; margin: auto;background-color: #f5f5f5; border-radius: 20px;">
+    <main class="container" style = "padding-top: 40px; padding-bottom: 40px" >
+      <main class="form-signin" style="width: 100%; max-width: 590px; height: 430px; padding-top: 40px;
+      padding-bottom: 40px; margin: auto;background-color: rgb(212, 241, 232); border-radius: 20px;">
        <h1 class="h3 mb-3 fw-normal" style="align-content: center">Tutor Information:</h1>
 
 
        {% if tutor %}
-       <ul style="display:block; list-style-type: disc; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; padding-inline-start: 0px;">
+       <ul style="display:block; list-style-type: disc; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; padding-inline-start: 0px;background-color: rgb(212, 241, 232)">
          <div class="col-lg-6 col-md-8 mx-auto" style="padding-right: 0px; padding-left: 0px">
            <h2 class="lead text-muted">Hourly Rate: {{ tutor.hourly_rate}}</h2>
            <h2 class="lead text-muted">Monday Hours: {{ tutor.monday_start}}-{{ tutor.monday_end}}</h2>
@@ -46,7 +46,7 @@ padding-bottom: 40px; margin: auto;background-color: #f5f5f5; border-radius: 20p
            <h2 class="lead text-muted">Friday Hours: {{ tutor.friday_start}}-{{ tutor.friday_end}}</h2>
          </div>
        </ul>
-       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" onclick=location.href="/tutorsetting">Change Tutor Info</button>
+       <button class="btn my-2 my-sm-0" type="submit" onclick=location.href="/tutorsetting" style="background-color: rgb(13, 172, 122);"><h6 style="color: rgb(247, 253, 247);">Change Tutor Info</h6></button>
      {% else %}
          <p>No Tutor Profile Made</p>
          {% endif %}
