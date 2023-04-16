@@ -9,6 +9,7 @@ Search = ( ("option1", "course mnemonic"),
            ("option2","course number"),
            ("option1", "course name")
            ) #choices for the search choice field
+
 Years1 =(
     ("First", "First"),
     ("Second", "Second"),
@@ -50,7 +51,9 @@ TimeSelections1 = (
 ) #choices for the time choice field
 
 TimeSelections = (
+
     ("Select Time", "Select Time"),
+
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
     ("10:00 AM", "10:00 AM"),
@@ -75,6 +78,14 @@ TimeSelections = (
     ("7:30 PM", "7:30 PM"),
     ("8:00 PM", "8:00 PM"),
 ) #choices for the time choice field
+
+Years1 =(
+    ("First", "First"),
+    ("Second", "Second"),
+    ("Third", "Third"),
+    ("Fourth", "Fourth"), ("Grad", "Grad")
+)
+
 Pronouns1 = (
     ("She/Her", "She/Her"),
     ("He/Him", "He/Him"),
@@ -96,6 +107,32 @@ Days = (
     ("Thursday", "Thursday"),
     ("Friday", "Friday")
 ) #choices for the day choice field
+TimeSelections1 = (
+    ("9:00 AM", "9:00 AM"),
+    ("9:30 AM", "9:30 AM"),
+    ("10:00 AM", "10:00 AM"),
+    ("10:30 AM", "10:30 AM"),
+    ("11:00 AM", "11:00 AM"),
+    ("11:30 AM", "11:30 AM"),
+    ("12:00 PM", "12:00 PM"),
+    ("12:30 PM", "12:30 PM"),
+    ("1:00 PM", "1:00 PM"),
+    ("1:30 PM", "1:30 PM"),
+    ("2:00 PM", "2:00 PM"),
+    ("2:30 PM", "2:30 PM"),
+    ("3:00 PM", "3:00 PM"),
+    ("3:30 PM", "3:30 PM"),
+    ("4:00 PM", "4:00 PM"),
+    ("4:30 PM", "4:30 PM"),
+    ("5:00 PM", "5:00 PM"),
+    ("5:30 PM", "5:30 PM"),
+    ("6:00 PM", "6:00 PM"),
+    ("6:30 PM", "6:30 PM"),
+    ("7:00 PM", "7:00 PM"),
+    ("7:30 PM", "7:30 PM"),
+    ("8:00 PM", "8:00 PM"),
+)
+
 class SearchForm(forms.Form): #the form you see when searching for classes
     search = forms.ChoiceField(choices=Search, required=True)
 
@@ -163,21 +200,18 @@ class TutorForm(forms.ModelForm):#the form you see that updates your tutor setti
 class FirstTutorForm(forms.ModelForm): #the form that you go to after first making your profile as a tutor
     #the fields you MUST fill out
     hourly_rate = forms.DecimalField(widget=forms.TextInput(attrs={'placeholder':'ex: 12.50'}), required=False)
-    monday_start = forms.ChoiceField(choices=TimeSelections1, required=False)
-    monday_end = forms.ChoiceField(choices=TimeSelections1, required=False)
-    tuesday_start = forms.ChoiceField(choices=TimeSelections1, required=False)
-    tuesday_end = forms.ChoiceField(choices=TimeSelections1, required=False)
-    wednesday_start = forms.ChoiceField(choices=TimeSelections1, required=False)
-    wednesday_end = forms.ChoiceField(choices=TimeSelections1, required=False)
-    thursday_start = forms.ChoiceField(choices=TimeSelections1, required=False)
-    thursday_end = forms.ChoiceField(choices=TimeSelections1, required=False)
-    friday_start = forms.ChoiceField(choices=TimeSelections1, required=False)
-    friday_end = forms.ChoiceField(choices=TimeSelections1, required=False)
-    # monday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # tuesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # wednesday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # thursday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
-    # friday_hours = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: 9:00 AM - 12:00 PM'}), required=False)
+
+    monday_start = forms.ChoiceField(choices=TimeSelections, required=False)
+    monday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+    tuesday_start = forms.ChoiceField(choices=TimeSelections, required=False)
+    tuesday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+    wednesday_start = forms.ChoiceField(choices=TimeSelections, required=False)
+    wednesday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+    thursday_start = forms.ChoiceField(choices=TimeSelections, required=False)
+    thursday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+    friday_start = forms.ChoiceField(choices=TimeSelections, required=False)
+    friday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+
 
     class Meta:
         model = Tutor
@@ -188,13 +222,14 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
 class AlertForm(forms.ModelForm):
     startTime = forms.ChoiceField(choices=TimeSelections)
     endTime = forms.ChoiceField(choices=TimeSelections)
-    day = forms.ChoiceField(choices=Days)
+    date = forms.DateField(widget=forms.SelectDateWidget)
     location = forms.CharField(max_length=100)
     classname = forms.CharField(max_length=100)
     # tutor = forms.CharField(max_length=100)
+
     class Meta:
         model = Request
-        fields = ['startTime', 'endTime', 'day', 'location','classname']
+        fields = ['startTime', 'endTime', 'date', 'location','classname']
         exclude = ()
 
 

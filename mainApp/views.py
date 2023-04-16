@@ -10,6 +10,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, ProfileForm2, TutorForm, StudentForm, FirstStudentForm, FirstTutorForm, SearchForm, AlertForm
 from django.contrib import messages
 from django.db.models import Q
+import calendar
+from datetime import date, datetime
+import datetime
 
 
 # Create your views here.
@@ -54,7 +57,21 @@ def tutorsetting(request):  # the account settings page for tutors
     thursday_end = tutor.thursday_end
     friday_start = tutor.friday_start
     friday_end = tutor.friday_end
-
+    if checkTimes(monday_start, monday_end) == False:
+        messages.add_message(request, messages.ERROR, 'Your Monday times are invalid')
+        return redirect('tutorsetting')
+    if checkTimes(tuesday_start, tuesday_end) == False:
+        messages.add_message(request, messages.ERROR, 'Your Tuesday times are invalid')
+        return redirect('tutorsetting')
+    if checkTimes(wednesday_start, wednesday_end) == False:
+        messages.add_message(request, messages.ERROR, 'Your Wednesday times are invalid')
+        return redirect('tutorsetting')
+    if checkTimes(thursday_start, thursday_end) == False:
+        messages.add_message(request, messages.ERROR, 'Your Thursday times are invalid')
+        return redirect('tutorsetting')
+    if checkTimes(friday_start, friday_end) == False:
+        messages.add_message(request, messages.ERROR, 'Your Friday times are invalid')
+        return redirect('tutorsetting')
     hourly_rate = tutor.hourly_rate
 
     first_name = profile.first_name
@@ -114,6 +131,21 @@ def tutorsetting(request):  # the account settings page for tutors
                     tutor.friday_start = friday_start
                 if tutorform.data['friday_end'] == "Select Time":
                     tutor.friday_end = friday_end
+                if checkTimes(monday_start, monday_end) == False:
+                    messages.add_message(request, messages.ERROR, 'Your Monday times are invalid')
+                    return redirect('tutorsetting')
+                if checkTimes(tuesday_start, tuesday_end) == False:
+                    messages.add_message(request, messages.ERROR, 'Your Tuesday times are invalid')
+                    return redirect('tutorsetting')
+                if checkTimes(wednesday_start, wednesday_end) == False:
+                    messages.add_message(request, messages.ERROR, 'Your Wednesday times are invalid')
+                    return redirect('tutorsetting')
+                if checkTimes(thursday_start, thursday_end) == False:
+                    messages.add_message(request, messages.ERROR, 'Your Thursday times are invalid')
+                    return redirect('tutorsetting')
+                if checkTimes(friday_start, friday_end) == False:
+                    messages.add_message(request, messages.ERROR, 'Your Friday times are invalid')
+                    return redirect('tutorsetting')
 
                 tutor.save()
     context = {
@@ -166,23 +198,21 @@ def studentsetting(request):  # the account settings page for students
 def tutor(request):  # tutor home page
     u = request.user
     tutor = get_object_or_404(Tutor, user=u)
-    requests = Request.objects.filter(tutor__lte=tutor) #get all of the requests associated with the tutor
+    requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
+    print(requests)
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
         #the student first name
-        profile = get_object_or_404(Profile, user=i.student) #this will get us the tutor's profile
+        user = i.student
+        profile = get_object_or_404(Profile, user=user) #this will get us the tutor's profile
+        print(profile)
         first_name = profile.first_name
         #the student last name
         last_name = profile.last_name
-        #the date
         date = i.date
-        #the start time
         start_time = i.startTime
-        #the end time
         end_time = i.endTime
-        # #location
         location = i.location
-        #status of approval
         approved = i.approved
         requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
         if request.method == 'POST':
@@ -200,7 +230,7 @@ def tutor(request):  # tutor home page
 @login_required
 def student(request):  # student home page
     student = request.user
-    requests = Request.objects.filter(student__lte=student) #get all of the requests associated with the student
+    requests = Request.objects.filter(student=student)#get all of the requests associated with the studen
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
         #the tutor first name
@@ -376,10 +406,7 @@ def searchClasses(request):
 
                                     )
                                     class_data.save()
-                                    # tutuor_class_data = tutorClasses(
-                                    #     classes_id=classNumber,
-                                    #     tutor_id=request.user.id,
-                                    # )
+
                                     classNumber = str(classNumber)
                                     # tutuor_class_data.save()
                                     messages.add_message(request, messages.INFO, mark_safe(
@@ -445,11 +472,11 @@ def detail(request, classnumber):
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
 @login_required
-def tutordetail(request,profileid):
-    profile = get_object_or_404(Profile,id=profileid)
-    tutorpro = get_object_or_404(Tutor,user = profile.user)
+def tutordetail(request, profileid):
+    profile = get_object_or_404(Profile, id=profileid)
+    tutorpro = get_object_or_404(Tutor, user=profile.user)
     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
-    classes= []
+    classes = []
 
     if request.method == 'POST':
         form = AlertForm(request.POST)
@@ -457,13 +484,47 @@ def tutordetail(request,profileid):
             form = form.save(commit=False)
             form.student = request.user
             form.tutor = tutorpro
-            form.save()
-            return redirect('classList')
+            form.approved = "pending"
+            d = form.date
+            x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
+            # messages.add_message(request, messages.INFO, x)
+            if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
+                messages.add_message(request, messages.WARNING, 'Tutor is not available on this day')
+                return redirect('tutordetail', profileid=profileid)
+
+
+            start = x + '_start'
+            end = x + '_end'
+            # Check if the session start time is within TA's available hours
+            if form.startTime < getattr(tutorpro, start):
+                messages.add_message(request, messages.WARNING, 'Start time must be within the available hours')
+                return redirect('tutordetail', profileid=profileid)
+
+            # Check if the session end time is within TA's available hours
+            elif form.endTime > getattr(tutorpro, end):
+                messages.add_message(request, messages.WARNING, 'End time must be within the available hours')
+                return redirect('tutordetail', profileid=profileid)
+            # Check if the session is no longer than 2 hours
+            session_start = datetime.datetime.strptime(form.startTime, '%I:%M %p')
+            session_end = datetime.datetime.strptime(form.endTime, '%I:%M %p')
+            if (session_end - session_start).total_seconds() > 7200:
+                messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
+                return redirect('tutordetail', profileid=profileid)
+            # # Check if the session end time comes after the session start time
+            if session_end <= session_start:
+                messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
+                return redirect('tutordetail', profileid=profileid)
+
+            else:
+                form.save()
+                messages.add_message(request, messages.INFO, 'Tutor  request sent!')
+                return redirect('tutordetail', profileid=profileid)
+
     form = AlertForm()
     for i in classesTaught:
         Class = i.classes
         classes.append(Class)
-    return render(request,'mainApp/tutordetail.html',{'info':[(profile,tutorpro,classes)], 'form':form})
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
 
 
 @login_required
@@ -556,3 +617,12 @@ def accountDisplayStudent(request): #the user version of account display
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
+
+
+def checkTimes(first, second):
+    if first == second:
+        return False
+    if first > second:
+        return False
+    else:
+        return True

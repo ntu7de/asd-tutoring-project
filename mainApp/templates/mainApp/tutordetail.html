@@ -36,9 +36,18 @@
 <section class="h-100 gradient-custom-2">
   <div class="container py-5 h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
+
       <div class="col col-lg-9 col-xl-7">
+        {% if messages %}
+              <div class="messages" style="font-size: 1.5rem;color: red;">
+                {% for message in messages %}
+                  <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
         <div class="card">
           <div class="rounded-top text-white d-flex flex-row" style="background-color: rgb(8, 14, 129); height:200px;">
+
             <div class="ms-3" style="margin-top: 60px; margin-bottom: 60px; margin-left: 20px;">
               <h1>{{tutor.0.first_name}} {{tutor.0.last_name}}</h1>
               <p>{{tutor.0.pronouns}}</p>
