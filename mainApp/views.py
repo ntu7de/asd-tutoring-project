@@ -461,6 +461,11 @@ def searchClasses(request):
 
 @login_required
 def detail(request, classnumber):
+    student = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=student)
+    except:
+        return redirect('tutor')
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
@@ -556,6 +561,11 @@ def classes(request):
 
 @login_required
 def StudentSearch(request):
+    student = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=student)
+    except:
+        return redirect('tutor')
     model = Classes
     data = Classes.objects.all()
     q = request.GET.get('search')
