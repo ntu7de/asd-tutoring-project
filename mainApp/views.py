@@ -45,6 +45,11 @@ def home(request):
 
 @login_required
 def tutorsetting(request):  # the account settings page for tutors
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     user = request.user  # using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
     tutor = get_object_or_404(Tutor, user=user)  # tutor info of the user logged in
@@ -133,6 +138,10 @@ def tutorsetting(request):  # the account settings page for tutors
 
 def studentsetting(request):  # the account settings page for students
     user = request.user  # using this to access the profile of the user logged in
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=user)
+    except:
+        return redirect('tutor')
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
 
     # the field information that is currently in the database for student and profile
@@ -173,7 +182,10 @@ def studentsetting(request):  # the account settings page for students
 @login_required
 def tutor(request):  # tutor home page
     u = request.user
-    tutor = get_object_or_404(Tutor, user=u)
+    try: #check if user is accessing wrong side
+        tutor = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
@@ -223,6 +235,10 @@ def tutor(request):  # tutor home page
 @login_required
 def student(request):  # student home page
     student = request.user
+    try: #check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=student)
+    except:
+        return redirect('tutor')
     requests = Request.objects.filter(student=student)#get all of the requests associated with the studen
     requestlist = [] #the array that we will put all of the relevant info for each request into
     for i in requests:
@@ -294,6 +310,11 @@ def accountSettings(request):
 @login_required
 def classesdetail(request, classnumber):
     # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     currentClass = Classes.objects.get(classnumber = classnumber)
     template = loader.get_template('mainApp/classesdetail.html')
     context = {
@@ -454,6 +475,11 @@ def searchClasses(request):
 
 @login_required
 def detail(request, classnumber):
+    student = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=student)
+    except:
+        return redirect('tutor')
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
     tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
@@ -529,6 +555,11 @@ def tutordetail(request, profileid):
 
 @login_required
 def classes(request):
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
     response = requests.get(url)
@@ -549,6 +580,11 @@ def classes(request):
 
 @login_required
 def StudentSearch(request):
+    student = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=student)
+    except:
+        return redirect('tutor')
     model = Classes
     data = Classes.objects.all()
     q = request.GET.get('search')
@@ -567,6 +603,11 @@ def StudentSearch(request):
 @login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     if request.method == "POST":
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
