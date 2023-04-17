@@ -129,6 +129,10 @@ def tutorsetting(request):  # the account settings page for tutors
 
 def studentsetting(request):  # the account settings page for students
     user = request.user  # using this to access the profile of the user logged in
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Student, user=user)
+    except:
+        return redirect('tutor')
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
 
     # the field information that is currently in the database for student and profile
