@@ -88,5 +88,5 @@ class Request(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE)
     approved = models.CharField(max_length=100, null=True, blank=True)
     date = models.CharField(max_length=100, null=True, blank=True)
-
+    classname = models.CharField(max_length=100, null=True, blank=True)
 
