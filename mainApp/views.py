@@ -449,6 +449,9 @@ def tutordetail(request, profileid):
     tutorpro = get_object_or_404(Tutor, user=profile.user)
     classesTaught = tutorClasses.objects.filter(tutor=tutorpro.user)
     classes = []
+    for i in classesTaught:
+        Class = i.classes
+        classes.append(Class)
     if request.method == 'POST':
         form = AlertForm(request.POST)
         if form.is_valid():
@@ -457,7 +460,7 @@ def tutordetail(request, profileid):
             form.tutor = tutorpro
             form.approved = "pending"
             d = form.date
-            classrequested = form.classname
+            classrequested = (form.classname).replace(" ","")
             x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
             # messages.add_message(request, messages.INFO, x)
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
@@ -485,16 +488,21 @@ def tutordetail(request, profileid):
             if session_end <= session_start:
                 messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
                 return redirect('tutordetail', profileid=profileid)
-
+            classexistBool = False
+            for i in classes:
+                if(i.subject+i.catalognumber == classrequested):
+                    classexistBool=True
+                    break
+            if not classexistBool:
+                messages.add_message(request, messages.WARNING, "The Tutor doesn't offer this class. Please look at the classes offered below and enter appropriate course mnemoic and catalog number (for ex: CS 3240)")
+                return redirect('tutordetail', profileid=profileid)
             else:
                 form.save()
                 messages.add_message(request, messages.INFO, 'Tutor  request sent!')
                 return redirect('tutordetail', profileid=profileid)
 
     form = AlertForm()
-    for i in classesTaught:
-        Class = i.classes
-        classes.append(Class)
+    
     return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
 
 @login_required

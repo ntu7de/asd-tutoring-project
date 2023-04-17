@@ -224,7 +224,7 @@ class AlertForm(forms.ModelForm):
     endTime = forms.ChoiceField(choices=TimeSelections)
     date = forms.DateField(widget=forms.SelectDateWidget)
     location = forms.CharField(max_length=100)
-    classname = forms.CharField(max_length=100)
+    classname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: CS 3100 or CS 1110'}))
     # tutor = forms.CharField(max_length=100)
 
     class Meta:
