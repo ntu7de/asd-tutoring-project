@@ -41,6 +41,11 @@ def home(request):
 
 @login_required
 def tutorsetting(request):  # the account settings page for tutors
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     user = request.user  # using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
     tutor = get_object_or_404(Tutor, user=user)  # tutor info of the user logged in
@@ -301,6 +306,11 @@ def accountSettings(request):
 @login_required
 def classesdetail(request, classnumber):
     # https://www.w3schools.com/django/showdjango.php?filename=demo_add_link_details1
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     currentClass = Classes.objects.get(classnumber = classnumber)
     template = loader.get_template('mainApp/classesdetail.html')
     context = {
@@ -541,6 +551,11 @@ def tutordetail(request, profileid):
 
 @login_required
 def classes(request):
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     model = Classes
     url = 'https://api.devhub.virginia.edu/v1/courses'
     response = requests.get(url)
@@ -584,6 +599,11 @@ def StudentSearch(request):
 @login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
+    u = request.user
+    try:  # check if user is accessing wrong side
+        temp = get_object_or_404(Tutor, user=u)
+    except:
+        return redirect('student')
     if request.method == "POST":
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
