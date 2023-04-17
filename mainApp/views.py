@@ -610,7 +610,8 @@ def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     tutor = get_object_or_404(Tutor, user=user) #tutor of the user logged in
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor})
+    classes_offered = tutorClasses.objects.filter(tutor=tutor.user)
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor,"classes_offered": classes_offered})
 
 @login_required
 def accountDisplayStudent(request): #the user version of account display
