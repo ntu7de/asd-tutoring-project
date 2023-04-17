@@ -18,10 +18,20 @@ class Calendar(HTMLCalendar):
     # formats a day as a td
     # filter events by day
     def formatday(self, day, events):
-        events_per_day = events.filter(date__icontains=day)
+        if len(str(self.month)) == 1:
+            formatted_month = "0" + str(self.month)
+        else:
+            formatted_month = str(self.month)
+        if len(str(day)) == 1:
+            formatted_day = "0" + str(day)
+        else:
+            formatted_day = str(day)
+        date = str(self.year) + "-" + formatted_month + "-" + formatted_day
+        # print(date)
+        events_per_day = events.filter(date__contains=date)
         d = ''
         for event in events_per_day:
-            d += f'<li> {event.classname} </li>'
+            d += f'<li> {event.classname, event.startTime + " to " + event.endTime, event.location, "approval: " + event.approved} </li>'
 
         if day != 0:
             return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"

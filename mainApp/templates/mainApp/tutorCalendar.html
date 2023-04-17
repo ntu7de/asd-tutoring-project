@@ -1,5 +1,12 @@
 {% extends 'mainApp/calBase.html' %}
 
 {% block content %}
+
+<div class="clearfix">
+	<a class="btn btn-info left" href="/tutorCalendar/?{{ prev_month }}"> Previous Month </a>
+	<a class="btn btn-info right" href="/tutorCalendar/?{{ next_month }}"> Next Month </a>
+</div>
+
 {{ tutorCalendar }}
+
 {% endblock %}
