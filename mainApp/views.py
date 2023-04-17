@@ -169,50 +169,52 @@ def studentsetting(request):  # the account settings page for students
 @login_required
 def tutor(request):  # tutor home page
     u = request.user
-    tutor = get_object_or_404(Tutor, user=u)
-    requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
-    requestlist = [] #the array that we will put all of the relevant info for each request into
-    for i in requests:
-        #the student first name
-        user = i.student
-        profile = get_object_or_404(Profile, user=user) #this will get us the tutor's profile
-        first_name = profile.first_name
-        #the student last name
-        last_name = profile.last_name
-        date = i.date
-        start_time = i.startTime
-        end_time = i.endTime
-        location = i.location
-        approved = i.approved
-        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+    try:
+        tutor = get_object_or_404(Tutor, user=u)
+        requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
+        requestlist = [] #the array that we will put all of the relevant info for each request into
+        for i in requests:
+            #the student first name
+            user = i.student
+            profile = get_object_or_404(Profile, user=user) #this will get us the tutor's profile
+            first_name = profile.first_name
+            #the student last name
+            last_name = profile.last_name
+            date = i.date
+            start_time = i.startTime
+            end_time = i.endTime
+            location = i.location
+            approved = i.approved
+            requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
 
-    if request.method == 'POST':
-        if 'approve' in request.POST:  # approving and denying
-            a = request.POST.get('approve', [])
-            print(a)
-            b = a[1:]
-            c = b[:-1]
-            d = c.translate({ord("'"): None})
-            my_list = d.split(", ")
-            p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
-            r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
-            print(r)
-            r.approved = 'approved'
-            r.save()
-            return redirect('tutor')
-        if 'deny' in request.POST:
-            a = request.POST.get('deny', [])
-            b = a[1:]
-            c = b[:-1]
-            d = c.translate({ord("'"): None})
-            my_list = d.split(", ")
-            p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
-            r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3],
-                                  endTime=my_list[4])
-            r.approved = 'denied'
-            r.save()
-            return redirect('tutor')
-
+        if request.method == 'POST':
+            if 'approve' in request.POST:  # approving and denying
+                a = request.POST.get('approve', [])
+                print(a)
+                b = a[1:]
+                c = b[:-1]
+                d = c.translate({ord("'"): None})
+                my_list = d.split(", ")
+                p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
+                r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
+                print(r)
+                r.approved = 'approved'
+                r.save()
+                return redirect('tutor')
+            if 'deny' in request.POST:
+                a = request.POST.get('deny', [])
+                b = a[1:]
+                c = b[:-1]
+                d = c.translate({ord("'"): None})
+                my_list = d.split(", ")
+                p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
+                r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3],
+                                      endTime=my_list[4])
+                r.approved = 'denied'
+                r.save()
+                return redirect('tutor')
+    except:
+        return redirect('student')
 
     return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
 
