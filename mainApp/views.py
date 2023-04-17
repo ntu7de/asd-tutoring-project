@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template import loader
 from django.utils.safestring import mark_safe
+from django.views import generic
+
 from .models import Classes, Profile, Tutor, Student, tutorClasses, Request
 from django.shortcuts import render
 from django.views.generic import ListView
@@ -13,6 +15,8 @@ from django.db.models import Q
 import calendar
 from datetime import date, datetime
 import datetime
+from calendar import HTMLCalendar
+from .utils import Calendar
 
 
 # Create your views here.
@@ -647,7 +651,8 @@ def accountDisplay(request):
     user = request.user #using this to access the profile of the user logged in
     profile = get_object_or_404(Profile, user=user) #profile of the user logged in
     tutor = get_object_or_404(Tutor, user=user) #tutor of the user logged in
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor})
+    classes_offered = tutorClasses.objects.filter(tutor=tutor.user)
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor,"classes_offered": classes_offered})
 
 @login_required
 def accountDisplayStudent(request): #the user version of account display
@@ -665,3 +670,52 @@ def checkTimes(first, second):
         return False
     else:
         return True
+
+
+class CalendarView(generic.ListView):
+    model = Request
+    template_name = 'mainApp/tutorCalendar.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # use today's date for the calendar
+        # d = get_date(self.request.GET.get('day', None))
+        d = get_date(self.request.GET.get('month', None))
+
+        # get user
+        user = self.request.user
+
+        # Instantiate our calendar class with today's year and date and user
+        cal = Calendar(d.year, d.month, user)
+
+        # Call the formatmonth method, which returns our calendar as a table
+        html_cal = cal.formatmonth(withyear=True)
+        context['tutorCalendar'] = mark_safe(html_cal)
+
+        # d = get_date(self.request.GET.get('month', None))
+        context['prev_month'] = prev_month(d)
+        context['next_month'] = next_month(d)
+        return context
+
+
+def prev_month(d):
+    first = d.replace(day=1)
+    prev_month = first - datetime.timedelta(days=1)
+    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+    return month
+
+
+def next_month(d):
+    days_in_month = calendar.monthrange(d.year, d.month)[1]
+    last = d.replace(day=days_in_month)
+    next_month = last + datetime.timedelta(days=1)
+    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
+    return month
+
+
+def get_date(req_day):
+    if req_day:
+        year, month = (int(x) for x in req_day.split('-'))
+        return date(year, month, day=1)
+    return datetime.datetime.today()

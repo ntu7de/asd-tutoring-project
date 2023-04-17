@@ -53,7 +53,28 @@
    </div>
 </main>
 </main>
+    <main class="container" style = "padding-top: 40px; padding-bottom: 40px" >
+      <main class="form-signin" style="width: 100%; max-width: 590px; height: 430px; padding-top: 40px;
+      padding-bottom: 40px; margin: auto;background-color: rgb(212, 241, 232); border-radius: 20px;">
+       <h1 class="h3 mb-3 fw-normal" style="align-content: center">Classes Offered:</h1>
+          {% if classes_offered %}
+            <ul style="display:block; list-style-type: disc; margin-block-start: 1em; margin-block-end: 1em; margin-inline-start: 0px; margin-inline-end: 0px; padding-inline-start: 0px;background-color: rgb(212, 241, 232)">
+                <div class="col-lg-6 col-md-8 mx-auto" style="padding-right: 0px; padding-left: 0px">
+                    {% for class in classes_offered %}
+                        <h2 class="lead text-muted"> {{ class.classes.classname }}</h2>
+                    {% endfor %}
+                </div>
+            </ul>
 
+          {% else %}
+            <p>No Classes Offered</p>
+          {% endif %}
+
+          <button class="btn my-2 my-sm-0" type="submit" onclick=location.href="/classes" style="background-color: rgb(13, 172, 122);"><h6 style="color: rgb(247, 253, 247);">Add Classes</h6></button>
+
+   </div>
+</main>
+</main>
 
     </body>
 

@@ -24,5 +24,6 @@ urlpatterns = [
     path('classes/<int:classnumber>/', views.classesdetail, name = 'classesdetail'),
 
     path('accountDisplayStudent/', views.accountDisplayStudent, name='accountDisplay'),
+    path('tutorCalendar/', views.CalendarView.as_view(), name='tutorCalendar'),
 ]
 
