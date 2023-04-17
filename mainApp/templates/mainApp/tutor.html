@@ -34,9 +34,8 @@
           <td>
               <form action="" method="POST">
                   {% csrf_token %}
-                  <button name="approve" class="btn btn-outline-success my-2 my-sm-0" type="submit">Approve</button>
-                  <button name="deny" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Deny</button>
-<!--                  <button name="deny" type="button" class="btn btn-outline-danger" type="submit">Deny</button>-->
+                  <button name="approve" value="{{ request }}" class="btn btn-outline-success my-2 my-sm-0" type="submit">Approve</button>
+                  <button name="deny" value="{{ request }}" class="btn btn-outline-danger my-2 my-sm-0" type="submit">Deny</button>
               </form>
           </td>
           {% else %}
