@@ -12,6 +12,13 @@
 <body class="text-center" style="color: #6c757d;" >
     <main class="form-signin" style="height: 610px">
         <div class="form-floating">
+<!--            {% if messages %}-->
+<!--              <div class="messages" style="font-size: 1.5rem;color: red;">-->
+<!--                {% for message in messages %}-->
+<!--                  <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>-->
+<!--                {% endfor %}-->
+<!--              </div>-->
+<!--            {% endif %}-->
             <h1 class="h3 mb-3 fw-normal">Please Fill In Your Account Settings</h1>
                 <form method="post" style="text-align:center; border-radius:12px">
                     {% csrf_token %}
