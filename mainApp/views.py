@@ -321,7 +321,11 @@ def classesdetail(request, classnumber):
 
 @login_required
 def searchClasses(request):
-    all_classes = {}
+    # all_classes = {}
+    all_classes = Classes.objects.all()
+    classAll = {
+        "classes": all_classes
+    }
     if 'name' in request.GET:
         input_value = request.GET['name']
         # data = ''
