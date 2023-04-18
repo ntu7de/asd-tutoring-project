@@ -587,11 +587,11 @@ def StudentSearch(request):
 @login_required
 # the tutor settings that a tutor sees when they first log in (right after initial account settings)
 def accountSettings2t(request):
-    u = request.user
-    try:  # check if user is accessing wrong side
-        temp = get_object_or_404(Tutor, user=u)
-    except:
-        return redirect('student')
+    # u = request.user
+    # try:  # check if user is accessing wrong side
+    #     temp = get_object_or_404(Tutor, user=u)
+    # except:
+    #     return redirect('student')
     if request.method == "POST":
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
