@@ -195,12 +195,14 @@ def tutor(request):  # tutor home page
         first_name = profile.first_name
         #the student last name
         last_name = profile.last_name
-        date = i.date
+        d = i.date
+        thedate = datetime.datetime.strptime(d, "%Y-%m-%d").date()
         start_time = i.startTime
         end_time = i.endTime
         location = i.location
         approved = i.approved
-        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if(date.today() <= thedate):
+            requestlist.append((first_name, last_name, d, start_time, end_time, location, approved))
 
     if request.method == 'POST':
         if 'approve' in request.POST:  # approving and denying
@@ -248,7 +250,8 @@ def student(request):  # student home page
         #the tutor last name
         last_name = profile.last_name
         #the date
-        date = i.date
+        d = i.date
+        thedate = datetime.datetime.strptime(d, "%Y-%m-%d").date()
         #the start time
         start_time = i.startTime
         #the end time
@@ -257,7 +260,8 @@ def student(request):  # student home page
         location = i.location
         #status of approvall
         approved = i.approved
-        requestlist.append((first_name, last_name, date, start_time, end_time, location, approved))
+        if (date.today() <= thedate):
+            requestlist.append((first_name, last_name, d, start_time, end_time, location, approved))
     return render(request, 'mainApp/student.html', {'requestlist': requestlist})
 
 
