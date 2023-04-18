@@ -53,7 +53,7 @@ TimeSelections1 = (
 TimeSelections = (
 
     ("Select Time", "Select Time"),
-
+    ("Not Available", "Not Available"),
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
     ("10:00 AM", "10:00 AM"),
@@ -108,6 +108,7 @@ Days = (
     ("Friday", "Friday")
 ) #choices for the day choice field
 TimeSelections1 = (
+    ("Not Available", "Not Available"),
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
     ("10:00 AM", "10:00 AM"),

@@ -493,9 +493,10 @@ def tutordetail(request, profileid):
             d = form.date
             classrequested = (form.classname).replace(" ","")
             x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
+            printx = x.capitalize()
             # messages.add_message(request, messages.INFO, x)
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
-                messages.add_message(request, messages.WARNING, 'Tutor is not available on this day')
+                messages.add_message(request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
                 return redirect('tutordetail', profileid=profileid)
             start = x + '_start'
             end = x + '_end'
