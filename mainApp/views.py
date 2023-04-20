@@ -188,6 +188,11 @@ def tutor(request):  # tutor home page
         return redirect('student')
     requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
     requestlist = [] #the array that we will put all of the relevant info for each request into
+    classes = tutorClasses.objects.filter(tutor=u)
+    classlist = []
+    for c in classes:
+        classname = c.classes.classname
+        classlist.append(classname)
     for i in requests:
         #the student first name
         user = i.student
@@ -232,7 +237,7 @@ def tutor(request):  # tutor home page
             return redirect('tutor')
 
 
-    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
+    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist, 'classlist': classlist})
 
 @login_required
 def student(request):  # student home page
