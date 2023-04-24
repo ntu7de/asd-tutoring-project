@@ -1,15 +1,17 @@
 {% extends 'mainApp/initialbase.html'%}
 {% load static %}
 {% block body %}
-  <div class = "container">
-    <div class = "text-center container">
-      <br>
+<div class="container">
+  <div class="text-center container">
+    <br>
     <br><br>
     <div class="row">
+
       <body>{AllClasses[0].ClassName}</body>
+
       <body>{AllClasses[0].instructor}</body>
     </div>
   </div>
-{% endblock %}
+  {% endblock %}
 
-<!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->
+  <!--https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i-->

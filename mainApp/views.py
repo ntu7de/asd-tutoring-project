@@ -541,10 +541,10 @@ def tutordetail(request, profileid):
                 form.save()
                 messages.add_message(request, messages.INFO, 'Tutor  request sent!')
                 return redirect('tutordetail', profileid=profileid)
-
+    lenclasses = len(classes)
     form = AlertForm()
     
-    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes,lenclasses)], 'form': form})
 
 @login_required
 def classes(request):
