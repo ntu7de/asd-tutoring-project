@@ -104,31 +104,41 @@ def tutorsetting(request):  # the account settings page for tutors
             user_id = request.user
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-                if not tutorform.data['hourly_rate']:
-                    tutor.hourly_rate = hourly_rate
-                if tutorform.data['monday_start'] == "Select Time":
-                    tutor.monday_start = monday_start
-                if tutorform.data['monday_end'] == "Select Time":
-                    tutor.monday_end = monday_end
-                if tutorform.data['tuesday_start'] == "Select Time":
-                    tutor.tuesday_start = tuesday_start
-                if tutorform.data['tuesday_end'] == "Select Time":
-                    tutor.tuesday_end = tuesday_end
-                if tutorform.data['wednesday_start'] == "Select Time":
-                    tutor.wednesday_start = wednesday_start
-                if tutorform.data['wednesday_end'] == "Select Time":
-                    tutor.wednesday_end = wednesday_end
-                if tutorform.data['thursday_start'] == "Select Time":
-                    tutor.thursday_start = thursday_start
-                if tutorform.data['thursday_end'] == "Select Time":
-                    tutor.thursday_end = thursday_end
-                if tutorform.data['friday_start'] == "Select Time":
-                    tutor.friday_start = friday_start
-                if tutorform.data['friday_end'] == "Select Time":
-                    tutor.friday_end = friday_end
+                if tutorform.is_valid():
+                    hourly_rate = tutorform.cleaned_data['hourly_rate']
+                    if hourly_rate < 0:
+                        # If the hourly rate is negative, show an error message
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
 
-
-                tutor.save()
+                    if hourly_rate > 100:
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                    if hourly_rate < 12.5:
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+                    else:
+                        if not tutorform.data['hourly_rate']:
+                            tutor.hourly_rate = hourly_rate
+                        if tutorform.data['monday_start'] == "Select Time":
+                            tutor.monday_start = monday_start
+                        if tutorform.data['monday_end'] == "Select Time":
+                            tutor.monday_end = monday_end
+                        if tutorform.data['tuesday_start'] == "Select Time":
+                            tutor.tuesday_start = tuesday_start
+                        if tutorform.data['tuesday_end'] == "Select Time":
+                            tutor.tuesday_end = tuesday_end
+                        if tutorform.data['wednesday_start'] == "Select Time":
+                            tutor.wednesday_start = wednesday_start
+                        if tutorform.data['wednesday_end'] == "Select Time":
+                            tutor.wednesday_end = wednesday_end
+                        if tutorform.data['thursday_start'] == "Select Time":
+                            tutor.thursday_start = thursday_start
+                        if tutorform.data['thursday_end'] == "Select Time":
+                            tutor.thursday_end = thursday_end
+                        if tutorform.data['friday_start'] == "Select Time":
+                            tutor.friday_start = friday_start
+                        if tutorform.data['friday_end'] == "Select Time":
+                            tutor.friday_end = friday_end
+                        tutor.save()
+                        return redirect('tutor')
     context = {
         'form': ProfileForm2,
         'form2': TutorForm,
