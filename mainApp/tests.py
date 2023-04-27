@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from mainApp.models import User, Profile, Tutor, Student, Classes, tutorClasses
+from mainApp.models import User, Profile, Tutor, Student, Classes, tutorClasses, Request
 # Create your tests here.
 
 
@@ -91,7 +91,8 @@ class TutorTestCase(TestCase):
 
     def test_tutor_client_response(self):
         """
-        test multiple client response status codes to make sure they are all 200 OK.
+        test multiple client response status codes to make sure they are all 200 OK,
+        and make sure the correct templates are used.
         """
         self.client.force_login(self.user)  # login
 
@@ -144,7 +145,7 @@ class StudentTestCase(TestCase):
 
     def test_student_account_display(self):
         """
-        test to see if the accountDisplay page works correctly
+        test to see if the accountDisplayStudent page works correctly
         """
         self.client.force_login(self.user)
         response = self.client.get('/accountDisplayStudent/')
@@ -164,7 +165,8 @@ class StudentTestCase(TestCase):
 
     def test_student_client_response(self):
         """
-        test multiple client response status codes to make sure they are all 200 OK.
+        test multiple client response status codes to make sure they are all 200 OK,
+        and make sure the correct templates are used.
         """
         self.client.force_login(self.user)  # login
 
@@ -187,3 +189,57 @@ class StudentTestCase(TestCase):
         student_tutor_search_response = self.client.get('/classList/')
         self.assertEqual(student_tutor_search_response.status_code, 200)
         self.assertTemplateUsed(student_tutor_search_response, 'mainApp/classList.html')
+
+
+class RequestTestCase(TestCase):
+    def setUp(self):
+        # make a student
+        self.user = User.objects.create_user(username="student_tester", password="student_password", id="1234")
+        self.user.profile = Profile.objects.create(user=self.user, first_name="student_f_name",
+                                                   last_name="student_l_name", year="1", pronouns="pronouns",
+                                                   major="major", tutor_or_student="student", fun_fact="fact")
+        self.user.student = Student.objects.create(user=self.user)
+
+        # make a tutor
+        tutor_user = User.objects.create_user(username="tutor_tester", password="tutor_password", id="1235")
+        tutor_user.profile = Profile.objects.create(user=tutor_user, first_name="tutor_f_name", last_name="tutor_l_name", year="1",
+                                                   pronouns="pronouns", major="major", tutor_or_student="tutor",
+                                                   fun_fact="fact")
+        tutor_user.tutor = Tutor.objects.create(user=tutor_user, hourly_rate=20, monday_start="9:00 AM",
+                                               monday_end="12:00 PM", tuesday_start="9:00 AM", tuesday_end="12:00 PM",
+                                               wednesday_start="9:00 AM", wednesday_end="12:00 PM",
+                                               thursday_start="9:00 AM", thursday_end="12:00 PM",
+                                               friday_start="9:00 AM", friday_end="12:00 PM")
+
+        # Add a class
+        test_class = Classes.objects.create(subject="CS", catalognumber="1110", classsection="001", classnumber="15149",
+                                            classname="Introduction to Programming")
+        tutorClasses.objects.create(tutor=tutor_user, classes=test_class)
+
+        self.client = Client()
+
+    def test_request(self):
+        """
+        test if a student can make a request and see it
+        """
+        self.client.force_login(self.user)  # login
+        request_response = self.client.get("/classList/15149/")
+        self.assertEqual(request_response.status_code, 200)
+        self.assertTemplateUsed(request_response, 'mainApp/detail.html')
+        tutor_list = request_response.context['tutors']
+        tutor = tutor_list[0][1]
+        Request.objects.create(startTime="9:00 AM", endTime="10:00 AM", location="the lawn",
+                                             tutor=tutor, student=self.user, approved="pending",
+                                             date="2023-4-27", classname="Introduction to Programming")
+        home_response = self.client.get('/student/')
+        self.assertEqual(home_response.status_code, 200)
+        tutor_request = home_response.context['requestlist'][0]
+
+        # Check if the request shows up correctly
+        self.assertEqual(tutor_request[0], "tutor_f_name")
+        self.assertEqual(tutor_request[1], "tutor_l_name")
+        self.assertEqual(tutor_request[2], "2023-4-27")
+        self.assertEqual(tutor_request[3], "9:00 AM")
+        self.assertEqual(tutor_request[4], "10:00 AM")
+        self.assertEqual(tutor_request[5], "the lawn")
+        self.assertEqual(tutor_request[6], "pending")
