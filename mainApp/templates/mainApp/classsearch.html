@@ -9,7 +9,8 @@
 
 <div class="container text-left">
 
-  <h1 style="font-size: 28px;">Search for a class to add it as a class you can tutor</h1>
+  <h1 style="font-size: 28px;">Search for a class by it's full name, course number, or subject </h1>
+  <h1 style="font-size: 28px;"> to add it as a class you can tutor</h1>
 
   <form method="POST">
     {% csrf_token %}
@@ -18,7 +19,7 @@
   <br>
 
   <form class="form-inline my-2 my-lg-0" method="GET">
-    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="name">
+    <input class="form-control mr-sm-2" type="search" placeholder="Advanced Software Development" aria-label="Search" name="name">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
   </form>
 
