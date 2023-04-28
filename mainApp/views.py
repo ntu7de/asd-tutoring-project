@@ -106,14 +106,16 @@ def tutorsetting(request):  # the account settings page for tutors
             if tutorform.is_valid():
                 if tutorform.is_valid():
                     hourly_rate = tutorform.cleaned_data['hourly_rate']
-                    if hourly_rate < 0:
+                    if not isinstance(hourly_rate, int):
+                        messages.add_message(request, messages.ERROR, 'Hourly rate must be an integer')
+                    elif hourly_rate < 0:
                         # If the hourly rate is negative, show an error message
                         messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
-
-                    if hourly_rate > 100:
+                    elif hourly_rate > 100:
                         messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
-                    if hourly_rate < 12.5:
+                    elif hourly_rate < 12.45:
                         messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+
                     else:
                         if not tutorform.data['hourly_rate']:
                             tutor.hourly_rate = hourly_rate
@@ -394,14 +396,24 @@ def searchClasses(request):
                 url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
                 if inputLength == 1:
                     url += '&subject=' + first
+
                     try:
                         response = requests.get(url)
                         data = response.json()
-                    except requests.exceptions.RequestException:
-                        url += '&catalog_nbr=' + first
-                        response = requests.get(url)
-                        data = response.json()
-                        if len(data) == 1:
+                    except requests.exceptions.RequestException as e:
+                        try:
+                            url += '&catalog_nbr=' + first
+                            response = requests.get(url)
+                            data = response.json()
+                        except requests.exceptions.RequestException:
+                            try:
+                                url += '&keyword=' + first
+                                response = requests.get(url)
+                                data = response.json()
+                            except requests.exceptions.RequestException:
+                                messages.add_message(
+                                    request, messages.WARNING, 'No classes found')
+                    if len(data) == 1:
                             currentClasses = []
                             for c in data:
                                 name = c['descr']
@@ -438,7 +450,7 @@ def searchClasses(request):
                         url += '&keyword=' + request.GET['name']
                         response = requests.get(url)
                         data = response.json()
-                elif inputLength == 3:
+                elif inputLength >= 3:
                     url += '&keyword=' + request.GET['name']
                     response = requests.get(url)
                     data = response.json()
