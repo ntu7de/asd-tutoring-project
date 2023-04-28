@@ -109,11 +109,10 @@ def tutorsetting(request):  # the account settings page for tutors
                     if hourly_rate < 0:
                         # If the hourly rate is negative, show an error message
                         messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
-
-                    if hourly_rate > 100:
-                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
                     if hourly_rate < 12.5:
                         messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+                    if hourly_rate > 100:
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
                     else:
                         if not tutorform.data['hourly_rate']:
                             tutor.hourly_rate = hourly_rate

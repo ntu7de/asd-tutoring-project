@@ -216,6 +216,10 @@ class RequestTestCase(TestCase):
                                             classname="Introduction to Programming")
         tutorClasses.objects.create(tutor=tutor_user, classes=test_class)
 
+        Request.objects.create(startTime="9:00 AM", endTime="10:00 AM", location="the lawn", tutor=tutor_user.tutor,
+                               student=self.user, approved="pending", date="2023-4-27",
+                               classname="Introduction to Programming")
+
         self.client = Client()
 
     def test_request(self):
@@ -227,10 +231,8 @@ class RequestTestCase(TestCase):
         self.assertEqual(request_response.status_code, 200)
         self.assertTemplateUsed(request_response, 'mainApp/detail.html')
         tutor_list = request_response.context['tutors']
-        tutor = tutor_list[0][1]
-        Request.objects.create(startTime="9:00 AM", endTime="10:00 AM", location="the lawn",
-                                             tutor=tutor, student=self.user, approved="pending",
-                                             date="2023-4-27", classname="Introduction to Programming")
+        self.assertEqual(len(tutor_list), 1)
+
         home_response = self.client.get('/student/')
         self.assertEqual(home_response.status_code, 200)
         tutor_request = home_response.context['requestlist'][0]
