@@ -221,11 +221,11 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
         exclude = ()
 
 class AlertForm(forms.ModelForm):
-    startTime = forms.ChoiceField(choices=TimeSelections)
-    endTime = forms.ChoiceField(choices=TimeSelections)
-    date = forms.DateField(widget=forms.SelectDateWidget)
-    location = forms.CharField(max_length=100)
-    classname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: CS 3100 or CS 1110'}))
+    startTime = forms.ChoiceField(choices=TimeSelections, label="start time")
+    endTime = forms.ChoiceField(choices=TimeSelections, label="end time")
+    date = forms.DateField(widget=forms.SelectDateWidget, label="date")
+    location = forms.CharField(max_length=100, label="location")
+    classname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: CS 3100 or CS 1110'}), label="class name")
     # tutor = forms.CharField(max_length=100)
 
     class Meta:
