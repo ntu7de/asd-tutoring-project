@@ -223,14 +223,12 @@ def tutor(request):  # tutor home page
     if request.method == 'POST':
         if 'approve' in request.POST:  # approving and denying
             a = request.POST.get('approve', [])
-            print(a)
             b = a[1:]
             c = b[:-1]
             d = c.translate({ord("'"): None})
             my_list = d.split(", ")
-            p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1]) #error fixx
-            r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
-            print(r)
+            # p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1], tutor_or_student="Student") #error fixx
+            r = get_object_or_404(Request, tutor=tutor, student=user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
             r.approved = 'approved'
             r.save()
             return redirect('tutor')
