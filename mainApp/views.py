@@ -613,16 +613,26 @@ def accountSettings2t(request):
     if request.method == "POST":
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
+        hourly_rate = form.data['hourly_rate']
         if form.is_valid():
-            if not form.data['hourly_rate'] or \
-                    (form.data['monday_start'] == form.data['monday_end'] and form.data['monday_start'] != "Not Available") or \
+            #covers hourly rate being empty
+            if not form.data['hourly_rate']:
+                messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
+            elif (form.data['monday_start'] == form.data['monday_end'] and form.data['monday_start'] != "Not Available") or \
                     (form.data['tuesday_start'] == form.data['tuesday_end'] and form.data['tuesday_start'] != "Not Available") or \
                     (form.data['wednesday_start'] == form.data['wednesday_end'] and form.data['wednesday_start'] != "Not Available") or \
                     (form.data['thursday_start'] == form.data['thursday_end'] and form.data['thursday_start'] != "Not Available") or \
                     (form.data['friday_start'] == form.data['friday_end'] and form.data['friday_start'] != "Not Available"):
                 messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
                 return redirect('accountSettings2t')
-            # elif
+            elif hourly_rate < 0 or hourly_rate < 12.5 or hourly_rate > 100:
+                if hourly_rate < 0:
+                    # If the hourly rate is negative, show an error message
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
+                if hourly_rate < 12.5:
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+                if hourly_rate > 100:
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
             else:
                 tutor = form.save(commit=False)
                 tutor.user = request.user  # connects the tutor to the user
