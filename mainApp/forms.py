@@ -52,7 +52,7 @@ TimeSelections1 = (
 
 TimeSelections = (
 
-    ("Select Time", "Select Time"),
+    # ("Select Time", "Select Time"),
     ("Not Available", "Not Available"),
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
