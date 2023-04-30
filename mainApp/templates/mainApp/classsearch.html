@@ -4,49 +4,52 @@
 
 {% block body %}
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+  integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 
-  <div class="container text-left">
+<div class="container text-left">
 
-    <h1 style="font-size: 28px;">Search for a class to add it as a class you can tutor</h1>
+  <h1 style="font-size: 28px;">Search for a class by its full name, course number, or subject </h1>
+  <h1 style="font-size: 28px;"> to add it as a class you can tutor</h1>
 
-    <form method="POST">
-      {% csrf_token %}
-    </form>
+  <form method="POST">
+    {% csrf_token %}
+  </form>
 
+  <br>
+
+  <form class="form-inline my-2 my-lg-0" method="GET">
+    <input class="form-control mr-sm-2" type="search" placeholder="Advanced Software Development" aria-label="Search" name="name">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+
+  {% if messages %}
+  <ul class="messages" style="list-style: none;">
+    {% for message in messages %}
     <br>
+    <div style="text-align: left; border-bottom: 1px solid #c4c4c4; padding-bottom: 5px;">
+      <li {% if message.tags %} class="{{ message.tags }} text-primary" {% endif %}>{{ message }}</li> <br>
+    </div>
 
-    <form class="form-inline my-2 my-lg-0" method="GET">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="name">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-
-    {% if messages %}
-      <ul class="messages" style="list-style: none;">
-        {% for message in messages %}
-          <br>
-          <div style="text-align: left; border-bottom: 1px solid #c4c4c4; padding-bottom: 5px;">
-            <li {% if message.tags %} class="{{ message.tags }} text-primary" {% endif %}>{{ message }}</li> <br>
-          </div>
-
-        {% endfor %}
-      </ul>
-    {% endif %}
-    {% if not messages %}
-      {% for class in AllClasses %}
-      <div class="col" id="tags">
-
-        <a href="/classes/{{ class.classnumber }}/"><b>{{ class.subject}} {{class.catalognumber}}:</b> {{class.classname}}</a>
-
-
-        <hr>
-      </div>
     {% endfor %}
-    {% endif %}
+  </ul>
+  {% endif %}
+  {% if not messages %}
+  {% for class in AllClasses %}
+  <div class="col" id="tags">
+
+    <a href="/classes/{{ class.classnumber }}/"><b>{{ class.subject}} {{class.catalognumber}}:</b>
+      {{class.classname}}</a>
 
 
-
+    <hr>
   </div>
+  {% endfor %}
+  {% endif %}
+
+
+
+</div>
 
 {% endblock %}
 

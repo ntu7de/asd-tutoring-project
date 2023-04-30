@@ -1,5 +1,6 @@
 {% load static %}
 {% block body %}
+
 <link rel="stylesheet" type="text/css" href="{% static 'mainApp/css/bootstrap.css' %}" />
 
 <head>
@@ -24,9 +25,6 @@
           <h5>Add Classes</h5>
         </a>
       </li>
-      <!--        <li class="nav-item active">-->
-      <!--        <a class="nav-link" href="/tutorsetting">Settings</a>-->
-      <!--        </li>-->
       <li class="nav-item active">
         <a class="nav-link" href="/accountDisplay">
           <h5>Account Info</h5>
@@ -53,14 +51,17 @@
     <div class="container">
       <div class="row">
         <div class="col align-self-center"><input class="form-control" type="search"
-            placeholder="Add a comment about your comfortabilty with this class here" aria-label="Comment"
+            placeholder="Add a comment about your comfort level with tutoring this class here" aria-label="Comment"
             name="comment">
         </div>
       </div>
     </div>
-    <br/>
+    <br />
     <div class=".col-md-6 text-center">
-      <a href="/classes" class="btn btn-danger" role="button"><h6 style="color: rgb(247, 253, 247);"></h6style>Back</h6></a>
+      <a href="/classes" class="btn btn-danger" role="button">
+        <h6 style="color: rgb(247, 253, 247);">
+          </h6style>Back</h6>
+      </a>
 
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="background-color: rgb(13, 172, 122);">
         <h6 style="color: rgb(247, 253, 247);">Add Class</h6>

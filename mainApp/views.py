@@ -104,31 +104,42 @@ def tutorsetting(request):  # the account settings page for tutors
             user_id = request.user
             tutorform = tutorform(request.POST, instance=tutor)
             if tutorform.is_valid():
-                if not tutorform.data['hourly_rate']:
-                    tutor.hourly_rate = hourly_rate
-                if tutorform.data['monday_start'] == "Select Time":
-                    tutor.monday_start = monday_start
-                if tutorform.data['monday_end'] == "Select Time":
-                    tutor.monday_end = monday_end
-                if tutorform.data['tuesday_start'] == "Select Time":
-                    tutor.tuesday_start = tuesday_start
-                if tutorform.data['tuesday_end'] == "Select Time":
-                    tutor.tuesday_end = tuesday_end
-                if tutorform.data['wednesday_start'] == "Select Time":
-                    tutor.wednesday_start = wednesday_start
-                if tutorform.data['wednesday_end'] == "Select Time":
-                    tutor.wednesday_end = wednesday_end
-                if tutorform.data['thursday_start'] == "Select Time":
-                    tutor.thursday_start = thursday_start
-                if tutorform.data['thursday_end'] == "Select Time":
-                    tutor.thursday_end = thursday_end
-                if tutorform.data['friday_start'] == "Select Time":
-                    tutor.friday_start = friday_start
-                if tutorform.data['friday_end'] == "Select Time":
-                    tutor.friday_end = friday_end
-
-
-                tutor.save()
+                if tutorform.is_valid():
+                    hourly_rate = tutorform.cleaned_data['hourly_rate']
+                    if hourly_rate < 0 or hourly_rate < 12.5 or hourly_rate > 100:
+                        if hourly_rate < 0:
+                            # If the hourly rate is negative, show an error message
+                            messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
+                        if hourly_rate < 12.5:
+                            messages.add_message(request, messages.ERROR,
+                                                 'Hourly rate cannot be less than minimum wage')
+                        if hourly_rate > 100:
+                            messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                    else:
+                        if not tutorform.data['hourly_rate']:
+                            tutor.hourly_rate = hourly_rate
+                        if tutorform.data['monday_start'] == "Select Time":
+                            tutor.monday_start = monday_start
+                        if tutorform.data['monday_end'] == "Select Time":
+                            tutor.monday_end = monday_end
+                        if tutorform.data['tuesday_start'] == "Select Time":
+                            tutor.tuesday_start = tuesday_start
+                        if tutorform.data['tuesday_end'] == "Select Time":
+                            tutor.tuesday_end = tuesday_end
+                        if tutorform.data['wednesday_start'] == "Select Time":
+                            tutor.wednesday_start = wednesday_start
+                        if tutorform.data['wednesday_end'] == "Select Time":
+                            tutor.wednesday_end = wednesday_end
+                        if tutorform.data['thursday_start'] == "Select Time":
+                            tutor.thursday_start = thursday_start
+                        if tutorform.data['thursday_end'] == "Select Time":
+                            tutor.thursday_end = thursday_end
+                        if tutorform.data['friday_start'] == "Select Time":
+                            tutor.friday_start = friday_start
+                        if tutorform.data['friday_end'] == "Select Time":
+                            tutor.friday_end = friday_end
+                        tutor.save()
+                        return redirect('tutor')
     context = {
         'form': ProfileForm2,
         'form2': TutorForm,
@@ -188,6 +199,11 @@ def tutor(request):  # tutor home page
         return redirect('student')
     requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
     requestlist = [] #the array that we will put all of the relevant info for each request into
+    classes = tutorClasses.objects.filter(tutor=u)
+    classlist = []
+    for c in classes:
+        classname = c.classes.classname
+        classlist.append(classname)
     for i in requests:
         #the student first name
         user = i.student
@@ -207,14 +223,12 @@ def tutor(request):  # tutor home page
     if request.method == 'POST':
         if 'approve' in request.POST:  # approving and denying
             a = request.POST.get('approve', [])
-            print(a)
             b = a[1:]
             c = b[:-1]
             d = c.translate({ord("'"): None})
             my_list = d.split(", ")
-            p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
-            r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
-            print(r)
+            # p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1], tutor_or_student="Student") #error fixx
+            r = get_object_or_404(Request, tutor=tutor, student=user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
             r.approved = 'approved'
             r.save()
             return redirect('tutor')
@@ -232,7 +246,7 @@ def tutor(request):  # tutor home page
             return redirect('tutor')
 
 
-    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist})
+    return render(request, 'mainApp/tutor.html', {'requestlist': requestlist, 'classlist': classlist})
 
 @login_required
 def student(request):  # student home page
@@ -536,10 +550,10 @@ def tutordetail(request, profileid):
                 form.save()
                 messages.add_message(request, messages.INFO, 'Tutor  request sent!')
                 return redirect('tutordetail', profileid=profileid)
-
+    lenclasses = len(classes)
     form = AlertForm()
     
-    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes)], 'form': form})
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes,lenclasses)], 'form': form})
 
 @login_required
 def classes(request):
