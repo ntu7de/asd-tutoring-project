@@ -618,6 +618,10 @@ def accountSettings2t(request):
             #covers hourly rate being empty
             if not form.data['hourly_rate']:
                 messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
+            #check that if 'Not Available' is selected for one of the options, the other must be 'Not Available' as well
+            elif ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or \
+                  (form.data['monday_end'] == "Not Available" and form.data['monday_start'] != "Not Available")):
+                messages.add_message(request, messages.WARNING, '"Not Available" must be selected for both days')
             elif (form.data['monday_start'] == form.data['monday_end'] and form.data['monday_start'] != "Not Available") or \
                     (form.data['tuesday_start'] == form.data['tuesday_end'] and form.data['tuesday_start'] != "Not Available") or \
                     (form.data['wednesday_start'] == form.data['wednesday_end'] and form.data['wednesday_start'] != "Not Available") or \
