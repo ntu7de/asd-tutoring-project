@@ -202,16 +202,16 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
     #the fields you MUST fill out
     hourly_rate = forms.DecimalField(widget=forms.TextInput(attrs={'placeholder':'ex: 12.50'}), required=False)
 
-    monday_start = forms.ChoiceField(choices=TimeSelections, required=False)
-    monday_end = forms.ChoiceField(choices=TimeSelections, required=False)
-    tuesday_start = forms.ChoiceField(choices=TimeSelections, required=False)
-    tuesday_end = forms.ChoiceField(choices=TimeSelections, required=False)
-    wednesday_start = forms.ChoiceField(choices=TimeSelections, required=False)
-    wednesday_end = forms.ChoiceField(choices=TimeSelections, required=False)
-    thursday_start = forms.ChoiceField(choices=TimeSelections, required=False)
-    thursday_end = forms.ChoiceField(choices=TimeSelections, required=False)
-    friday_start = forms.ChoiceField(choices=TimeSelections, required=False)
-    friday_end = forms.ChoiceField(choices=TimeSelections, required=False)
+    monday_start = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    monday_end = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    tuesday_start = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    tuesday_end = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    wednesday_start = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    wednesday_end = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    thursday_start = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    thursday_end = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    friday_start = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
+    friday_end = forms.ChoiceField(choices=TimeSelections, required=False, initial='Not Available')
 
 
     class Meta:

@@ -375,7 +375,7 @@ def searchClasses(request):
 
                         )
                         class_data.save()
-                      
+
                         classNumber = str(classNumber)
                         # tutuor_class_data.save()
                         messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
@@ -552,7 +552,7 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
     lenclasses = len(classes)
     form = AlertForm()
-    
+
     return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes,lenclasses)], 'form': form})
 
 @login_required
@@ -614,13 +614,64 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
-                    form.data['tuesday_start'] == form.data['tuesday_end'] or \
-                    form.data['wednesday_start'] == form.data['wednesday_end'] or \
-                    form.data['thursday_start'] == form.data['thursday_end'] or \
-                    form.data['friday_start'] == form.data['friday_end']:
-                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            try:
+                float(form.data['hourly_rate'])
+            except ValueError:
+                messages.add_message(request, messages.ERROR, 'Hourly rate must be a number')
                 return redirect('accountSettings2t')
+            if float(form.data['hourly_rate']) < 0 or float(form.data['hourly_rate']) < 12.5 or float(form.data['hourly_rate']) > 100:
+                if float(form.data['hourly_rate']) < 0:
+                    # If the hourly rate is negative, show an error message
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
+                if float(form.data['hourly_rate']) < 12.5:
+                    messages.add_message(request, messages.ERROR,
+                                         'Hourly rate cannot be less than minimum wage')
+                if float(form.data['hourly_rate']) > 100:
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                return redirect('accountSettings2t')
+            if ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or
+                    (form.data['monday_start'] != "Not Available" and form.data['monday_end'] == "Not Available")) or \
+                    ((form.data['tuesday_start'] == "Not Available" and form.data['tuesday_end'] != "Not Available") or
+                        (form.data['tuesday_start'] != "Not Available" and
+                     form.data['tuesday_end'] == "Not Available")) or \
+                        ((form.data['wednesday_start'] == "Not Available" and
+                          form.data['wednesday_end'] != "Not Available") or
+                            (form.data['wednesday_start'] != "Not Available" and
+                             form.data['wednesday_end'] == "Not Available")) or \
+                        ((form.data['thursday_start'] == "Not Available" and
+                          form.data['thursday_end'] != "Not Available") or
+                            (form.data['thursday_start'] != "Not Available" and
+                             form.data['thursday_end'] == "Not Available")) or \
+                        ((form.data['friday_start'] == "Not Available" and
+                          form.data['friday_end'] != "Not Available") or
+                            (form.data['friday_start'] != "Not Available" and
+                             form.data['friday_end'] == "Not Available")):
+                messages.add_message(request, messages.ERROR,'You cannot have only one start/end field set as "Not Available"')
+                return redirect('accountSettings2t')
+            if form.data['monday_start'] == "Not Available" and form.data['tuesday_start'] == "Not Available" and \
+                form.data['wednesday_start'] == "Not Available" and form.data['thursday_start'] == "Not Available" and \
+                    form.data['friday_start'] == "Not Available":
+                messages.add_message(request, messages.ERROR, 'You must be available for at least one day')
+                return redirect('accountSettings2t')
+            if (form.data['monday_end'] != "Not Available" and
+                    form.data['monday_end'] >= form.data['monday_start']) or \
+                    (form.data['tuesday_end'] != "Not Available" and
+                        form.data['tuesday_end'] >= form.data['tuesday_start']) or \
+                    (form.data['wednesday_end'] != "Not Available" and
+                        form.data['wednesday_end'] >= form.data['wednesday_start']) or \
+                    (form.data['thursday_end'] != "Not Available" and
+                        form.data['thursday_end'] >= form.data['thursday_start']) or \
+                    (form.data['friday_end'] != "Not Available" and
+                        form.data['friday_end'] >= form.data['friday_start']):
+                messages.add_message(request, messages.ERROR, 'Start times must be before end times')
+                return redirect('accountSettings2t')
+            # if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
+            #         form.data['tuesday_start'] == form.data['tuesday_end'] or \
+            #         form.data['wednesday_start'] == form.data['wednesday_end'] or \
+            #         form.data['thursday_start'] == form.data['thursday_end'] or \
+            #         form.data['friday_start'] == form.data['friday_end']:
+            #     messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            #     return redirect('accountSettings2t')
             else:
                 tutor = form.save(commit=False)
                 tutor.user = request.user  # connects the tutor to the user
