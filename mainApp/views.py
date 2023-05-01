@@ -676,37 +676,276 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
-                    form.data['tuesday_start'] == form.data['tuesday_end'] or \
-                    form.data['wednesday_start'] == form.data['wednesday_end'] or \
-                    form.data['thursday_start'] == form.data['thursday_end'] or \
-                    form.data['friday_start'] == form.data['friday_end']:
-                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            #covers hourly rate being empty
+            try:
+                float(form.data['hourly_rate'])
+            except ValueError:
+                messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
                 return redirect('accountSettings2t')
-            if form.data['monday_start'] == "Not Available" and form.data['tuesday_start'] == "Not Available" and \
-                form.data['wednesday_start'] == "Not Available" and form.data['thursday_start'] == "Not Available" and \
-                    form.data['friday_start'] == "Not Available":
-                messages.add_message(request, messages.ERROR, 'You must be available for at least one day')
+            hourly_rate = form.cleaned_data['hourly_rate']
+            # if not form.data['hourly_rate'] or form.data['hourly_rate'] == None:
+            #     messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
+            # check if hourly_rate is less than minimum wage or over 100 dollars
+            if hourly_rate < 0 or hourly_rate < 12.5 or hourly_rate > 100:
+                if hourly_rate < 0:
+                    # If the hourly rate is negative, show an error message
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
+                    return redirect('accountSettings2t')
+                if hourly_rate < 12.5:
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+                    return redirect('accountSettings2t')
+                if hourly_rate > 100:
+                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+            # check that 'Select Time' isn't selected
+            if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
+                    (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
+                    (form.data['wednesday_start'] == "Select Time" or form.data['wednesday_end'] == "Select Time") or \
+                    (form.data['thursday_start'] == "Select Time" or form.data['thursday_end'] == "Select Time") or \
+                    (form.data['friday_start'] == "Select Time" or form.data['friday_end'] == "Select Time")):
+                messages.add_message(request, messages.WARNING, 'You must select an option for every start and end.')
                 return redirect('accountSettings2t')
-            if (form.data['monday_end'] != "Not Available" and
-                    datetime.datetime.strptime(form.data['monday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['monday_start'], '%I:%M %p')) or \
-                    (form.data['tuesday_end'] != "Not Available" and
-                        datetime.datetime.strptime(form.data['tuesday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['tuesday_start'], '%I:%M %p')) or \
-                    (form.data['wednesday_end'] != "Not Available" and
-                        datetime.datetime.strptime(form.data['wednesday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['wednesday_start'], '%I:%M %p')) or \
-                    (form.data['thursday_end'] != "Not Available" and
-                        datetime.datetime.strptime(form.data['thursday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['thursday_start'], '%I:%M %p')) or \
-                    (form.data['friday_end'] != "Not Available" and
-                        datetime.datetime.strptime(form.data['friday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['friday_start'], '%I:%M %p')):
-                messages.add_message(request, messages.ERROR, 'Start times must be before end times')
-                return redirect('accountSettings2t')
-            # if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
-            #         form.data['tuesday_start'] == form.data['tuesday_end'] or \
-            #         form.data['wednesday_start'] == form.data['wednesday_end'] or \
-            #         form.data['thursday_start'] == form.data['thursday_end'] or \
-            #         form.data['friday_start'] == form.data['friday_end']:
-            #     messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
-            #     return redirect('accountSettings2t')
+            #start to declare all the time variables needed to compare
+            monday_start = form.data['monday_start']
+            tuesday_start = form.data['tuesday_start']
+            wednesday_start = form.data['wednesday_start']
+            thursday_start = form.data['thursday_start']
+            friday_start = form.data['friday_start']
+
+            monday_end = form.data['monday_end']
+            tuesday_end = form.data['tuesday_end']
+            wednesday_end = form.data['wednesday_end']
+            thursday_end = form.data['thursday_end']
+            friday_end = form.data['friday_end']
+
+            monday_start_hour = monday_start[0]
+            tuesday_start_hour = tuesday_start[0]
+            wednesday_start_hour = wednesday_start[0]
+            thursday_start_hour = thursday_start[0]
+            friday_start_hour = friday_start[0]
+            if(monday_start != "Not Available" and monday_end != "Not Available"):
+            #case for when hour has two digits
+                if(monday_start[1] != ":"):
+                    monday_start_hour = int(monday_start_hour + monday_start[1])
+                    monday_start_minutes = int(monday_start[3:5])
+                    monday_start_meridiem = monday_start[6:8]
+                else:
+                    monday_start_hour = int(monday_start_hour)
+                    monday_start_minutes = int(monday_start[2:4])
+                    monday_start_meridiem = monday_start[5:7]
+                #create monday end variables
+                monday_end_hour = monday_end[0]
+                if(form.data['monday_end'][1] != ":"):
+                    monday_end_hour = int(monday_end_hour + monday_end[1])
+                    monday_end_minutes = int(monday_end[3:5])
+                    monday_end_meridiem = monday_end[6:8]
+                else:
+                    monday_end_hour = int(monday_end_hour)
+                    monday_end_minutes = int(monday_end[2:4])
+                    monday_end_meridiem = monday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((monday_end_hour < monday_start_hour and monday_end_meridiem == monday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Monday start time must be after end time')
+                    return redirect('accountSettings2t')
+                #check if end meridiem is PM and start meridiem is AM
+                if(monday_end_meridiem == "AM" and monday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Monday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (monday_end_hour == monday_start_hour and monday_end_meridiem == monday_start_meridiem and \
+                        monday_end_minutes < monday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Monday start time must be after end time')
+                    return redirect('accountSettings2t')
+                #check if times are equal
+                if (monday_end_hour == monday_start_hour and monday_end_minutes == monday_start_minutes and \
+                        monday_end_meridiem == monday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                #check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (monday_end_hour == 12 and monday_start_hour < 12 and monday_end_meridiem == "PM" and \
+                        monday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Monday start time must be after end time')
+                    return redirect('accountSettings2t')
+            if(tuesday_start != "Not Available" and tuesday_end != "Not Available"):
+                if (tuesday_start[1] != ":"):
+                    tuesday_start_hour = int(tuesday_start_hour + tuesday_start[1])
+                    tuesday_start_minutes = int(tuesday_start[3:5])
+                    tuesday_start_meridiem = tuesday_start[6:8]
+                else:
+                    tuesday_start_hour = int(tuesday_start_hour)
+                    tuesday_start_minutes = int(tuesday_start[2:4])
+                    tuesday_start_meridiem = tuesday_start[5:7]
+                tuesday_end_hour = tuesday_end[0]
+                if (form.data['tuesday_end'][1] != ":"):
+                    tuesday_end_hour = int(tuesday_end_hour + tuesday_end[1])
+                    tuesday_end_minutes = int(tuesday_end[3:5])
+                    tuesday_end_meridiem = tuesday_end[6:8]
+                else:
+                    tuesday_end_hour = int(tuesday_end_hour)
+                    tuesday_end_minutes = int(tuesday_end[2:4])
+                    tuesday_end_meridiem = tuesday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((tuesday_end_hour < tuesday_start_hour and tuesday_end_meridiem == tuesday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Tuesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if end meridiem is PM and start meridiem is AM
+                if (tuesday_end_meridiem == "AM" and tuesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Tuesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (tuesday_end_hour == tuesday_start_hour and tuesday_end_meridiem == tuesday_start_meridiem and \
+                        tuesday_end_minutes < tuesday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Tuesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if times are equal
+                if (tuesday_end_hour == tuesday_start_hour and tuesday_end_minutes == tuesday_start_minutes and \
+                        tuesday_end_meridiem == tuesday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                # check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (tuesday_end_hour == 12 and tuesday_start_hour < 12 and tuesday_end_meridiem == "PM" and \
+                        tuesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Tuesday start time must be after end time')
+                    return redirect('accountSettings2t')
+            #wednesday
+            if (wednesday_start != "Not Available" and wednesday_end != "Not Available"):
+                if (wednesday_start[1] != ":"):
+                    wednesday_start_hour = int(wednesday_start_hour + wednesday_start[1])
+                    wednesday_start_minutes = int(wednesday_start[3:5])
+                    wednesday_start_meridiem = wednesday_start[6:8]
+                else:
+                    wednesday_start_hour = int(wednesday_start_hour)
+                    wednesday_start_minutes = int(wednesday_start[2:4])
+                    wednesday_start_meridiem = wednesday_start[5:7]
+                wednesday_end_hour = wednesday_end[0]
+                if (form.data['wednesday_end'][1] != ":"):
+                    wednesday_end_hour = int(wednesday_end_hour + wednesday_end[1])
+                    wednesday_end_minutes = int(wednesday_end[3:5])
+                    wednesday_end_meridiem = wednesday_end[6:8]
+                else:
+                    wednesday_end_hour = int(wednesday_end_hour)
+                    wednesday_end_minutes = int(wednesday_end[2:4])
+                    wednesday_end_meridiem = wednesday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((wednesday_end_hour < wednesday_start_hour and wednesday_end_meridiem == wednesday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if end meridiem is PM and start meridiem is AM
+                if (wednesday_end_meridiem == "AM" and wednesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (wednesday_end_hour == wednesday_start_hour and wednesday_end_meridiem == wednesday_start_meridiem and \
+                        wednesday_end_minutes < wednesday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if times are equal
+                if (wednesday_end_hour == wednesday_start_hour and wednesday_end_minutes == wednesday_start_minutes and \
+                        wednesday_end_meridiem == wednesday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                # check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (wednesday_end_hour == 12 and wednesday_start_hour < 12 and wednesday_end_meridiem == "PM" and \
+                        wednesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+            #thursday
+            if (thursday_start != "Not Available" and thursday_end != "Not Available"):
+                if (thursday_start[1] != ":"):
+                    thursday_start_hour = int(thursday_start_hour + thursday_start[1])
+                    thursday_start_minutes = int(thursday_start[3:5])
+                    thursday_start_meridiem = thursday_start[6:8]
+                else:
+                    thursday_start_hour = int(thursday_start_hour)
+                    thursday_start_minutes = int(thursday_start[2:4])
+                    thursday_start_meridiem = thursday_start[5:7]
+                thursday_end_hour = thursday_end[0]
+                if (form.data['thursday_end'][1] != ":"):
+                    thursday_end_hour = int(thursday_end_hour + thursday_end[1])
+                    thursday_end_minutes = int(thursday_end[3:5])
+                    thursday_end_meridiem = thursday_end[6:8]
+                else:
+                    thursday_end_hour = int(thursday_end_hour)
+                    thursday_end_minutes = int(thursday_end[2:4])
+                    thursday_end_meridiem = thursday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((thursday_end_hour < thursday_start_hour and thursday_end_meridiem == thursday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Thursday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if end meridiem is PM and start meridiem is AM
+                if (thursday_end_meridiem == "AM" and thursday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Thursday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (thursday_end_hour == thursday_start_hour and thursday_end_meridiem == thursday_start_meridiem and \
+                        thursday_end_minutes < thursday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Thursday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if times are equal
+                if (thursday_end_hour == thursday_start_hour and thursday_end_minutes == thursday_start_minutes and \
+                        thursday_end_meridiem == thursday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                # check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (thursday_end_hour == 12 and thursday_start_hour < 12 and thursday_end_meridiem == "PM" and \
+                        thursday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Thursday start time must be after end time')
+                    return redirect('accountSettings2t')
+            #friday
+            if (friday_start != "Not Available" and friday_end != "Not Available"):
+                if (friday_start[1] != ":"):
+                    friday_start_hour = int(friday_start_hour + friday_start[1])
+                    friday_start_minutes = int(friday_start[3:5])
+                    friday_start_meridiem = friday_start[6:8]
+                else:
+                    friday_start_hour = int(friday_start_hour)
+                    friday_start_minutes = int(friday_start[2:4])
+                    friday_start_meridiem = friday_start[5:7]
+                friday_end_hour = friday_end[0]
+                if (form.data['friday_end'][1] != ":"):
+                    friday_end_hour = int(friday_end_hour + friday_end[1])
+                    friday_end_minutes = int(friday_end[3:5])
+                    friday_end_meridiem = friday_end[6:8]
+                else:
+                    friday_end_hour = int(friday_end_hour)
+                    friday_end_minutes = int(friday_end[2:4])
+                    friday_end_meridiem = friday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((friday_end_hour < friday_start_hour and friday_end_meridiem == friday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Friday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if end meridiem is PM and start meridiem is AM
+                if (friday_end_meridiem == "AM" and friday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Friday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (friday_end_hour == friday_start_hour and friday_end_meridiem == friday_start_meridiem and \
+                        friday_end_minutes < friday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Friday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if times are equal
+                if (friday_end_hour == friday_start_hour and friday_end_minutes == friday_start_minutes and \
+                        friday_end_meridiem == friday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                # check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (friday_end_hour == 12 and friday_start_hour < 12 and friday_end_meridiem == "PM" and \
+                        friday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Friday start time must be after end time')
+                    return redirect('accountSettings2t')
+            #check that if 'Not Available' is selected for one of the options, the other must be 'Not Available' as well
+            if ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or \
+                  (form.data['monday_end'] == "Not Available" and form.data['monday_start'] != "Not Available") or \
+                  (form.data['tuesday_start'] == "Not Available" and form.data['tuesday_end'] != "Not Available") or \
+                  (form.data['tuesday_end'] == "Not Available" and form.data['tuesday_start'] != "Not Available") or \
+                  (form.data['wednesday_start'] == "Not Available" and form.data['wednesday_end'] != "Not Available") or \
+                  (form.data['wednesday_end'] == "Not Available" and form.data['wednesday_start'] != "Not Available") or \
+                  (form.data['thursday_start'] == "Not Available" and form.data['thursday_end'] != "Not Available") or \
+                  (form.data['thursday_end'] == "Not Available" and form.data['thursday_start'] != "Not Available") or \
+                  (form.data['friday_start'] == "Not Available" and form.data['friday_end'] != "Not Available") or \
+                  (form.data['friday_end'] == "Not Available" and form.data['friday_start'] != "Not Available")):
+                messages.add_message(request, messages.WARNING, '"Not Available" must be selected for both start and end')
+            #check that if both inputs are not "Not Available," then they should not be equal to each other
+            #check that end time is after start time
             else:
                 tutor = form.save(commit=False)
                 tutor.user = request.user  # connects the tutor to the user
