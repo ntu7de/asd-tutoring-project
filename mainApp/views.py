@@ -116,6 +116,17 @@ def tutorsetting(request):  # the account settings page for tutors
                                                      'Hourly rate cannot be less than minimum wage')
                             if hourly_rate > 100:
                                 messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                    if ((tutorform.data['monday_start'] == "Not Available" and tutorform.data['monday_end'] != "Not Available") or \
+                            (tutorform.data['monday_end'] == "Not Available" and tutorform.data['monday_start'] != "Not Available") or \
+                            (tutorform.data['tuesday_start'] == "Not Available" and tutorform.data['tuesday_end'] != "Not Available") or \
+                            (tutorform.data['tuesday_end'] == "Not Available" and tutorform.data['tuesday_start'] != "Not Available") or \
+                            (tutorform.data['wednesday_start'] == "Not Available" and tutorform.data['wednesday_end'] != "Not Available") or \
+                            (tutorform.data['wednesday_end'] == "Not Available" and tutorform.data['wednesday_start'] != "Not Available") or \
+                            (tutorform.data['thursday_start'] == "Not Available" and tutorform.data['thursday_end'] != "Not Available") or \
+                            (tutorform.data['thursday_end'] == "Not Available" and tutorform.data['thursday_start'] != "Not Available") or \
+                            (tutorform.data['friday_start'] == "Not Available" and tutorform.data['friday_end'] != "Not Available") or \
+                            (tutorform.data['friday_end'] == "Not Available" and tutorform.data['friday_start'] != "Not Available")):
+                        messages.add_message(request, messages.WARNING, '"Not Available" must be selected for both start and end')
                     else:
                         if not tutorform.data['hourly_rate']:
                             tutor.hourly_rate = hourly_rate
