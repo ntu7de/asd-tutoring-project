@@ -510,6 +510,7 @@ def tutordetail(request, profileid):
             form.approved = "pending"
             d = form.date
             classrequested = (form.classname).replace(" ","")
+            classrequested = classrequested.upper()
             x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
             printx = x.capitalize()
             # messages.add_message(request, messages.INFO, x)
