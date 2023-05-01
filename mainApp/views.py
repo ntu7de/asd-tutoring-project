@@ -43,6 +43,7 @@ def home(request):
         return redirect('student')
     return render(request, 'mainApp/home.html')
 
+
 @login_required
 def tutorsetting(request):  # the account settings page for tutors
     u = request.user
@@ -51,8 +52,10 @@ def tutorsetting(request):  # the account settings page for tutors
     except:
         return redirect('student')
     user = request.user  # using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
-    tutor = get_object_or_404(Tutor, user=user)  # tutor info of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
+    # tutor info of the user logged in
+    tutor = get_object_or_404(Tutor, user=user)
     tutorform = TutorForm  # the form that allows them to update their tutor information
 
     # the field information that is currently in the database for tutor and profile
@@ -165,7 +168,8 @@ def studentsetting(request):  # the account settings page for students
         temp = get_object_or_404(Student, user=user)
     except:
         return redirect('tutor')
-    profile = get_object_or_404(Profile, user=user)  # profile of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
 
     # the field information that is currently in the database for student and profile
     first_name = profile.first_name
@@ -202,26 +206,29 @@ def studentsetting(request):  # the account settings page for students
     }
     return render(request, 'mainApp/studentSettings.html', context=context)
 
+
 @login_required
 def tutor(request):  # tutor home page
     u = request.user
-    try: #check if user is accessing wrong side
+    try:  # check if user is accessing wrong side
         tutor = get_object_or_404(Tutor, user=u)
     except:
         return redirect('student')
-    requests = Request.objects.filter(tutor=tutor) #get all of the requests associated with the tutor
-    requestlist = [] #the array that we will put all of the relevant info for each request into
+    # get all of the requests associated with the tutor
+    requests = Request.objects.filter(tutor=tutor)
+    requestlist = []  # the array that we will put all of the relevant info for each request into
     classes = tutorClasses.objects.filter(tutor=u)
     classlist = []
     for c in classes:
-        classname = c.classes.classname
+        classname = c.classes
         classlist.append(classname)
     for i in requests:
-        #the student first name
+        # the student first name
         user = i.student
-        profile = get_object_or_404(Profile, user=user) #this will get us the tutor's profile
+        # this will get us the tutor's profile
+        profile = get_object_or_404(Profile, user=user)
         first_name = profile.first_name
-        #the student last name
+        # the student last name
         last_name = profile.last_name
         d = i.date
         thedate = datetime.datetime.strptime(d, "%Y-%m-%d").date()
@@ -229,8 +236,9 @@ def tutor(request):  # tutor home page
         end_time = i.endTime
         location = i.location
         approved = i.approved
-        if(date.today() <= thedate):
-            requestlist.append((first_name, last_name, d, start_time, end_time, location, approved))
+        if (date.today() <= thedate):
+            requestlist.append(
+                (first_name, last_name, d, start_time, end_time, location, approved))
 
     if request.method == 'POST':
         if 'approve' in request.POST:  # approving and denying
@@ -240,7 +248,8 @@ def tutor(request):  # tutor home page
             d = c.translate({ord("'"): None})
             my_list = d.split(", ")
             # p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1], tutor_or_student="Student") #error fixx
-            r = get_object_or_404(Request, tutor=tutor, student=user, date=my_list[2], startTime=my_list[3], endTime=my_list[4])
+            r = get_object_or_404(Request, tutor=tutor, student=user,
+                                  date=my_list[2], startTime=my_list[3], endTime=my_list[4])
             r.approved = 'approved'
             r.save()
             return redirect('tutor')
@@ -250,44 +259,48 @@ def tutor(request):  # tutor home page
             c = b[:-1]
             d = c.translate({ord("'"): None})
             my_list = d.split(", ")
-            p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1])
+            p = get_object_or_404(
+                Profile, first_name=my_list[0], last_name=my_list[1])
             r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3],
                                   endTime=my_list[4])
             r.approved = 'denied'
             r.save()
             return redirect('tutor')
 
-
     return render(request, 'mainApp/tutor.html', {'requestlist': requestlist, 'classlist': classlist})
+
 
 @login_required
 def student(request):  # student home page
     student = request.user
-    try: #check if user is accessing wrong side
+    try:  # check if user is accessing wrong side
         temp = get_object_or_404(Student, user=student)
     except:
         return redirect('tutor')
-    requests = Request.objects.filter(student=student)#get all of the requests associated with the studen
-    requestlist = [] #the array that we will put all of the relevant info for each request into
+    # get all of the requests associated with the studen
+    requests = Request.objects.filter(student=student)
+    requestlist = []  # the array that we will put all of the relevant info for each request into
     for i in requests:
-        #the tutor first name
-        profile = get_object_or_404(Profile, user=i.tutor.user) #this will get us the tutor's profile
+        # the tutor first name
+        # this will get us the tutor's profile
+        profile = get_object_or_404(Profile, user=i.tutor.user)
         first_name = profile.first_name
-        #the tutor last name
+        # the tutor last name
         last_name = profile.last_name
-        #the date
+        # the date
         d = i.date
         thedate = datetime.datetime.strptime(d, "%Y-%m-%d").date()
-        #the start time
+        # the start time
         start_time = i.startTime
-        #the end time
+        # the end time
         end_time = i.endTime
-        #location
+        # location
         location = i.location
-        #status of approvall
+        # status of approvall
         approved = i.approved
         if (date.today() <= thedate):
-            requestlist.append((first_name, last_name, d, start_time, end_time, location, approved))
+            requestlist.append(
+                (first_name, last_name, d, start_time, end_time, location, approved))
     return render(request, 'mainApp/student.html', {'requestlist': requestlist})
 
 
@@ -306,11 +319,13 @@ def accountSettings(request):
             if profile.tutor_or_student == "Tutor":  # sends you to initially filling in your tutor settings
                 return redirect('accountSettings2t')
             else:  # sends you to initially filling in your student settings
-                stud = Student.objects.create(user=request.user, classes="")  # creates an instance of a student
+                # creates an instance of a student
+                stud = Student.objects.create(user=request.user, classes="")
                 stud.save()  # saves that instance
                 return redirect('student')
         else:
-            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            messages.add_message(request, messages.WARNING,
+                                 'One or more fields are invalid.')
             return redirect('accountSettings')
     form = ProfileForm()
     return render(request, 'mainApp/accountSettings.html', {"form": form})
@@ -324,10 +339,10 @@ def classesdetail(request, classnumber):
         temp = get_object_or_404(Tutor, user=u)
     except:
         return redirect('student')
-    currentClass = Classes.objects.get(classnumber = classnumber)
+    currentClass = Classes.objects.get(classnumber=classnumber)
     template = loader.get_template('mainApp/classesdetail.html')
     context = {
-        'Classes' : currentClass,
+        'Classes': currentClass,
     }
     if request.method == 'POST':
         classes_id = classnumber
@@ -336,9 +351,10 @@ def classesdetail(request, classnumber):
         tutor_class_data = tutorClasses(
             classes_id=classnumber,
             tutor_id=request.user.id,
-            comment = comment,
+            comment=comment,
         )
-        tutorClass = tutorClasses.objects.filter(classes_id=classes_id, tutor_id=tutor_id)
+        tutorClass = tutorClasses.objects.filter(
+            classes_id=classes_id, tutor_id=tutor_id)
         # tutorClasses(request.POST, classes_id=classes_id, tutor_id=tutor_id)
 
         if tutorClass:
@@ -348,6 +364,7 @@ def classesdetail(request, classnumber):
             return redirect('/classes')
 
     return HttpResponse(template.render(context, request))
+
 
 @login_required
 def searchClasses(request):
@@ -387,10 +404,11 @@ def searchClasses(request):
 
                         )
                         class_data.save()
-                      
+
                         classNumber = str(classNumber)
                         # tutuor_class_data.save()
-                        messages.add_message(request, messages.INFO,mark_safe('<a href = /classes/' + classNumber +'>'+subject + catalog_nbr + ": " + name +'</a>'))
+                        messages.add_message(request, messages.INFO, mark_safe(
+                            '<a href = /classes/' + classNumber + '>'+subject + catalog_nbr + ": " + name + '</a>'))
             all_classes = Classes.objects.all()
             if len(data) == 0:
                 messages.add_message(
@@ -430,7 +448,8 @@ def searchClasses(request):
                                         classnumber=c['class_nbr'],
                                         classname=c['descr'],
 
-                                        body=c['subject'] + c['catalog_nbr'] + c['descr'],
+                                        body=c['subject'] +
+                                        c['catalog_nbr'] + c['descr'],
 
                                     )
                                     class_data.save()
@@ -471,7 +490,8 @@ def searchClasses(request):
                                 classnumber=c['class_nbr'],
                                 classname=c['descr'],
 
-                                body=c['subject'] + c['catalog_nbr'] + c['descr'],
+                                body=c['subject'] +
+                                c['catalog_nbr'] + c['descr'],
 
                             )
                             class_data.save()
@@ -486,6 +506,7 @@ def searchClasses(request):
                     request, messages.WARNING, 'No classes found')
     return render(request, 'mainApp/classsearch.html', {'AllClasses': all_classes})
 
+
 @login_required
 def detail(request, classnumber):
     student = request.user
@@ -495,7 +516,8 @@ def detail(request, classnumber):
         return redirect('tutor')
     model = Classes
     classInfo = Classes.objects.filter(Q(classnumber__icontains=classnumber))
-    tutorInfo = tutorClasses.objects.filter(Q(classes__classnumber__icontains=classnumber))
+    tutorInfo = tutorClasses.objects.filter(
+        Q(classes__classnumber__icontains=classnumber))
     tutors0 = []
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
@@ -503,6 +525,7 @@ def detail(request, classnumber):
         tutors0.append((profile, tutor))
 
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
+
 
 @login_required
 def tutordetail(request, profileid):
@@ -521,51 +544,71 @@ def tutordetail(request, profileid):
             form.tutor = tutorpro
             form.approved = "pending"
             d = form.date
-            classrequested = (form.classname).replace(" ","")
-            x = datetime.datetime.strptime(d, '%Y-%m-%d').strftime('%A').lower()
+            classrequested = (form.classname).replace(" ", "")
+            classrequested = classrequested.upper()
+            x = datetime.datetime.strptime(
+                d, '%Y-%m-%d').strftime('%A').lower()
             printx = x.capitalize()
+            #
+            time_format = "%I:%M %p"
             # messages.add_message(request, messages.INFO, x)
-            if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday' :
-                messages.add_message(request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
+            # messages.add_message(request, messages.INFO, 'start' + form.startTime)
+            formStart = datetime.datetime.strptime(form.startTime, time_format)
+            formEnd = datetime.datetime.strptime(form.endTime, time_format)
+                        # messages.add_message(request, messages.INFO, form.endTime)
+            if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday':
+                messages.add_message(
+                    request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
                 return redirect('tutordetail', profileid=profileid)
             start = x + '_start'
             end = x + '_end'
+            tutorStart = datetime.datetime.strptime(getattr(tutorpro, start), time_format)
+            tutorEnd = datetime.datetime.strptime(getattr(tutorpro, end), time_format)
             # messages.add_message(request, messages.INFO, getattr(tutorpro, start))
             # Check if the session start time is within TA's available hours
-            if form.startTime < getattr(tutorpro, start):
-                messages.add_message(request, messages.WARNING, 'Start time must be within the available hours')
+            if formStart < tutorStart:
+                # messages.add_message(request, messages.WARNING, getattr(tutorpro, start))
+                messages.add_message(
+                    request, messages.WARNING, 'Start time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
-
             # Check if the session end time is within TA's available hours
-            elif form.endTime > getattr(tutorpro, end):
-                messages.add_message(request, messages.WARNING, 'End time must be within the available hours')
+            if formEnd > tutorEnd:
+                # messages.add_message(request, messages.WARNING, getattr(tutorpro, end))
+                messages.add_message(
+                    request, messages.WARNING, 'End time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
             # Check if the session is no longer than 2 hours
-            session_start = datetime.datetime.strptime(form.startTime, '%I:%M %p')
+            session_start = datetime.datetime.strptime(
+                form.startTime, '%I:%M %p')
             session_end = datetime.datetime.strptime(form.endTime, '%I:%M %p')
             if (session_end - session_start).total_seconds() > 7200:
-                messages.add_message(request, messages.WARNING, 'Session cannot be longer than 2 hours')
+                messages.add_message(
+                    request, messages.WARNING, 'Session cannot be longer than 2 hours')
                 return redirect('tutordetail', profileid=profileid)
             # # Check if the session end time comes after the session start time
             if session_end <= session_start:
-                messages.add_message(request, messages.WARNING, 'Session end time must come after the session start time')
+                messages.add_message(
+                    request, messages.WARNING, 'Session end time must come after the session start time')
                 return redirect('tutordetail', profileid=profileid)
             classexistBool = False
             for i in classes:
-                if(i.subject+i.catalognumber == classrequested):
-                    classexistBool=True
+                if (i.subject+i.catalognumber == classrequested):
+                    classexistBool = True
                     break
             if not classexistBool:
-                messages.add_message(request, messages.WARNING, "The Tutor doesn't offer this class. Please look at the classes offered below and enter appropriate course mnemoic and catalog number (for ex: CS 3240)")
+                messages.add_message(
+                    request, messages.WARNING, "The Tutor doesn't offer this class. Please look at the classes offered below and enter appropriate course mnemoic and catalog number (for ex: CS 3240)")
                 return redirect('tutordetail', profileid=profileid)
             else:
                 form.save()
-                messages.add_message(request, messages.INFO, 'Tutor  request sent!')
+                messages.add_message(request, messages.INFO,
+                                     'Tutor  request sent!')
                 return redirect('tutordetail', profileid=profileid)
     lenclasses = len(classes)
     form = AlertForm()
-    
-    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes,lenclasses)], 'form': form})
+
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes, lenclasses)], 'form': form})
+
 
 @login_required
 def classes(request):
@@ -592,6 +635,7 @@ def classes(request):
                   {"AllClasses": AllClasses}
                   )
 
+
 @login_required
 def StudentSearch(request):
     student = request.user
@@ -604,10 +648,11 @@ def StudentSearch(request):
     q = request.GET.get('search')
     if q:
         q = q.strip(" ")
-        q = q.replace(":","")
-        q = q.replace(" ","")
+        q = q.replace(":", "")
+        q = q.replace(" ", "")
         classes = Classes.objects.filter(
-            Q(body__icontains=q) | Q(subject__icontains=q) | Q(classname__icontains=q) | Q(catalognumber__icontains=q)
+            Q(body__icontains=q) | Q(subject__icontains=q) | Q(
+                classname__icontains=q) | Q(catalognumber__icontains=q)
         )
         return render(request, 'mainApp/classList.html', {'info': classes})
     else:
@@ -902,10 +947,12 @@ def accountSettings2t(request):
                 tutor.save()
                 return redirect('classes')  # send them to the classes page
         else:
-            messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
+            messages.add_message(request, messages.WARNING,
+                                 'One or more fields are invalid.')
             return redirect('accountSettings2t')
     form = FirstTutorForm()
     return render(request, 'mainApp/accountSettings2t.html', {"form": form})
+
 
 @login_required
 def classes(request):
@@ -923,18 +970,22 @@ def classes(request):
     AllClasses = Classes.objects.all().order_by('-classID')
     # https://dev.to/yahaya_hk/how-to-populate-your-database-with-data-from-an-external-api-in-django-398i
 
-@login_required
-def accountDisplay(request):
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
-    tutor = get_object_or_404(Tutor, user=user) #tutor of the user logged in
-    classes_offered = tutorClasses.objects.filter(tutor=tutor.user)
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor,"classes_offered": classes_offered})
 
 @login_required
-def accountDisplayStudent(request): #the user version of account display
-    user = request.user #using this to access the profile of the user logged in
-    profile = get_object_or_404(Profile, user=user) #profile of the user logged in
+def accountDisplay(request):
+    user = request.user  # using this to access the profile of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
+    tutor = get_object_or_404(Tutor, user=user)  # tutor of the user logged in
+    classes_offered = tutorClasses.objects.filter(tutor=tutor.user)
+    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor, "classes_offered": classes_offered})
+
+
+@login_required
+def accountDisplayStudent(request):  # the user version of account display
+    user = request.user  # using this to access the profile of the user logged in
+    # profile of the user logged in
+    profile = get_object_or_404(Profile, user=user)
     return render(request, 'mainApp/accountDisplayStudent.html', {"profile": profile})
 
 
