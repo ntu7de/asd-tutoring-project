@@ -628,7 +628,7 @@ def accountSettings2t(request):
         if form.is_valid():
             hourly_rate = form.cleaned_data['hourly_rate']
             #covers hourly rate being empty
-            if not form.data['hourly_rate']:
+            if not form.data['hourly_rate'] or form.data['hourly_rate'] == None:
                 messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
             # check if hourly_rate is less than minimum wage or over 100 dollars
             if hourly_rate < 0 or hourly_rate < 12.5 or hourly_rate > 100:
@@ -642,13 +642,13 @@ def accountSettings2t(request):
                 if hourly_rate > 100:
                     messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
             # check that 'Select Time' isn't selected
-            # if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
-            #         (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
-            #         (form.data['wednesday_start'] == "Select Time" or form.data['wednesday_end'] == "Select Time") or \
-            #         (form.data['thursday_start'] == "Select Time" or form.data['thursday_end'] == "Select Time") or \
-            #         (form.data['friday_start'] == "Select Time" or form.data['friday_end'] == "Select Time")):
-            #     messages.add_message(request, messages.WARNING, 'You must select an option for every start and end.')
-            #     return redirect('accountSettings2t')
+            if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
+                    (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
+                    (form.data['wednesday_start'] == "Select Time" or form.data['wednesday_end'] == "Select Time") or \
+                    (form.data['thursday_start'] == "Select Time" or form.data['thursday_end'] == "Select Time") or \
+                    (form.data['friday_start'] == "Select Time" or form.data['friday_end'] == "Select Time")):
+                messages.add_message(request, messages.WARNING, 'You must select an option for every start and end.')
+                return redirect('accountSettings2t')
             #start to declare all the time variables needed to compare
             monday_start = form.data['monday_start']
             tuesday_start = form.data['tuesday_start']
