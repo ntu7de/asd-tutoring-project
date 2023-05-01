@@ -108,6 +108,16 @@ def tutorsetting(request):  # the account settings page for tutors
                 try:
                     float(new_hourly_rate)
                 except TypeError:
+                    new_hourly_rate = hourly_rate # make it so hourly_rate is comparable
+                if new_hourly_rate < 0 or new_hourly_rate < 12.5 or new_hourly_rate > 100:
+                    if new_hourly_rate < 0:
+                        # If the hourly rate is negative, show an error message
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
+                    if new_hourly_rate < 12.5:
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
+                    if new_hourly_rate > 100:
+                        messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                else:
                     if not tutorform.data['hourly_rate']:
                         tutor.hourly_rate = hourly_rate
                     if tutorform.data['monday_start'] == "Select Time":
@@ -130,40 +140,21 @@ def tutorsetting(request):  # the account settings page for tutors
                         tutor.friday_start = friday_start
                     if tutorform.data['friday_end'] == "Select Time":
                         tutor.friday_end = friday_end
-                    tutor.save()
-                    return redirect('tutor')
-                else:
-                    if new_hourly_rate < 0 or new_hourly_rate < 12.5 or new_hourly_rate > 100:
-                        if new_hourly_rate < 0:
-                            # If the hourly rate is negative, show an error message
-                            messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
-                        if new_hourly_rate < 12.5:
-                            messages.add_message(request, messages.ERROR, 'Hourly rate cannot be less than minimum wage')
-                        if new_hourly_rate > 100:
-                            messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+                    if ((tutor.monday_start == "Not Available" and tutor.monday_end != "Not Available") or (tutor.monday_start != "Not Available" and tutor.monday_end == "Not Available")) or \
+                            ((tutor.tuesday_start == "Not Available" and tutor.tuesday_end != "Not Available") or (tutor.tuesday_start != "Not Available" and tutor.tuesday_end == "Not Available")) or \
+                            ((tutor.wednesday_start == "Not Available" and tutor.wednesday_end != "Not Available") or (tutor.wednesday_start != "Not Available" and tutor.wednesday_end == "Not Available")) or \
+                            ((tutor.thursday_start == "Not Available" and tutor.thursday_end != "Not Available") or (tutor.thursday_start != "Not Available" and tutor.thursday_end == "Not Available")) or \
+                            ((tutor.friday_start == "Not Available" and tutor.friday_end != "Not Available") or (tutor.friday_start != "Not Available" and tutor.friday_end == "Not Available")):
+                        messages.add_message(request, messages.ERROR, 'You cannot have only one start/end field set as "Not Available"')
+                    elif tutor.monday_start == "Not Available" and tutor.tuesday_start == "Not Available" and tutor.wednesday_start == "Not Available" and tutor.thursday_start == "Not Available" and tutor.friday_start == "Not Available":
+                        messages.add_message(request, messages.ERROR, 'You must be available for at least one day')
+                    elif (tutor.monday_end != "Not Available" and datetime.datetime.strptime(tutor.monday_end, '%I:%M %p') <= datetime.datetime.strptime(tutor.monday_start, '%I:%M %p')) or \
+                            (tutor.tuesday_end != "Not Available" and datetime.datetime.strptime(tutor.tuesday_end, '%I:%M %p') <= datetime.datetime.strptime(tutor.tuesday_start, '%I:%M %p')) or \
+                            (tutor.wednesday_end != "Not Available" and datetime.datetime.strptime(tutor.wednesday_end, '%I:%M %p') <= datetime.datetime.strptime(tutor.wednesday_start, '%I:%M %p')) or \
+                            (tutor.thursday_end != "Not Available" and datetime.datetime.strptime(tutor.thursday_end, '%I:%M %p') <= datetime.datetime.strptime(tutor.thursday_start, '%I:%M %p')) or \
+                            (tutor.friday_end != "Not Available" and datetime.datetime.strptime(tutor.friday_end, '%I:%M %p') <= datetime.datetime.strptime(tutor.friday_start, '%I:%M %p')):
+                        messages.add_message(request, messages.ERROR, 'Start times must be before end times')
                     else:
-                        if not tutorform.data['hourly_rate']:
-                            tutor.hourly_rate = hourly_rate
-                        if tutorform.data['monday_start'] == "Select Time":
-                            tutor.monday_start = monday_start
-                        if tutorform.data['monday_end'] == "Select Time":
-                            tutor.monday_end = monday_end
-                        if tutorform.data['tuesday_start'] == "Select Time":
-                            tutor.tuesday_start = tuesday_start
-                        if tutorform.data['tuesday_end'] == "Select Time":
-                            tutor.tuesday_end = tuesday_end
-                        if tutorform.data['wednesday_start'] == "Select Time":
-                            tutor.wednesday_start = wednesday_start
-                        if tutorform.data['wednesday_end'] == "Select Time":
-                            tutor.wednesday_end = wednesday_end
-                        if tutorform.data['thursday_start'] == "Select Time":
-                            tutor.thursday_start = thursday_start
-                        if tutorform.data['thursday_end'] == "Select Time":
-                            tutor.thursday_end = thursday_end
-                        if tutorform.data['friday_start'] == "Select Time":
-                            tutor.friday_start = friday_start
-                        if tutorform.data['friday_end'] == "Select Time":
-                            tutor.friday_end = friday_end
                         tutor.save()
                         return redirect('tutor')
     context = {
@@ -659,19 +650,19 @@ def accountSettings2t(request):
                     (form.data['monday_start'] != "Not Available" and form.data['monday_end'] == "Not Available")) or \
                     ((form.data['tuesday_start'] == "Not Available" and form.data['tuesday_end'] != "Not Available") or
                         (form.data['tuesday_start'] != "Not Available" and
-                     form.data['tuesday_end'] == "Not Available")) or \
-                        ((form.data['wednesday_start'] == "Not Available" and
-                          form.data['wednesday_end'] != "Not Available") or
-                            (form.data['wednesday_start'] != "Not Available" and
-                             form.data['wednesday_end'] == "Not Available")) or \
-                        ((form.data['thursday_start'] == "Not Available" and
-                          form.data['thursday_end'] != "Not Available") or
-                            (form.data['thursday_start'] != "Not Available" and
-                             form.data['thursday_end'] == "Not Available")) or \
-                        ((form.data['friday_start'] == "Not Available" and
-                          form.data['friday_end'] != "Not Available") or
-                            (form.data['friday_start'] != "Not Available" and
-                             form.data['friday_end'] == "Not Available")):
+                            form.data['tuesday_end'] == "Not Available")) or \
+                    ((form.data['wednesday_start'] == "Not Available" and
+                        form.data['wednesday_end'] != "Not Available") or
+                        (form.data['wednesday_start'] != "Not Available" and
+                            form.data['wednesday_end'] == "Not Available")) or \
+                    ((form.data['thursday_start'] == "Not Available" and
+                        form.data['thursday_end'] != "Not Available") or
+                        (form.data['thursday_start'] != "Not Available" and
+                            form.data['thursday_end'] == "Not Available")) or \
+                    ((form.data['friday_start'] == "Not Available" and
+                        form.data['friday_end'] != "Not Available") or
+                        (form.data['friday_start'] != "Not Available" and
+                            form.data['friday_end'] == "Not Available")):
                 messages.add_message(request, messages.ERROR,'You cannot have only one start/end field set as "Not Available"')
                 return redirect('accountSettings2t')
             if form.data['monday_start'] == "Not Available" and form.data['tuesday_start'] == "Not Available" and \
@@ -680,15 +671,15 @@ def accountSettings2t(request):
                 messages.add_message(request, messages.ERROR, 'You must be available for at least one day')
                 return redirect('accountSettings2t')
             if (form.data['monday_end'] != "Not Available" and
-                    form.data['monday_end'] >= form.data['monday_start']) or \
+                    datetime.datetime.strptime(form.data['monday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['monday_start'], '%I:%M %p')) or \
                     (form.data['tuesday_end'] != "Not Available" and
-                        form.data['tuesday_end'] >= form.data['tuesday_start']) or \
+                        datetime.datetime.strptime(form.data['tuesday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['tuesday_start'], '%I:%M %p')) or \
                     (form.data['wednesday_end'] != "Not Available" and
-                        form.data['wednesday_end'] >= form.data['wednesday_start']) or \
+                        datetime.datetime.strptime(form.data['wednesday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['wednesday_start'], '%I:%M %p')) or \
                     (form.data['thursday_end'] != "Not Available" and
-                        form.data['thursday_end'] >= form.data['thursday_start']) or \
+                        datetime.datetime.strptime(form.data['thursday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['thursday_start'], '%I:%M %p')) or \
                     (form.data['friday_end'] != "Not Available" and
-                        form.data['friday_end'] >= form.data['friday_start']):
+                        datetime.datetime.strptime(form.data['friday_end'], '%I:%M %p') <= datetime.datetime.strptime(form.data['friday_start'], '%I:%M %p')):
                 messages.add_message(request, messages.ERROR, 'Start times must be before end times')
                 return redirect('accountSettings2t')
             # if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
