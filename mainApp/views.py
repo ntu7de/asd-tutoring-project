@@ -719,7 +719,6 @@ def accountSettings2t(request):
                     tuesday_start_hour = int(tuesday_start_hour)
                     tuesday_start_minutes = int(tuesday_start[2:4])
                     tuesday_start_meridiem = tuesday_start[5:7]
-                    # create monday end variables
                 tuesday_end_hour = tuesday_end[0]
                 if (form.data['tuesday_end'][1] != ":"):
                     tuesday_end_hour = int(tuesday_end_hour + tuesday_end[1])
@@ -751,6 +750,48 @@ def accountSettings2t(request):
                 if (tuesday_end_hour == 12 and tuesday_start_hour < 12 and tuesday_end_meridiem == "PM" and \
                         tuesday_start_meridiem == "PM"):
                     messages.add_message(request, messages.WARNING, 'Tuesday start time must be after end time')
+                    return redirect('accountSettings2t')
+            #wednesday
+            if (wednesday_start != "Not Available" and wednesday_end != "Not Available"):
+                if (wednesday_start[1] != ":"):
+                    wednesday_start_hour = int(wednesday_start_hour + wednesday_start[1])
+                    wednesday_start_minutes = int(wednesday_start[3:5])
+                    wednesday_start_meridiem = wednesday_start[6:8]
+                else:
+                    wednesday_start_hour = int(wednesday_start_hour)
+                    wednesday_start_minutes = int(wednesday_start[2:4])
+                    wednesday_start_meridiem = wednesday_start[5:7]
+                wednesday_end_hour = wednesday_end[0]
+                if (form.data['wednesday_end'][1] != ":"):
+                    wednesday_end_hour = int(wednesday_end_hour + wednesday_end[1])
+                    wednesday_end_minutes = int(wednesday_end[3:5])
+                    wednesday_end_meridiem = wednesday_end[6:8]
+                else:
+                    wednesday_end_hour = int(wednesday_end_hour)
+                    wednesday_end_minutes = int(wednesday_end[2:4])
+                    wednesday_end_meridiem = wednesday_end[5:7]
+                # check if end time is before start time if meridiems are equal
+                if ((wednesday_end_hour < wednesday_start_hour and wednesday_end_meridiem == wednesday_start_meridiem)):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if end meridiem is PM and start meridiem is AM
+                if (wednesday_end_meridiem == "AM" and wednesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                    # if hours and meridiems are equal, check if end minutes is less than start minutes
+                if (wednesday_end_hour == wednesday_start_hour and wednesday_end_meridiem == wednesday_start_meridiem and \
+                        wednesday_end_minutes < wednesday_start_minutes):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
+                    return redirect('accountSettings2t')
+                # check if times are equal
+                if (wednesday_end_hour == wednesday_start_hour and wednesday_end_minutes == wednesday_start_minutes and \
+                        wednesday_end_meridiem == wednesday_start_meridiem):
+                    messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                    return redirect('accountSettings2t')
+                # check for case where end time is 12:00 or 12:30 and start time is some time in the afternoon
+                if (wednesday_end_hour == 12 and wednesday_start_hour < 12 and wednesday_end_meridiem == "PM" and \
+                        wednesday_start_meridiem == "PM"):
+                    messages.add_message(request, messages.WARNING, 'Wednesday start time must be after end time')
                     return redirect('accountSettings2t')
             #check that if 'Not Available' is selected for one of the options, the other must be 'Not Available' as well
             if ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or \
