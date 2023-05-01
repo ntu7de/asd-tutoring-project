@@ -641,6 +641,52 @@ def accountSettings2t(request):
                     return redirect('accountSettings2t')
                 if hourly_rate > 100:
                     messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
+
+            #start to declare all the time variables needed to compare
+            monday_start = form.data['monday_start']
+            monday_end = form.data['monday_end']
+            monday_start_hour = monday_start[0]
+            #create monday start variables for comparing
+            #ex: "10:00 AM"
+            if(monday_start[1] != ":"):
+                monday_start_hour = int(monday_start_hour + monday_start[1])
+                monday_start_minutes = int(monday_start[3:5])
+                monday_start_meridiem = monday_start[6:8]
+            else:
+                monday_start_hour = int(monday_start_hour)
+                monday_start_minutes = int(monday_start[2:4])
+                monday_start_meridiem = monday_start[5:7]
+            #create monday end variables
+            monday_end_hour = monday_end[0]
+            if(form.data['monday_end'][1] != ":"):
+                monday_end_hour = int(monday_end_hour + monday_end[1])
+                monday_end_minutes = int(monday_end[3:5])
+                monday_end_meridiem = monday_end[6:8]
+            else:
+                monday_end_hour = int(monday_end_hour)
+                monday_end_minutes = int(monday_end[2:4])
+                monday_end_meridiem = monday_end[5:7]
+            #then check if end minutes are less than start minutes
+
+            #check if end time is before start time if meridiems are equal
+            if(monday_end_hour < monday_start_hour and monday_end_meridiem == monday_start_meridiem):
+                # messages.add_message(request, messages.WARNING, monday_end_meridiem)
+                messages.add_message(request, messages.WARNING, 'Start time must be after end time')
+                return redirect('accountSettings2t')
+            #check if end meridiem is PM and start meridiem is AM
+            if(monday_end_meridiem == "AM" and monday_start_meridiem == "PM"):
+                messages.add_message(request, messages.WARNING, 'Start time must be after end time')
+                return redirect('accountSettings2t')
+            #if hours and meridiems are equal, check if end minutes is less than start minutes
+            if(monday_end_hour == monday_start_hour and monday_end_meridiem == monday_start_meridiem and \
+                    monday_end_minutes < monday_start_minutes):
+                messages.add_message(request, messages.WARNING, 'Start time must be after end time')
+                return redirect('accountSettings2t')
+            #check if times are equal
+            if(monday_end_hour == monday_start_hour and monday_end_minutes == monday_start_minutes and \
+                    monday_end_meridiem == monday_start_meridiem):
+                messages.add_message(request, messages.WARNING, 'Start time cannot equal end time')
+                return redirect('accountSettings2t')
             #check that 'Select Time' isn't selected
             if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
                     (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
@@ -661,6 +707,8 @@ def accountSettings2t(request):
                   (form.data['friday_start'] == "Not Available" and form.data['friday_end'] != "Not Available") or \
                   (form.data['friday_end'] == "Not Available" and form.data['friday_start'] != "Not Available")):
                 messages.add_message(request, messages.WARNING, '"Not Available" must be selected for both start and end')
+            #check that if both inputs are not "Not Available," then they should not be equal to each other
+            #check that end time is after start time
             else:
                 tutor = form.save(commit=False)
                 tutor.user = request.user  # connects the tutor to the user
