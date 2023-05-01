@@ -539,22 +539,31 @@ def tutordetail(request, profileid):
             x = datetime.datetime.strptime(
                 d, '%Y-%m-%d').strftime('%A').lower()
             printx = x.capitalize()
+            #
+            time_format = "%I:%M %p"
             # messages.add_message(request, messages.INFO, x)
+            # messages.add_message(request, messages.INFO, 'start' + form.startTime)
+            formStart = datetime.datetime.strptime(form.startTime, time_format)
+            formEnd = datetime.datetime.strptime(form.endTime, time_format)
+                        # messages.add_message(request, messages.INFO, form.endTime)
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday':
                 messages.add_message(
                     request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
                 return redirect('tutordetail', profileid=profileid)
             start = x + '_start'
             end = x + '_end'
+            tutorStart = datetime.datetime.strptime(getattr(tutorpro, start), time_format)
+            tutorEnd = datetime.datetime.strptime(getattr(tutorpro, end), time_format)
             # messages.add_message(request, messages.INFO, getattr(tutorpro, start))
             # Check if the session start time is within TA's available hours
-            if form.startTime < getattr(tutorpro, start):
+            if formStart < tutorStart:
+                # messages.add_message(request, messages.WARNING, getattr(tutorpro, start))
                 messages.add_message(
                     request, messages.WARNING, 'Start time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
-
             # Check if the session end time is within TA's available hours
-            elif form.endTime > getattr(tutorpro, end):
+            if formEnd > tutorEnd:
+                # messages.add_message(request, messages.WARNING, getattr(tutorpro, end))
                 messages.add_message(
                     request, messages.WARNING, 'End time must be within the available hours')
                 return redirect('tutordetail', profileid=profileid)
