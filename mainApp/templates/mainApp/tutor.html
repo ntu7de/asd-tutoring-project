@@ -6,18 +6,18 @@
     <div class="col-lg-6 col-md-8 mx-auto">
       <h2 class="fw-light">Welcome to the Tutor Page, {{ user.first_name }}!</h2>
     </div>
-    {% if classlist %}
-    {% if classlist.0 and not classlist.1 %}
-    <p class="lead text" style="width:100%; color:black">Here is the class that you tutor for: {{classlist.0}} </p>
-    {% elif classlist.0 and classlist.1 and not classlist.2%}
-    <p class="lead text" style="width:100%; color:black">Here are the classes that you tutor for: {{classlist.0}},
-      {{classlist.1}} </p>
-    {% else %}
-    <p class="lead text" style="width:100%; color:black">Here are some of the classes that you tutor for:
-      {{classlist.0}}, {{classlist.1}}, {{classlist.2}}</p>
-    {% endif %}
-    {% endif %}
   </div>
+  {% if classlist %}
+  <h5><u>Classes Tutoring</u></h5>
+  <hr>
+    {%for class in classlist%}
+    <div class="col" id="tags">
+      <b>{{ class.subject}} {{class.catalognumber}}:</b>
+      {{class.classname}}
+      <hr>
+    </div>
+    {% endfor %}
+    {% endif %}
 </section>
 {% if requestlist %}
 <table class="table table-striped table-bordered table-hover" style="padding-left: 40px">
