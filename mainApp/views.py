@@ -946,6 +946,9 @@ def accountSettings2t(request):
                 messages.add_message(request, messages.WARNING, '"Not Available" must be selected for both start and end')
             #check that if both inputs are not "Not Available," then they should not be equal to each other
             #check that end time is after start time
+            # check that at least one day is not "Not Available"
+            elif form.data['monday_start'] == "Not Available" and form.data['tuesday_start'] == "Not Available" and form.data['wednesday_start'] == "Not Available" and form.data['thursday_start'] == "Not Available" and form.data['friday_start'] == "Not Available":
+                messages.add_message(request, messages.WARNING, 'You must be available for at least one day')
             else:
                 tutor = form.save(commit=False)
                 tutor.user = request.user  # connects the tutor to the user

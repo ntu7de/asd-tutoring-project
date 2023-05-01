@@ -53,7 +53,7 @@ class Calendar(HTMLCalendar):
         # request = Request.objects.get(tutor=tutor)
         # print(request.date)
         events = Request.objects.filter(date__icontains=self.year, date__contains=self.month,
-                                        tutor__id__in=tutor).exclude(approved="denied")
+                                        tutor__id__in=tutor, approved__contains="approved")
 
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f'{self.formatmonthname(self.year, self.month, withyear=withyear)}\n'
