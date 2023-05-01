@@ -985,8 +985,39 @@ def accountDisplay(request):
     # profile of the user logged in
     profile = get_object_or_404(Profile, user=user)
     tutor = get_object_or_404(Tutor, user=user)  # tutor of the user logged in
+    if tutor.monday_start == "Not Available":
+        tutor_monday = "Not Available"
+    else:
+        tutor_monday = tutor.monday_start + "-" + tutor.monday_end
+    if tutor.tuesday_start == "Not Available":
+        tutor_tuesday = "Not Available"
+    else:
+        tutor_tuesday = tutor.tuesday_start + "-" + tutor.tuesday_end
+    if tutor.wednesday_start == "Not Available":
+        tutor_wednesday = "Not Available"
+    else:
+        tutor_wednesday = tutor.wednesday_start + "-" + tutor.wednesday_end
+    if tutor.thursday_start == "Not Available":
+        tutor_thursday = "Not Available"
+    else:
+        tutor_thursday = tutor.thursday_start + "-" + tutor.thursday_end
+    if tutor.friday_start == "Not Available":
+        tutor_friday = "Not Available"
+    else:
+        tutor_friday = tutor.friday_start + "-" + tutor.friday_end
     classes_offered = tutorClasses.objects.filter(tutor=tutor.user)
-    return render(request, 'mainApp/accountDisplay.html', {"profile": profile, "tutor": tutor, "classes_offered": classes_offered})
+    context = {
+        'profile': profile,
+        'tutor': tutor,
+        'classes_offered': classes_offered,
+        'hourly_rate': tutor.hourly_rate,
+        'monday': tutor_monday,
+        'tuesday': tutor_tuesday,
+        'wednesday': tutor_wednesday,
+        'thursday': tutor_thursday,
+        'friday': tutor_friday
+    }
+    return render(request, 'mainApp/accountDisplay.html', context)
 
 
 @login_required
