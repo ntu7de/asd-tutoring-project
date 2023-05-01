@@ -611,8 +611,35 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
     lenclasses = len(classes)
     form = AlertForm()
-
-    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes, lenclasses)], 'form': form})
+    # figure out tutor days
+    if tutorpro.monday_start == "Not Available":
+        tutor_monday = "Not Available"
+    else:
+        tutor_monday = tutorpro.monday_start + " - " + tutorpro.monday_end
+    if tutorpro.tuesday_start == "Not Available":
+        tutor_tuesday = "Not Available"
+    else:
+        tutor_tuesday = tutorpro.tuesday_start + " - " + tutorpro.tuesday_end
+    if tutorpro.wednesday_start == "Not Available":
+        tutor_wednesday = "Not Available"
+    else:
+        tutor_wednesday = tutorpro.wednesday_start + " - " + tutorpro.wednesday_end
+    if tutorpro.thursday_start == "Not Available":
+        tutor_thursday = "Not Available"
+    else:
+        tutor_thursday = tutorpro.thursday_start + " - " + tutorpro.thursday_end
+    if tutorpro.friday_start == "Not Available":
+        tutor_friday = "Not Available"
+    else:
+        tutor_friday = tutorpro.friday_start + " - " + tutorpro.friday_end
+    days = {
+        'monday': tutor_monday,
+        'tuesday': tutor_tuesday,
+        'wednesday': tutor_wednesday,
+        'thursday': tutor_thursday,
+        'friday': tutor_friday
+    }
+    return render(request, 'mainApp/tutordetail.html', {'info': [(profile, tutorpro, classes, lenclasses)], 'days': days, 'form': form})
 
 
 @login_required
