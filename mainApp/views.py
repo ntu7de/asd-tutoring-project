@@ -676,39 +676,12 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            try:
-                float(form.data['hourly_rate'])
-            except ValueError:
-                messages.add_message(request, messages.ERROR, 'Hourly rate must be a number')
-                return redirect('accountSettings2t')
-            if float(form.data['hourly_rate']) < 0 or float(form.data['hourly_rate']) < 12.5 or float(form.data['hourly_rate']) > 100:
-                if float(form.data['hourly_rate']) < 0:
-                    # If the hourly rate is negative, show an error message
-                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be negative')
-                if float(form.data['hourly_rate']) < 12.5:
-                    messages.add_message(request, messages.ERROR,
-                                         'Hourly rate cannot be less than minimum wage')
-                if float(form.data['hourly_rate']) > 100:
-                    messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
-                return redirect('accountSettings2t')
-            if ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or
-                    (form.data['monday_start'] != "Not Available" and form.data['monday_end'] == "Not Available")) or \
-                    ((form.data['tuesday_start'] == "Not Available" and form.data['tuesday_end'] != "Not Available") or
-                        (form.data['tuesday_start'] != "Not Available" and
-                            form.data['tuesday_end'] == "Not Available")) or \
-                    ((form.data['wednesday_start'] == "Not Available" and
-                        form.data['wednesday_end'] != "Not Available") or
-                        (form.data['wednesday_start'] != "Not Available" and
-                            form.data['wednesday_end'] == "Not Available")) or \
-                    ((form.data['thursday_start'] == "Not Available" and
-                        form.data['thursday_end'] != "Not Available") or
-                        (form.data['thursday_start'] != "Not Available" and
-                            form.data['thursday_end'] == "Not Available")) or \
-                    ((form.data['friday_start'] == "Not Available" and
-                        form.data['friday_end'] != "Not Available") or
-                        (form.data['friday_start'] != "Not Available" and
-                            form.data['friday_end'] == "Not Available")):
-                messages.add_message(request, messages.ERROR,'You cannot have only one start/end field set as "Not Available"')
+            if not form.data['hourly_rate'] or form.data['monday_start'] == form.data['monday_end'] or \
+                    form.data['tuesday_start'] == form.data['tuesday_end'] or \
+                    form.data['wednesday_start'] == form.data['wednesday_end'] or \
+                    form.data['thursday_start'] == form.data['thursday_end'] or \
+                    form.data['friday_start'] == form.data['friday_end']:
+                messages.add_message(request, messages.WARNING, 'One or more fields are invalid.')
                 return redirect('accountSettings2t')
             if form.data['monday_start'] == "Not Available" and form.data['tuesday_start'] == "Not Available" and \
                 form.data['wednesday_start'] == "Not Available" and form.data['thursday_start'] == "Not Available" and \
