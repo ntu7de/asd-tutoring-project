@@ -626,10 +626,15 @@ def accountSettings2t(request):
         # the tutor form that requires you to add everything
         form = FirstTutorForm(request.POST)
         if form.is_valid():
-            hourly_rate = form.cleaned_data['hourly_rate']
             #covers hourly rate being empty
-            if not form.data['hourly_rate'] or form.data['hourly_rate'] == None:
+            try:
+                float(form.data['hourly_rate'])
+            except ValueError:
                 messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
+                return redirect('accountSettings2t')
+            hourly_rate = form.cleaned_data['hourly_rate']
+            # if not form.data['hourly_rate'] or form.data['hourly_rate'] == None:
+            #     messages.add_message(request, messages.WARNING, 'Hourly rate is required.')
             # check if hourly_rate is less than minimum wage or over 100 dollars
             if hourly_rate < 0 or hourly_rate < 12.5 or hourly_rate > 100:
                 if hourly_rate < 0:
