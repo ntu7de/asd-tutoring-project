@@ -32,7 +32,7 @@ class Calendar(HTMLCalendar):
         d = ''
         for event in events_per_day:
             d += f'<li> {event.classname}, {event.startTime} to {event.endTime}, {event.location}, ' \
-                 f'{event.student.first_name} {event.student.last_name}, approval status: {event.approved} </li>'
+                 f'{event.student.first_name} {event.student.last_name} </li>'
 
         if day != 0:
             return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
