@@ -631,12 +631,13 @@ def accountSettings2t(request):
                 if hourly_rate > 100:
                     messages.add_message(request, messages.ERROR, 'Hourly rate cannot be greater than $100')
             #check that 'Select Time' isn't selected
-            # if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
-            #         (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
-            #         (form.data['wednesday_start'] == "Select Time" or form.data['wednesday_end'] == "Select Time") or \
-            #         (form.data['thursday_start'] == "Select Time" or form.data['thursday_end'] == "Select Time") or \
-            #         (form.data['friday_start'] == "Select Time" or form.data['friday_end'] == "Select Time")):
-            #     messages.add_message(request, messages.WARNING, 'You must select an option for every start and end.')
+            if ((form.data['monday_start'] == "Select Time" or form.data['monday_end'] == "Select Time") or \
+                    (form.data['tuesday_start'] == "Select Time" or form.data['tuesday_end'] == "Select Time") or \
+                    (form.data['wednesday_start'] == "Select Time" or form.data['wednesday_end'] == "Select Time") or \
+                    (form.data['thursday_start'] == "Select Time" or form.data['thursday_end'] == "Select Time") or \
+                    (form.data['friday_start'] == "Select Time" or form.data['friday_end'] == "Select Time")):
+                messages.add_message(request, messages.WARNING, 'You must select an option for every start and end.')
+                return redirect('accountSettings2t')
             #check that if 'Not Available' is selected for one of the options, the other must be 'Not Available' as well
             if ((form.data['monday_start'] == "Not Available" and form.data['monday_end'] != "Not Available") or \
                   (form.data['monday_end'] == "Not Available" and form.data['monday_start'] != "Not Available") or \
