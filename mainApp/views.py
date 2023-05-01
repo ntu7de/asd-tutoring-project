@@ -202,7 +202,7 @@ def tutor(request):  # tutor home page
     classes = tutorClasses.objects.filter(tutor=u)
     classlist = []
     for c in classes:
-        classname = c.classes.classname
+        classname = c.classes
         classlist.append(classname)
     for i in requests:
         #the student first name
