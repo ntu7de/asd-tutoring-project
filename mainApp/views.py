@@ -626,11 +626,13 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
             # keep students from requesting the same time - no multiple requests
             student_user = request.user
-            same_request = Request.objects.filter(startTime=session_start, endTime=session_end, tutor=tutorpro,
-                                                  student=student_user, date=d)
-            if same_request != Request.objects.none():
+            same_request = Request.objects.filter(startTime=form.startTime, endTime=form.endTime, tutor=tutorpro,
+                                                  student=student_user, date=form.date)
+            print(same_request)
+            if same_request.count() > 0:
                 messages.add_message(request, messages.WARNING,
                                      "You have already requested this time and date from this tutor")
+                return redirect('tutordetail', profileid=profileid)
             else:
                 form.save()
                 messages.add_message(request, messages.INFO,
