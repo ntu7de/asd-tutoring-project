@@ -587,8 +587,12 @@ def tutordetail(request, profileid):
                 return redirect('tutordetail', profileid=profileid)
             start = x + '_start'
             end = x + '_end'
-            tutorStart = datetime.datetime.strptime(getattr(tutorpro, start), time_format)
-            tutorEnd = datetime.datetime.strptime(getattr(tutorpro, end), time_format)
+            try:
+                tutorStart = datetime.datetime.strptime(getattr(tutorpro, start), time_format)
+                tutorEnd = datetime.datetime.strptime(getattr(tutorpro, end), time_format)
+            except ValueError:
+                messages.add_message(request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
+                return redirect('tutordetail', profileid=profileid)
             # messages.add_message(request, messages.INFO, getattr(tutorpro, start))
             # Check if the session start time is within TA's available hours
             if formStart < tutorStart:
