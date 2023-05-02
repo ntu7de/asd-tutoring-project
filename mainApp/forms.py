@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import  Profile
 from .models import Tutor
 from .models import Student, Request
+import datetime
 from django.core.exceptions import ValidationError
 Search = ( ("option1", "course mnemonic"),
            ("option2","course number"),
@@ -223,7 +224,7 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
 class AlertForm(forms.ModelForm):
     startTime = forms.ChoiceField(choices=TimeSelections, label="start time")
     endTime = forms.ChoiceField(choices=TimeSelections, label="end time")
-    date = forms.DateField(widget=forms.SelectDateWidget, label="date")
+    date = forms.DateField(widget=forms.SelectDateWidget, label="date", initial=datetime.date.today)
     location = forms.CharField(max_length=100, label="location")
     classname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: CS 3100 or CS 1110'}), label="class name")
     # tutor = forms.CharField(max_length=100)
