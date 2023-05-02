@@ -26,6 +26,7 @@ Years =(
 ) #choices for the year choice field
 
 TimeSelections1 = (
+    ("Select Time", "Select Time"),
     ("9:00 AM", "9:00 AM"),
     ("9:30 AM", "9:30 AM"),
     ("10:00 AM", "10:00 AM"),
@@ -108,32 +109,6 @@ Days = (
     ("Thursday", "Thursday"),
     ("Friday", "Friday")
 ) #choices for the day choice field
-TimeSelections1 = (
-    ("Not Available", "Not Available"),
-    ("9:00 AM", "9:00 AM"),
-    ("9:30 AM", "9:30 AM"),
-    ("10:00 AM", "10:00 AM"),
-    ("10:30 AM", "10:30 AM"),
-    ("11:00 AM", "11:00 AM"),
-    ("11:30 AM", "11:30 AM"),
-    ("12:00 PM", "12:00 PM"),
-    ("12:30 PM", "12:30 PM"),
-    ("1:00 PM", "1:00 PM"),
-    ("1:30 PM", "1:30 PM"),
-    ("2:00 PM", "2:00 PM"),
-    ("2:30 PM", "2:30 PM"),
-    ("3:00 PM", "3:00 PM"),
-    ("3:30 PM", "3:30 PM"),
-    ("4:00 PM", "4:00 PM"),
-    ("4:30 PM", "4:30 PM"),
-    ("5:00 PM", "5:00 PM"),
-    ("5:30 PM", "5:30 PM"),
-    ("6:00 PM", "6:00 PM"),
-    ("6:30 PM", "6:30 PM"),
-    ("7:00 PM", "7:00 PM"),
-    ("7:30 PM", "7:30 PM"),
-    ("8:00 PM", "8:00 PM"),
-)
 
 class SearchForm(forms.Form): #the form you see when searching for classes
     search = forms.ChoiceField(choices=Search, required=True)
@@ -222,8 +197,8 @@ class FirstTutorForm(forms.ModelForm): #the form that you go to after first maki
         exclude = ()
 
 class AlertForm(forms.ModelForm):
-    startTime = forms.ChoiceField(choices=TimeSelections, label="start time")
-    endTime = forms.ChoiceField(choices=TimeSelections, label="end time")
+    startTime = forms.ChoiceField(choices=TimeSelections1, label="start time")
+    endTime = forms.ChoiceField(choices=TimeSelections1, label="end time")
     date = forms.DateField(widget=forms.SelectDateWidget, label="date", initial=datetime.date.today)
     location = forms.CharField(max_length=100, label="location")
     classname = forms.CharField(widget=forms.TextInput(attrs={'placeholder':'ex: CS 3100 or CS 1110'}), label="class name")

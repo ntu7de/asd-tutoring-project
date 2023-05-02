@@ -581,9 +581,13 @@ def tutordetail(request, profileid):
             time_format = "%I:%M %p"
             # messages.add_message(request, messages.INFO, x)
             # messages.add_message(request, messages.INFO, 'start' + form.startTime)
-            formStart = datetime.datetime.strptime(form.startTime, time_format)
-            formEnd = datetime.datetime.strptime(form.endTime, time_format)
+            try:
+                formStart = datetime.datetime.strptime(form.startTime, time_format)
+                formEnd = datetime.datetime.strptime(form.endTime, time_format)
                         # messages.add_message(request, messages.INFO, form.endTime)
+            except ValueError:
+                messages.add_message(request, messages.WARNING, 'Select a start and an end time')
+                return redirect('tutordetail', profileid=profileid)
             if x != 'monday' and x != 'tuesday' and x != 'wednesday' and x != 'thursday' and x != 'friday':
                 messages.add_message(
                     request, messages.WARNING, 'Tutor is not available on ' + printx + 's')
