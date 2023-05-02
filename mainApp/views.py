@@ -628,7 +628,6 @@ def tutordetail(request, profileid):
             student_user = request.user
             same_request = Request.objects.filter(startTime=form.startTime, endTime=form.endTime, tutor=tutorpro,
                                                   student=student_user, date=form.date)
-            print(same_request)
             if same_request.count() > 0:
                 messages.add_message(request, messages.WARNING,
                                      "You have already requested this time and date from this tutor")
