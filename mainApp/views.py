@@ -624,6 +624,13 @@ def tutordetail(request, profileid):
                 messages.add_message(
                     request, messages.WARNING, "The Tutor doesn't offer this class. Please look at the classes offered below and enter appropriate course mnemoic and catalog number (for ex: CS 3240)")
                 return redirect('tutordetail', profileid=profileid)
+            # keep students from requesting the same time - no multiple requests
+            student_user = request.user
+            same_request = Request.objects.filter(startTime=session_start, endTime=session_end, tutor=tutorpro,
+                                                  student=student_user, date=d)
+            if same_request != Request.objects.none():
+                messages.add_message(request, messages.WARNING,
+                                     "You have already requested this time and date from this tutor")
             else:
                 form.save()
                 messages.add_message(request, messages.INFO,
