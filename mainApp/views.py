@@ -378,7 +378,7 @@ def searchClasses(request):
         "classes": all_classes
     }
     if 'name' in request.GET:
-        input_value = request.GET['name']
+        input_value = request.GET['name'].strip()
         # data = ''
         if input_value.isdigit():
             url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
@@ -424,15 +424,14 @@ def searchClasses(request):
             if inputLength < 0:
                 courseNumber = input[1]
             else:
-                url = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
+                orgurl = 'https://sisuva.admin.virginia.edu/psc/ihprd/UVSS/SA/s/WEBLIB_HCX_CM.H_CLASS_SEARCH.FieldFormula.IScript_ClassSearch?institution=UVA01&term=1232'
                 if inputLength == 1:
-                    url += '&subject=' + first
-                    try:
-                        response = requests.get(url)
-                        data = response.json()
-                    except requests.exceptions.RequestException:
-                        url += '&catalog_nbr=' + first
-                        response = requests.get(url)
+                    url = orgurl + '&subject=' + first
+                    response = requests.get(url)
+                    data = response.json()
+                    if len(data) == 0:
+                        newurl = orgurl+ '&keyword=' + first
+                        response = requests.get(newurl)
                         data = response.json()
                         if len(data) == 1:
                             currentClasses = []
@@ -464,16 +463,16 @@ def searchClasses(request):
                                         '<a href = /classes/' + classNumber + '>' + subject + catalog_nbr + ": " + name + '</a>'))
                 elif inputLength == 2:
                     second = request.GET['name'].split(' ')[1]
-                    url += '&subject=' + first + '&catalog_nbr=' + second
-                    try:
-                        response = requests.get(url)
+                    url = orgurl + '&subject=' + first + '&catalog_nbr=' + second
+                    response = requests.get(url)
+                    data = response.json()
+                    if len(data) == 0:
+                        newurl = orgurl + '&keyword=' + first + '&keyword=' + second
+
+                        response = requests.get(newurl)
                         data = response.json()
-                    except requests.exceptions.RequestException:
-                        url += '&keyword=' + request.GET['name']
-                        response = requests.get(url)
-                        data = response.json()
-                elif inputLength == 3:
-                    url += '&keyword=' + request.GET['name']
+                elif inputLength >= 3:
+                    url = orgurl + '&keyword=' + request.GET['name']
                     response = requests.get(url)
                     data = response.json()
                 if len(data) > 1:
