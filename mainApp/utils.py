@@ -31,7 +31,7 @@ class Calendar(HTMLCalendar):
         events_per_day = events.filter(date__contains=date)
         d = ''
         for event in events_per_day:
-            d += f'<li> {event.classname}, {event.startTime} to {event.endTime}, {event.location}, ' \
+            d += f'<li> {event.classname}, {event.startTime} - {event.endTime}, {event.location}, ' \
                  f'{event.student.first_name} {event.student.last_name} </li>'
 
         if day != 0:

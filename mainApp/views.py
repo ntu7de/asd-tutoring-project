@@ -264,9 +264,8 @@ def tutor(request):  # tutor home page
             c = b[:-1]
             d = c.translate({ord("'"): None})
             my_list = d.split(", ")
-            p = get_object_or_404(
-                Profile, first_name=my_list[0], last_name=my_list[1])
-            r = get_object_or_404(Request, tutor=tutor, student=p.user, date=my_list[2], startTime=my_list[3],
+            # p = get_object_or_404(Profile, first_name=my_list[0], last_name=my_list[1]) error fix
+            r = get_object_or_404(Request, tutor=tutor, student=user, date=my_list[2], startTime=my_list[3],
                                   endTime=my_list[4])
             r.approved = 'denied'
             r.save()
