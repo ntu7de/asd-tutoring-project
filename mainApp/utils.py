@@ -31,8 +31,8 @@ class Calendar(HTMLCalendar):
         events_per_day = events.filter(date__contains=date)
         d = ''
         for event in events_per_day:
-            d += f'<li> {event.classname}, {event.startTime} to {event.endTime}, {event.location}, ' \
-                 f'{event.student.first_name} {event.student.last_name}, approval status: {event.approved} </li>'
+            d += f'<li> {event.classname}, {event.startTime} - {event.endTime}, {event.location}, ' \
+                 f'{event.student.first_name} {event.student.last_name} </li>'
 
         if day != 0:
             return f"<td><span class='date'>{day}</span><ul> {d} </ul></td>"
@@ -53,7 +53,7 @@ class Calendar(HTMLCalendar):
         # request = Request.objects.get(tutor=tutor)
         # print(request.date)
         events = Request.objects.filter(date__icontains=self.year, date__contains=self.month,
-                                        tutor__id__in=tutor).exclude(approved="denied")
+                                        tutor__id__in=tutor, approved__contains="approved")
 
         cal = f'<table border="0" cellpadding="0" cellspacing="0" class="calendar">\n'
         cal += f'{self.formatmonthname(self.year, self.month, withyear=withyear)}\n'
