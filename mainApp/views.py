@@ -527,7 +527,27 @@ def detail(request, classnumber):
     for i in tutorInfo:
         profile = get_object_or_404(Profile, user=i.tutor)
         tutor = get_object_or_404(Tutor, user=i.tutor)
-        tutors0.append((profile, tutor))
+        if tutor.monday_start == "Not Available":
+            monday = "Not Available"
+        else:
+            monday = tutor.monday_start + " - " + tutor.monday_end
+        if tutor.tuesday_start == "Not Available":
+            tuesday = "Not Available"
+        else:
+            tuesday = tutor.tuesday_start + " - " + tutor.tuesday_end
+        if tutor.wednesday_start == "Not Available":
+            wednesday = "Not Available"
+        else:
+            wednesday = tutor.wednesday_start + " - " + tutor.wednesday_end
+        if tutor.thursday_start == "Not Available":
+            thursday = "Not Available"
+        else:
+            thursday = tutor.thursday_start + " - " + tutor.thursday_end
+        if tutor.friday_start == "Not Available":
+            friday = "Not Available"
+        else:
+            friday = tutor.friday_start + " - " + tutor.friday_end
+        tutors0.append((profile, tutor, monday, tuesday, wednesday, thursday, friday))
 
     return render(request, 'mainApp/detail.html', {'classinfo': classInfo, 'tutors': tutors0})
 
